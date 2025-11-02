@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "sso-microservice/internal/pb;userpb";
+
+service User {
+    rpc Create(CreateRequest) returns (CreateResponse);
+    rpc Update(UpdateRequest) returns (UpdateResponse);
+    rpc Delete(DeleteRequest) returns (DeleteResponse);
+    rpc GetByID(GetByIDRequest) returns (GetByIDResponse);
+    rpc GetAll(GetAllRequest) returns (GetAllResponse);
+    rpc GetByEmail(GetByEmailRequest) returns (GetByEmailResponse);
+}
+
+message UserInfo {
+    string id = 1;
+    string email = 2;
+    string name = 3;
+    string surname = 4;
+    string birth_date = 5;
+    string role = 6;
+}
+
+message CreateRequest {
+    string email = 1;
+    string password = 2;
+    string name = 3;
+    string surname = 4;
+    string birth_date = 5;
+    string role = 6;
+}
+
+message CreateResponse {
+    string user_id = 1;
+}
+
+message UpdateRequest {
+    string email = 1;
+    string password = 2;
+    string name = 3;
+    string surname = 4;
+    string birth_date = 5;
+    string role = 6;
+}
+
+message UpdateResponse {
+    UserInfo user = 1;
+}
+
+message DeleteRequest {
+    string user_id = 1;
+}
+
+message DeleteResponse {
+    string message = 1;
+}
+
+message GetByIDRequest {
+    string user_id = 1;
+}
+
+message GetByIDResponse {
+    UserInfo user = 1; 
+}
+
+message GetAllRequest {
+
+}
+
+message GetAllResponse {
+    repeated UserInfo users = 1;
+}
+
+message GetByEmailRequest {
+    string email = 1;
+}
+
+message GetByEmailResponse {
+    UserInfo user = 1; 
+}
