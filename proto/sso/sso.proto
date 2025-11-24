@@ -2,7 +2,10 @@ syntax = "proto3";
 
 package auth;
 
-option go_package = "sso.v1;ssopb";
+option go_package = "sso-microservice/internal/pb/sso;ssopb";
+
+
+import "validate/validate.proto";
 
 service AuthService {
     rpc Register(RegisterRequest) returns (RegisterResponse);
@@ -13,12 +16,17 @@ service AuthService {
 }
 
 message RegisterRequest {
-    string email = 1;
-    string password = 2;
-    string name = 3;
-    string surname = 4;
-    string birth_date = 5;
-    string role = 6;
+    string email = 1 [(validate.rules).string.email = true];
+    string password = 2 [(validate.rules).string.min_len = 6];
+    string name = 3 [(validate.rules).string = {
+    pattern:   "^[A-Za-z]+( [A-Za-z]+)*$",
+    min_len: 2,
+  }];
+    string surname = 4 [(validate.rules).string = {
+    pattern:   "^[A-Za-z]+( [A-Za-z]+)*$",
+    min_len: 2,
+  }];
+    string role = 6 [(validate.rules).string = {pattern: "^\\S+$"}];
 }
 
 message RegisterResponse {
@@ -26,8 +34,8 @@ message RegisterResponse {
 }
 
 message LoginRequest {
-    string email = 1;
-    string password = 2;
+    string email = 1 [(validate.rules).string.email = true];
+    string password = 2 [(validate.rules).string.min_len = 6];
     int32 app_id = 3;
 }
 
@@ -37,15 +45,15 @@ message LoginResponse {
 }
 
 message IsAdminRequest{
-    string user_id = 1;
+    string user_id = 1 [(validate.rules).string = {pattern:"^\\S+$"}];
 }
 
 message IsAdminResponse{
-    bool is_admin= 1;
+    bool is_admin = 1;
 }
 
 message RefreshTokenRequest {
-    string refresh_token = 1;
+    string refresh_token = 1 [(validate.rules).string = {pattern:"^\\S+$"}];
 }
 
 message RefreshTokenResponse {
@@ -54,7 +62,7 @@ message RefreshTokenResponse {
 }
 
 message LogoutRequest {
-    string refresh_token = 1;
+    string refresh_token = 1 [(validate.rules).string = {pattern:"^\\S+$"}];
 }
 
 message LogoutResponse {
