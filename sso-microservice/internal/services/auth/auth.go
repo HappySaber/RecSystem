@@ -27,14 +27,14 @@ type UserSaver interface {
 		email string,
 		name string,
 		surname string,
-		passHash []byte,
 		role string,
+		passHash []byte,
 	) (userID string, err error)
 }
 
 type UserProvider interface {
 	User(ctx context.Context, email string) (models.User, error)
-	IsAdmin(ctx context.Context, userID string) (bool, error)
+	UserRole(ctx context.Context, userID string) (string, error)
 }
 
 type AppProvider interface {
@@ -43,6 +43,8 @@ type AppProvider interface {
 
 var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
+	ErrInvalidAppID       = errors.New("invalid app id")
+	ErrUserExists         = errors.New("user already exists")
 )
 
 // New returs a new instance of the Auth service
@@ -81,17 +83,17 @@ func (a *Auth) Login(
 	user, err := a.userProvider.User(ctx, email)
 	if err != nil {
 		if errors.Is(err, storage.ErrUserNotFound) {
-			a.log.Warn("user not found", err)
+			a.log.Warn("user not found", "error", err.Error())
 			return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
 		}
 
-		a.log.Error("failed to get user", err)
+		a.log.Error("failed to get user", "error", err.Error())
 
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
 
 	if err := bcrypt.CompareHashAndPassword(user.PassHash, []byte(password)); err != nil {
-		a.log.Info("invalid cridentials", err)
+		a.log.Info("invalid cridentials", "error", err.Error())
 
 		return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
 	}
@@ -105,7 +107,7 @@ func (a *Auth) Login(
 
 	token, err := jwt.NewToken(user, app, a.tokenTTL)
 	if err != nil {
-		a.log.Error("failed to generate token", err)
+		a.log.Error("failed to generate token", "error", err.Error())
 
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
@@ -118,11 +120,10 @@ func (a *Auth) Login(
 func (a *Auth) RegisterNewUser(
 	ctx context.Context,
 	email string,
-	password string,
 	name string,
 	surname string,
 	role string,
-	appID int,
+	password string,
 ) (string, error) {
 	const op = "auth.RegisterNewUser"
 
@@ -135,13 +136,16 @@ func (a *Auth) RegisterNewUser(
 
 	passHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		log.Error("failed to generate password hash", err)
+		log.Error("failed to generate password hash", "error", err.Error())
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
 
-	id, err := a.userSaver.SaveUser(ctx, email, name, surname, passHash, role)
+	id, err := a.userSaver.SaveUser(ctx, email, name, surname, role, passHash)
 	if err != nil {
-		log.Error("failed to save user", err)
+		if errors.Is(err, storage.ErrUserExists) {
+			log.Warn("user already exists")
+		}
+		log.Error("failed to save user", "error", ErrUserExists)
 
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
@@ -151,10 +155,10 @@ func (a *Auth) RegisterNewUser(
 	return id, nil
 }
 
-func (a *Auth) IsAdmin(
+func (a *Auth) UserRole(
 	ctx context.Context,
 	userID string,
-) (bool, error) {
+) (string, error) {
 	const op = "Auth.IsAdmin"
 
 	log := a.log.With(
@@ -164,12 +168,21 @@ func (a *Auth) IsAdmin(
 
 	log.Info("checking if user is admin")
 
-	isAdmin, err := a.userProvider.IsAdmin(ctx, userID)
+	isAdmin, err := a.userProvider.UserRole(ctx, userID)
 	if err != nil {
-		return false, fmt.Errorf("%s: %w", op, err)
+		if errors.Is(err, storage.ErrAppNotFound) {
+			log.Warn("user not found", "error", err.Error())
+
+			return "none", fmt.Errorf("%s: %w", op, ErrInvalidAppID)
+		}
+		return "none", fmt.Errorf("%s: %w", op, err)
 	}
 
-	log.Info("checked if user is admin", slog.Bool("is_admin", isAdmin))
+	log.Info("checked if user is admin", slog.String("is_admin", isAdmin))
 
 	return isAdmin, nil
+}
+
+func (a *Auth) Logout(ctx context.Context, refToken string) (bool, error) {
+	return true, nil
 }

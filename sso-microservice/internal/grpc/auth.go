@@ -2,7 +2,10 @@ package auth
 
 import (
 	"context"
+	"errors"
 	sso1 "sso-microservice/internal/pb/sso.v1"
+	"sso-microservice/internal/services/auth"
+	"sso-microservice/internal/storage"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -14,14 +17,18 @@ type Auth interface {
 		email string,
 		password string,
 		appID int,
-	) (accessToken string, refreshToken string, err error)
+	) (accessToken string, err error)
+	//refreshToken string,
 	RegisterNewUser(ctx context.Context,
 		email string,
+		name string,
+		surname string,
+		role string,
 		password string,
 	) (userID string, err error)
-	IsAdmin(ctx context.Context,
+	UserRole(ctx context.Context,
 		userID string,
-	) (isAdmin bool, err error)
+	) (isAdmin string, err error)
 	Logout(ctx context.Context,
 		refToken string,
 	) (isLogouted bool, err error)
@@ -42,15 +49,16 @@ func (s *serverAPI) Login(ctx context.Context, req *sso1.LoginRequest) (*sso1.Lo
 		return nil, status.Error(codes.InvalidArgument, "wrong arguments")
 	}
 
-	accessToken, refreshToken, err := s.auth.Login(ctx, req.GetEmail(), req.GetPassword(), int(req.GetAppId()))
+	accessToken, err := s.auth.Login(ctx, req.GetEmail(), req.GetPassword(), int(req.GetAppId()))
 	if err != nil {
-		//TODO ...
+		if errors.Is(err, auth.ErrInvalidCredentials) {
+			return nil, status.Error(codes.InvalidArgument, "invalid credentials")
+		}
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
 	return &sso1.LoginResponse{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
+		AccessToken: accessToken,
 	}, nil
 }
 
@@ -59,9 +67,12 @@ func (s *serverAPI) Register(ctx context.Context, req *sso1.RegisterRequest) (*s
 		return nil, status.Error(codes.InvalidArgument, "wrong arguments")
 	}
 
-	userID, err := s.auth.RegisterNewUser(ctx, req.GetEmail(), req.GetPassword())
+	userID, err := s.auth.RegisterNewUser(ctx, req.GetEmail(), req.GetName(), req.GetSurname(), req.GetRole(), req.GetPassword())
 
 	if err != nil {
+		if errors.Is(err, storage.ErrUserExists) {
+			return nil, status.Error(codes.AlreadyExists, "user already exists")
+		}
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
@@ -76,6 +87,7 @@ func (s *serverAPI) Logout(ctx context.Context, req *sso1.LogoutRequest) (*sso1.
 
 	isLogouted, err := s.auth.Logout(ctx, req.GetRefreshToken())
 	if err != nil {
+
 		return nil, status.Error(codes.Internal, "Coudnot logout")
 	}
 
@@ -89,14 +101,23 @@ func (s *serverAPI) IsAdmin(ctx context.Context, req *sso1.IsAdminRequest) (*sso
 		return nil, status.Error(codes.InvalidArgument, "wrong arguments")
 	}
 
-	isAdmin, err := s.auth.IsAdmin(ctx, req.GetUserId())
+	role, err := s.auth.UserRole(ctx, req.GetUserId())
 
 	if err != nil {
+		if errors.Is(err, storage.ErrUserNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
+	if role == "admin" {
+		return &sso1.IsAdminResponse{
+			IsAdmin: true,
+		}, nil
+	}
+
 	return &sso1.IsAdminResponse{
-		IsAdmin: isAdmin,
+		IsAdmin: false,
 	}, nil
 }
 func (s *serverAPI) RefreshToken(ctx context.Context, req *sso1.RefreshTokenRequest) (*sso1.RefreshTokenResponse, error) {

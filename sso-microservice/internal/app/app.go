@@ -3,6 +3,8 @@ package app
 import (
 	"log/slog"
 	grpcapp "sso-microservice/internal/app/grpc"
+	"sso-microservice/internal/services/auth"
+	"sso-microservice/internal/storage/postgresql"
 	"time"
 )
 
@@ -15,11 +17,14 @@ func New(
 	grpcPort int,
 	tokenTTL time.Duration,
 ) *App {
-	//TODO инициализировать хранилище
+	storage, err := postgresql.New()
+	if err != nil {
+		panic(err)
+	}
 
-	//TODO init auth service
+	authService := auth.New(log, storage, storage, storage, tokenTTL)
 
-	grpcApp := grpcapp.New(log, grpcPort)
+	grpcApp := grpcapp.New(log, grpcPort, authService)
 	return &App{
 		GRPCSrv: grpcApp,
 	}
