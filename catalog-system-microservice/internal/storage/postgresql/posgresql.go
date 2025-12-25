@@ -165,14 +165,174 @@ ON CONFLICT (content_id) DO UPDATE SET
 	return err
 }
 
-func (s *Storage) SaveSeries(contentID string, tmdbID int, rawJSON string) error {
+func (s *Storage) SaveSeries(series *models.SeriesDetails) error {
 	_, err := s.DB.Exec(`
-		INSERT INTO series_details (content_id, tmdb_id, raw_data)
-		VALUES ($1, $2, $3)
-		ON CONFLICT (content_id)
-		DO UPDATE SET
-			tmdb_id = EXCLUDED.tmdb_id,
-			raw_data = EXCLUDED.raw_data
-	`, contentID, tmdbID, rawJSON)
+	INSERT INTO series_details (
+		content_id,
+		tmdb_id,
+		original_name,
+		status,
+		first_air_date,
+		last_air_date,
+		number_of_seasons,
+		number_of_episodes,
+		language,
+		genres,
+		networks,
+		cast_members,
+		images,
+		videos,
+		raw_data
+	)
+	VALUES (
+		$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15
+	)
+	ON CONFLICT (content_id) DO UPDATE SET
+		tmdb_id = EXCLUDED.tmdb_id,
+		original_name = EXCLUDED.original_name,
+		status = EXCLUDED.status,
+		first_air_date = EXCLUDED.first_air_date,
+		last_air_date = EXCLUDED.last_air_date,
+		number_of_seasons = EXCLUDED.number_of_seasons,
+		number_of_episodes = EXCLUDED.number_of_episodes,
+		language = EXCLUDED.language,
+		genres = EXCLUDED.genres,
+		networks = EXCLUDED.networks,
+		cast_members = EXCLUDED.cast_members,
+		images = EXCLUDED.images,
+		videos = EXCLUDED.videos,
+		raw_data = EXCLUDED.raw_data
+	`,
+		series.ContentID,
+		series.TmdbID,
+		series.OriginalName,
+		series.Status,
+		series.FirstAirDate,
+		series.LastAirDate,
+		series.NumberOfSeasons,
+		series.NumberOfEpisodes,
+		series.Language,
+		series.Genres,
+		series.Networks,
+		series.CastMembers,
+		series.Images,
+		series.Videos,
+		series.RawData,
+	)
+
+	return err
+}
+
+func (s *Storage) SaveAnime(anime *models.AnimeDetails) error {
+	_, err := s.DB.Exec(`
+	INSERT INTO anime_details (
+		content_id,
+		anilist_id,
+		mal_id,
+
+		original_title,
+		format,
+		status,
+		season,
+		season_year,
+
+		episodes_count,
+		episode_duration,
+
+		start_date,
+		end_date,
+
+		language,
+
+		genres,
+		tags,
+		studios,
+
+		characters,
+		voice_actors,
+
+		mean_score,
+		popularity,
+		favourites,
+
+		trailer_url,
+		raw_data
+	)
+	VALUES (
+		$1, $2, $3,
+		$4, $5, $6, $7, $8,
+		$9, $10,
+		$11, $12,
+		$13,
+		$14, $15, $16,
+		$17, $18,
+		$19, $20, $21,
+		$22, $23
+	)
+	ON CONFLICT (content_id) DO UPDATE SET
+		anilist_id       = EXCLUDED.anilist_id,
+		mal_id           = EXCLUDED.mal_id,
+
+		original_title   = EXCLUDED.original_title,
+		format           = EXCLUDED.format,
+		status           = EXCLUDED.status,
+		season           = EXCLUDED.season,
+		season_year      = EXCLUDED.season_year,
+
+		episodes_count   = EXCLUDED.episodes_count,
+		episode_duration = EXCLUDED.episode_duration,
+
+		start_date       = EXCLUDED.start_date,
+		end_date         = EXCLUDED.end_date,
+
+		language         = EXCLUDED.language,
+
+		genres           = EXCLUDED.genres,
+		tags             = EXCLUDED.tags,
+		studios          = EXCLUDED.studios,
+
+		characters       = EXCLUDED.characters,
+		voice_actors     = EXCLUDED.voice_actors,
+
+		mean_score       = EXCLUDED.mean_score,
+		popularity       = EXCLUDED.popularity,
+		favourites       = EXCLUDED.favourites,
+
+		trailer_url      = EXCLUDED.trailer_url,
+		raw_data         = EXCLUDED.raw_data
+	`,
+		anime.ContentID,
+		anime.AniListID,
+		anime.MALID,
+
+		anime.OriginalTitle,
+		anime.Format,
+		anime.Status,
+		anime.Season,
+		anime.SeasonYear,
+
+		anime.EpisodesCount,
+		anime.EpisodeDuration,
+
+		anime.StartDate,
+		anime.EndDate,
+
+		anime.Language,
+
+		anime.Genres,
+		anime.Tags,
+		anime.Studios,
+
+		anime.Characters,
+		anime.VoiceActors,
+
+		anime.MeanScore,
+		anime.Popularity,
+		anime.Favourites,
+
+		anime.TrailerURL,
+		anime.RawData,
+	)
+
 	return err
 }

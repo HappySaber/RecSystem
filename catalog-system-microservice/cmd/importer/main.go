@@ -1,11 +1,10 @@
 package main
 
 import (
-	"catalog-microservice/internal/importer/tmdb"
+	"catalog-microservice/internal/importer/anilist"
 	"catalog-microservice/internal/storage/postgresql"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -20,15 +19,22 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not open database %s", err)
 	}
-	TMDBApiKey := os.Getenv("TMDB_APIKEY")
+	//TMDBApiKey := os.Getenv("TMDB_APIKEY")
 	//log.Println(TMDBApiKey)
-	client := tmdb.NewClient(TMDBApiKey)
-	importer := tmdb.NewImporter(client, db, db, db)
+	// client := tmdb.NewClient(TMDBApiKey)
+	// importer := tmdb.NewImporter(client, db, db, db)
+	animeClient := anilist.NewClient()
+	animeImporter := anilist.NewImporter(animeClient, db, db)
 
-	if err := importer.ImportPopularMovies(); err != nil {
-		log.Fatal(err)
-	}
-	if err := importer.ImportPopularTVShows(); err != nil {
+	// if err := importer.ImportPopularMovies(); err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// if err := importer.ImportPopularSeries(); err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	if err := animeImporter.ImportPopularAnime(); err != nil {
 		log.Fatal(err)
 	}
 }

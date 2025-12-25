@@ -117,6 +117,7 @@ func (i *Importer) ImportPopularMovies() error {
 				return fmt.Errorf("failed to save movie details: %w", err)
 			}
 
+			//timeout to avoid hitting rate limits
 			time.Sleep(100 * time.Millisecond)
 		}
 	}
