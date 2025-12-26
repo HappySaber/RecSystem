@@ -9,4 +9,6 @@ type Content struct {
 	Description    string
 	PosterURL      string
 	ReleaseDate    string
+	CreatedAt      string
+	UpdatedAt      string
 }

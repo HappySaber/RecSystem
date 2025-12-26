@@ -20,7 +20,10 @@ service CatalogService {
   rpc GetBookDetails(GetBookDetailsRequest) returns (GetBookDetailsResponse);
 }
 
-// Type of content
+// ----------------------
+// Content
+// ----------------------
+
 enum ContentType {
   CONTENT_TYPE_UNSPECIFIED = 0;
   MOVIE = 1;
@@ -30,86 +33,136 @@ enum ContentType {
   BOOK = 5;
 }
 
-// Basic model of content
 message Content {
   string id = 1;                 // UUID
-  ContentType type = 2;          // movie, anime, game, series, book
-  string external_source = 3;    // tmdb, igdb, anilist, openlibrary, googlebooks
-  string external_id = 4;        // ID from outer API
+  ContentType type = 2;
+  string external_source = 3;    // tmdb | igdb | anilist | openlibrary | googlebooks
+  string external_id = 4;
+
   string title = 5;
   string description = 6;
   string poster_url = 7;
-  string release_date = 8;       // ISO8601
+  string release_date = 8;       // YYYY-MM-DD
+
   string created_at = 9;
   string updated_at = 10;
 }
 
 // ----------------------
-// Detail data
+// Movies
 // ----------------------
 
-// Movies (movies_details)
 message MovieDetails {
   string content_id = 1;
   int32 tmdb_id = 2;
-  int32 runtime = 3;
-  string tagline = 4;
-  string status = 5;
-  int64 budget = 6;
-  int64 revenue = 7;
-  string language = 8;
 
-  string genres_json = 9;
-  string cast_json = 10;
-  string crew_json = 11;
-  string images_json = 12;
-  string videos_json = 13;
-  string raw_json = 14;
+  string original_title = 3;
+  int32 runtime = 4;
+  string tagline = 5;
+  string status = 6;
+
+  int64 budget = 7;
+  int64 revenue = 8;
+  string language = 9;
+
+  string genres_json = 10;
+  string cast_json = 11;
+  string crew_json = 12;
+  string images_json = 13;
+  string videos_json = 14;
+
+  string raw_json = 15;
 }
 
-// Anime (anime_details)
-message AnimeDetails {
-  string content_id = 1;
-  int32 anilist_id = 2;
-  int32 mal_id = 3;
-  int32 episodes_count = 4;
-  string status = 5;
-  string season = 6;
+// ----------------------
+// Series
+// ----------------------
 
-  string studios_json = 7;
-  string genres_json = 8;
-  string trailer_url = 9;
-  string raw_json = 10;
-}
-
-// Games (games_details)
-message GameDetails {
-  string content_id = 1;
-  int32 igdb_id = 2;
-  string platforms_json = 3;
-  string screenshots_json = 4;
-  double rating = 5;
-  string genres_json = 6;
-  string developers_json = 7;
-  string publishers_json = 8;
-  string raw_json = 9;
-}
-
-// Series (series_details)
 message SeriesDetails {
   string content_id = 1;
   int32 tmdb_id = 2;
-  string seasons_json = 3;
-  string episodes_json = 4;
-  string networks_json = 5;
-  string genres_json = 6;
-  string cast_json = 7;
-  string images_json = 8;
+
+  string original_name = 3;
+  string status = 4;
+
+  string first_air_date = 5;
+  string last_air_date = 6;
+
+  int32 number_of_seasons = 7;
+  int32 number_of_episodes = 8;
+
+  string language = 9;
+
+  string genres_json = 10;
+  string networks_json = 11;
+  string cast_json = 12;
+  string images_json = 13;
+  string videos_json = 14;
+
+  string raw_json = 15;
+}
+
+// ----------------------
+// Anime
+// ----------------------
+
+message AnimeDetails {
+  string content_id = 1;
+
+  int32 anilist_id = 2;
+  int32 mal_id = 3;
+
+  string original_title = 4;
+  string format = 5;          // TV | MOVIE | OVA | ONA
+  string status = 6;          // FINISHED | RELEASING
+  string season = 7;          // WINTER | SPRING | SUMMER | FALL
+  int32 season_year = 8;
+
+  int32 episodes_count = 9;
+  int32 episode_duration = 10;
+
+  string start_date = 11;
+  string end_date = 12;
+
+  string language = 13;
+
+  string genres_json = 14;
+  string tags_json = 15;
+  string studios_json = 16;
+
+  string characters_json = 17;
+  string voice_actors_json = 18;
+
+  int32 mean_score = 19;
+  int32 popularity = 20;
+  int32 favourites = 21;
+
+  string trailer_url = 22;
+
+  string raw_json = 23;
+}
+
+// ----------------------
+// Games
+// ----------------------
+
+message GameDetails {
+  string content_id = 1;
+  int32 igdb_id = 2;
+
+  double rating = 3;
+
+  string genres_json = 4;
+  string platforms_json = 5;
+  string developers_json = 6;
+  string publishers_json = 7;
+  string screenshots_json = 8;
+
   string raw_json = 9;
 }
 
 // ----------------------
-// BOOKS (books_details)
+// Books
 // ----------------------
 
 message BookDetails {
@@ -117,17 +170,22 @@ message BookDetails {
 
   string isbn_10 = 2;
   string isbn_13 = 3;
+
   string language = 4;
   int32 pages = 5;
 
-  string authors_json = 6;
-  string publishers_json = 7;
-  string genres_json = 8;
+  string publish_date = 6;
 
-  string raw_json = 9; // full JSON from OpenLibrary / Google Books
+  string authors_json = 7;
+  string publishers_json = 8;
+  string genres_json = 9;
+
+  string raw_json = 10;
 }
 
-
+// ----------------------
+// Requests / Responses
+// ----------------------
 
 message GetContentRequest {
   string id = 1;
@@ -146,7 +204,6 @@ message FindContentByExternalResponse {
   Content content = 1;
 }
 
-// Create New Content
 message CreateContentRequest {
   Content content = 1;
 }
@@ -155,7 +212,6 @@ message CreateContentResponse {
   Content content = 1;
 }
 
-// Обновление метаданных контента
 message UpdateContentRequest {
   Content content = 1;
 }
@@ -164,8 +220,7 @@ message UpdateContentResponse {
   Content content = 1;
 }
 
-
-//MOVIE
+// ---- detail getters ----
 
 message GetMovieDetailsRequest {
   string content_id = 1;
@@ -175,8 +230,6 @@ message GetMovieDetailsResponse {
   MovieDetails details = 1;
 }
 
-//ANIME
-
 message GetAnimeDetailsRequest {
   string content_id = 1;
 }
@@ -184,8 +237,6 @@ message GetAnimeDetailsRequest {
 message GetAnimeDetailsResponse {
   AnimeDetails details = 1;
 }
-
-//GAMES
 
 message GetGameDetailsRequest {
   string content_id = 1;
@@ -195,8 +246,6 @@ message GetGameDetailsResponse {
   GameDetails details = 1;
 }
 
-//SERIES
-
 message GetSeriesDetailsRequest {
   string content_id = 1;
 }
@@ -204,8 +253,6 @@ message GetSeriesDetailsRequest {
 message GetSeriesDetailsResponse {
   SeriesDetails details = 1;
 }
-
-// BOOKS
 
 message GetBookDetailsRequest {
   string content_id = 1;

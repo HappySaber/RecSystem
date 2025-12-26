@@ -1,3 +1,5 @@
 package models
 
-type BookDetails struct{}
+type BookDetails struct {
+	ContentID string
+}

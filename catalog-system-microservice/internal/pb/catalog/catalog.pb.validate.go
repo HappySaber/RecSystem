@@ -179,6 +179,8 @@ func (m *MovieDetails) validate(all bool) error {
 
 	// no validation rules for TmdbId
 
+	// no validation rules for OriginalTitle
+
 	// no validation rules for Runtime
 
 	// no validation rules for Tagline
@@ -280,6 +282,136 @@ var _ interface {
 	ErrorName() string
 } = MovieDetailsValidationError{}
 
+// Validate checks the field values on SeriesDetails with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *SeriesDetails) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on SeriesDetails with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in SeriesDetailsMultiError, or
+// nil if none found.
+func (m *SeriesDetails) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *SeriesDetails) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for ContentId
+
+	// no validation rules for TmdbId
+
+	// no validation rules for OriginalName
+
+	// no validation rules for Status
+
+	// no validation rules for FirstAirDate
+
+	// no validation rules for LastAirDate
+
+	// no validation rules for NumberOfSeasons
+
+	// no validation rules for NumberOfEpisodes
+
+	// no validation rules for Language
+
+	// no validation rules for GenresJson
+
+	// no validation rules for NetworksJson
+
+	// no validation rules for CastJson
+
+	// no validation rules for ImagesJson
+
+	// no validation rules for VideosJson
+
+	// no validation rules for RawJson
+
+	if len(errors) > 0 {
+		return SeriesDetailsMultiError(errors)
+	}
+
+	return nil
+}
+
+// SeriesDetailsMultiError is an error wrapping multiple validation errors
+// returned by SeriesDetails.ValidateAll() if the designated constraints
+// aren't met.
+type SeriesDetailsMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m SeriesDetailsMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m SeriesDetailsMultiError) AllErrors() []error { return m }
+
+// SeriesDetailsValidationError is the validation error returned by
+// SeriesDetails.Validate if the designated constraints aren't met.
+type SeriesDetailsValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e SeriesDetailsValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e SeriesDetailsValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e SeriesDetailsValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e SeriesDetailsValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e SeriesDetailsValidationError) ErrorName() string { return "SeriesDetailsValidationError" }
+
+// Error satisfies the builtin error interface
+func (e SeriesDetailsValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sSeriesDetails.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = SeriesDetailsValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = SeriesDetailsValidationError{}
+
 // Validate checks the field values on AnimeDetails with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
@@ -308,15 +440,41 @@ func (m *AnimeDetails) validate(all bool) error {
 
 	// no validation rules for MalId
 
-	// no validation rules for EpisodesCount
+	// no validation rules for OriginalTitle
+
+	// no validation rules for Format
 
 	// no validation rules for Status
 
 	// no validation rules for Season
 
-	// no validation rules for StudiosJson
+	// no validation rules for SeasonYear
+
+	// no validation rules for EpisodesCount
+
+	// no validation rules for EpisodeDuration
+
+	// no validation rules for StartDate
+
+	// no validation rules for EndDate
+
+	// no validation rules for Language
 
 	// no validation rules for GenresJson
+
+	// no validation rules for TagsJson
+
+	// no validation rules for StudiosJson
+
+	// no validation rules for CharactersJson
+
+	// no validation rules for VoiceActorsJson
+
+	// no validation rules for MeanScore
+
+	// no validation rules for Popularity
+
+	// no validation rules for Favourites
 
 	// no validation rules for TrailerUrl
 
@@ -425,17 +583,17 @@ func (m *GameDetails) validate(all bool) error {
 
 	// no validation rules for IgdbId
 
-	// no validation rules for PlatformsJson
-
-	// no validation rules for ScreenshotsJson
-
 	// no validation rules for Rating
 
 	// no validation rules for GenresJson
 
+	// no validation rules for PlatformsJson
+
 	// no validation rules for DevelopersJson
 
 	// no validation rules for PublishersJson
+
+	// no validation rules for ScreenshotsJson
 
 	// no validation rules for RawJson
 
@@ -516,124 +674,6 @@ var _ interface {
 	ErrorName() string
 } = GameDetailsValidationError{}
 
-// Validate checks the field values on SeriesDetails with the rules defined in
-// the proto definition for this message. If any rules are violated, the first
-// error encountered is returned, or nil if there are no violations.
-func (m *SeriesDetails) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on SeriesDetails with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// result is a list of violation errors wrapped in SeriesDetailsMultiError, or
-// nil if none found.
-func (m *SeriesDetails) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *SeriesDetails) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	// no validation rules for ContentId
-
-	// no validation rules for TmdbId
-
-	// no validation rules for SeasonsJson
-
-	// no validation rules for EpisodesJson
-
-	// no validation rules for NetworksJson
-
-	// no validation rules for GenresJson
-
-	// no validation rules for CastJson
-
-	// no validation rules for ImagesJson
-
-	// no validation rules for RawJson
-
-	if len(errors) > 0 {
-		return SeriesDetailsMultiError(errors)
-	}
-
-	return nil
-}
-
-// SeriesDetailsMultiError is an error wrapping multiple validation errors
-// returned by SeriesDetails.ValidateAll() if the designated constraints
-// aren't met.
-type SeriesDetailsMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m SeriesDetailsMultiError) Error() string {
-	msgs := make([]string, 0, len(m))
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m SeriesDetailsMultiError) AllErrors() []error { return m }
-
-// SeriesDetailsValidationError is the validation error returned by
-// SeriesDetails.Validate if the designated constraints aren't met.
-type SeriesDetailsValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e SeriesDetailsValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e SeriesDetailsValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e SeriesDetailsValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e SeriesDetailsValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e SeriesDetailsValidationError) ErrorName() string { return "SeriesDetailsValidationError" }
-
-// Error satisfies the builtin error interface
-func (e SeriesDetailsValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sSeriesDetails.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = SeriesDetailsValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = SeriesDetailsValidationError{}
-
 // Validate checks the field values on BookDetails with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
@@ -665,6 +705,8 @@ func (m *BookDetails) validate(all bool) error {
 	// no validation rules for Language
 
 	// no validation rules for Pages
+
+	// no validation rules for PublishDate
 
 	// no validation rules for AuthorsJson
 

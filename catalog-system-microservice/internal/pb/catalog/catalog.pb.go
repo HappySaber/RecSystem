@@ -21,7 +21,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Type of content
 type ContentType int32
 
 const (
@@ -80,17 +79,16 @@ func (ContentType) EnumDescriptor() ([]byte, []int) {
 	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{0}
 }
 
-// Basic model of content
 type Content struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
-	Id             string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                               // UUID
-	Type           ContentType            `protobuf:"varint,2,opt,name=type,proto3,enum=catalog.ContentType" json:"type,omitempty"`                 // movie, anime, game, series, book
-	ExternalSource string                 `protobuf:"bytes,3,opt,name=external_source,json=externalSource,proto3" json:"external_source,omitempty"` // tmdb, igdb, anilist, openlibrary, googlebooks
-	ExternalId     string                 `protobuf:"bytes,4,opt,name=external_id,json=externalId,proto3" json:"external_id,omitempty"`             // ID from outer API
+	Id             string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` // UUID
+	Type           ContentType            `protobuf:"varint,2,opt,name=type,proto3,enum=catalog.ContentType" json:"type,omitempty"`
+	ExternalSource string                 `protobuf:"bytes,3,opt,name=external_source,json=externalSource,proto3" json:"external_source,omitempty"` // tmdb | igdb | anilist | openlibrary | googlebooks
+	ExternalId     string                 `protobuf:"bytes,4,opt,name=external_id,json=externalId,proto3" json:"external_id,omitempty"`
 	Title          string                 `protobuf:"bytes,5,opt,name=title,proto3" json:"title,omitempty"`
 	Description    string                 `protobuf:"bytes,6,opt,name=description,proto3" json:"description,omitempty"`
 	PosterUrl      string                 `protobuf:"bytes,7,opt,name=poster_url,json=posterUrl,proto3" json:"poster_url,omitempty"`
-	ReleaseDate    string                 `protobuf:"bytes,8,opt,name=release_date,json=releaseDate,proto3" json:"release_date,omitempty"` // ISO8601
+	ReleaseDate    string                 `protobuf:"bytes,8,opt,name=release_date,json=releaseDate,proto3" json:"release_date,omitempty"` // YYYY-MM-DD
 	CreatedAt      string                 `protobuf:"bytes,9,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt      string                 `protobuf:"bytes,10,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields  protoimpl.UnknownFields
@@ -197,23 +195,23 @@ func (x *Content) GetUpdatedAt() string {
 	return ""
 }
 
-// Movies (movies_details)
 type MovieDetails struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ContentId     string                 `protobuf:"bytes,1,opt,name=content_id,json=contentId,proto3" json:"content_id,omitempty"`
 	TmdbId        int32                  `protobuf:"varint,2,opt,name=tmdb_id,json=tmdbId,proto3" json:"tmdb_id,omitempty"`
-	Runtime       int32                  `protobuf:"varint,3,opt,name=runtime,proto3" json:"runtime,omitempty"`
-	Tagline       string                 `protobuf:"bytes,4,opt,name=tagline,proto3" json:"tagline,omitempty"`
-	Status        string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
-	Budget        int64                  `protobuf:"varint,6,opt,name=budget,proto3" json:"budget,omitempty"`
-	Revenue       int64                  `protobuf:"varint,7,opt,name=revenue,proto3" json:"revenue,omitempty"`
-	Language      string                 `protobuf:"bytes,8,opt,name=language,proto3" json:"language,omitempty"`
-	GenresJson    string                 `protobuf:"bytes,9,opt,name=genres_json,json=genresJson,proto3" json:"genres_json,omitempty"`
-	CastJson      string                 `protobuf:"bytes,10,opt,name=cast_json,json=castJson,proto3" json:"cast_json,omitempty"`
-	CrewJson      string                 `protobuf:"bytes,11,opt,name=crew_json,json=crewJson,proto3" json:"crew_json,omitempty"`
-	ImagesJson    string                 `protobuf:"bytes,12,opt,name=images_json,json=imagesJson,proto3" json:"images_json,omitempty"`
-	VideosJson    string                 `protobuf:"bytes,13,opt,name=videos_json,json=videosJson,proto3" json:"videos_json,omitempty"`
-	RawJson       string                 `protobuf:"bytes,14,opt,name=raw_json,json=rawJson,proto3" json:"raw_json,omitempty"`
+	OriginalTitle string                 `protobuf:"bytes,3,opt,name=original_title,json=originalTitle,proto3" json:"original_title,omitempty"`
+	Runtime       int32                  `protobuf:"varint,4,opt,name=runtime,proto3" json:"runtime,omitempty"`
+	Tagline       string                 `protobuf:"bytes,5,opt,name=tagline,proto3" json:"tagline,omitempty"`
+	Status        string                 `protobuf:"bytes,6,opt,name=status,proto3" json:"status,omitempty"`
+	Budget        int64                  `protobuf:"varint,7,opt,name=budget,proto3" json:"budget,omitempty"`
+	Revenue       int64                  `protobuf:"varint,8,opt,name=revenue,proto3" json:"revenue,omitempty"`
+	Language      string                 `protobuf:"bytes,9,opt,name=language,proto3" json:"language,omitempty"`
+	GenresJson    string                 `protobuf:"bytes,10,opt,name=genres_json,json=genresJson,proto3" json:"genres_json,omitempty"`
+	CastJson      string                 `protobuf:"bytes,11,opt,name=cast_json,json=castJson,proto3" json:"cast_json,omitempty"`
+	CrewJson      string                 `protobuf:"bytes,12,opt,name=crew_json,json=crewJson,proto3" json:"crew_json,omitempty"`
+	ImagesJson    string                 `protobuf:"bytes,13,opt,name=images_json,json=imagesJson,proto3" json:"images_json,omitempty"`
+	VideosJson    string                 `protobuf:"bytes,14,opt,name=videos_json,json=videosJson,proto3" json:"videos_json,omitempty"`
+	RawJson       string                 `protobuf:"bytes,15,opt,name=raw_json,json=rawJson,proto3" json:"raw_json,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -260,6 +258,13 @@ func (x *MovieDetails) GetTmdbId() int32 {
 		return x.TmdbId
 	}
 	return 0
+}
+
+func (x *MovieDetails) GetOriginalTitle() string {
+	if x != nil {
+		return x.OriginalTitle
+	}
+	return ""
 }
 
 func (x *MovieDetails) GetRuntime() int32 {
@@ -346,26 +351,194 @@ func (x *MovieDetails) GetRawJson() string {
 	return ""
 }
 
-// Anime (anime_details)
+type SeriesDetails struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	ContentId        string                 `protobuf:"bytes,1,opt,name=content_id,json=contentId,proto3" json:"content_id,omitempty"`
+	TmdbId           int32                  `protobuf:"varint,2,opt,name=tmdb_id,json=tmdbId,proto3" json:"tmdb_id,omitempty"`
+	OriginalName     string                 `protobuf:"bytes,3,opt,name=original_name,json=originalName,proto3" json:"original_name,omitempty"`
+	Status           string                 `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
+	FirstAirDate     string                 `protobuf:"bytes,5,opt,name=first_air_date,json=firstAirDate,proto3" json:"first_air_date,omitempty"`
+	LastAirDate      string                 `protobuf:"bytes,6,opt,name=last_air_date,json=lastAirDate,proto3" json:"last_air_date,omitempty"`
+	NumberOfSeasons  int32                  `protobuf:"varint,7,opt,name=number_of_seasons,json=numberOfSeasons,proto3" json:"number_of_seasons,omitempty"`
+	NumberOfEpisodes int32                  `protobuf:"varint,8,opt,name=number_of_episodes,json=numberOfEpisodes,proto3" json:"number_of_episodes,omitempty"`
+	Language         string                 `protobuf:"bytes,9,opt,name=language,proto3" json:"language,omitempty"`
+	GenresJson       string                 `protobuf:"bytes,10,opt,name=genres_json,json=genresJson,proto3" json:"genres_json,omitempty"`
+	NetworksJson     string                 `protobuf:"bytes,11,opt,name=networks_json,json=networksJson,proto3" json:"networks_json,omitempty"`
+	CastJson         string                 `protobuf:"bytes,12,opt,name=cast_json,json=castJson,proto3" json:"cast_json,omitempty"`
+	ImagesJson       string                 `protobuf:"bytes,13,opt,name=images_json,json=imagesJson,proto3" json:"images_json,omitempty"`
+	VideosJson       string                 `protobuf:"bytes,14,opt,name=videos_json,json=videosJson,proto3" json:"videos_json,omitempty"`
+	RawJson          string                 `protobuf:"bytes,15,opt,name=raw_json,json=rawJson,proto3" json:"raw_json,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *SeriesDetails) Reset() {
+	*x = SeriesDetails{}
+	mi := &file_catalog_system_catalog_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SeriesDetails) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SeriesDetails) ProtoMessage() {}
+
+func (x *SeriesDetails) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_system_catalog_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SeriesDetails.ProtoReflect.Descriptor instead.
+func (*SeriesDetails) Descriptor() ([]byte, []int) {
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *SeriesDetails) GetContentId() string {
+	if x != nil {
+		return x.ContentId
+	}
+	return ""
+}
+
+func (x *SeriesDetails) GetTmdbId() int32 {
+	if x != nil {
+		return x.TmdbId
+	}
+	return 0
+}
+
+func (x *SeriesDetails) GetOriginalName() string {
+	if x != nil {
+		return x.OriginalName
+	}
+	return ""
+}
+
+func (x *SeriesDetails) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *SeriesDetails) GetFirstAirDate() string {
+	if x != nil {
+		return x.FirstAirDate
+	}
+	return ""
+}
+
+func (x *SeriesDetails) GetLastAirDate() string {
+	if x != nil {
+		return x.LastAirDate
+	}
+	return ""
+}
+
+func (x *SeriesDetails) GetNumberOfSeasons() int32 {
+	if x != nil {
+		return x.NumberOfSeasons
+	}
+	return 0
+}
+
+func (x *SeriesDetails) GetNumberOfEpisodes() int32 {
+	if x != nil {
+		return x.NumberOfEpisodes
+	}
+	return 0
+}
+
+func (x *SeriesDetails) GetLanguage() string {
+	if x != nil {
+		return x.Language
+	}
+	return ""
+}
+
+func (x *SeriesDetails) GetGenresJson() string {
+	if x != nil {
+		return x.GenresJson
+	}
+	return ""
+}
+
+func (x *SeriesDetails) GetNetworksJson() string {
+	if x != nil {
+		return x.NetworksJson
+	}
+	return ""
+}
+
+func (x *SeriesDetails) GetCastJson() string {
+	if x != nil {
+		return x.CastJson
+	}
+	return ""
+}
+
+func (x *SeriesDetails) GetImagesJson() string {
+	if x != nil {
+		return x.ImagesJson
+	}
+	return ""
+}
+
+func (x *SeriesDetails) GetVideosJson() string {
+	if x != nil {
+		return x.VideosJson
+	}
+	return ""
+}
+
+func (x *SeriesDetails) GetRawJson() string {
+	if x != nil {
+		return x.RawJson
+	}
+	return ""
+}
+
 type AnimeDetails struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ContentId     string                 `protobuf:"bytes,1,opt,name=content_id,json=contentId,proto3" json:"content_id,omitempty"`
-	AnilistId     int32                  `protobuf:"varint,2,opt,name=anilist_id,json=anilistId,proto3" json:"anilist_id,omitempty"`
-	MalId         int32                  `protobuf:"varint,3,opt,name=mal_id,json=malId,proto3" json:"mal_id,omitempty"`
-	EpisodesCount int32                  `protobuf:"varint,4,opt,name=episodes_count,json=episodesCount,proto3" json:"episodes_count,omitempty"`
-	Status        string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
-	Season        string                 `protobuf:"bytes,6,opt,name=season,proto3" json:"season,omitempty"`
-	StudiosJson   string                 `protobuf:"bytes,7,opt,name=studios_json,json=studiosJson,proto3" json:"studios_json,omitempty"`
-	GenresJson    string                 `protobuf:"bytes,8,opt,name=genres_json,json=genresJson,proto3" json:"genres_json,omitempty"`
-	TrailerUrl    string                 `protobuf:"bytes,9,opt,name=trailer_url,json=trailerUrl,proto3" json:"trailer_url,omitempty"`
-	RawJson       string                 `protobuf:"bytes,10,opt,name=raw_json,json=rawJson,proto3" json:"raw_json,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	ContentId       string                 `protobuf:"bytes,1,opt,name=content_id,json=contentId,proto3" json:"content_id,omitempty"`
+	AnilistId       int32                  `protobuf:"varint,2,opt,name=anilist_id,json=anilistId,proto3" json:"anilist_id,omitempty"`
+	MalId           int32                  `protobuf:"varint,3,opt,name=mal_id,json=malId,proto3" json:"mal_id,omitempty"`
+	OriginalTitle   string                 `protobuf:"bytes,4,opt,name=original_title,json=originalTitle,proto3" json:"original_title,omitempty"`
+	Format          string                 `protobuf:"bytes,5,opt,name=format,proto3" json:"format,omitempty"` // TV | MOVIE | OVA | ONA
+	Status          string                 `protobuf:"bytes,6,opt,name=status,proto3" json:"status,omitempty"` // FINISHED | RELEASING
+	Season          string                 `protobuf:"bytes,7,opt,name=season,proto3" json:"season,omitempty"` // WINTER | SPRING | SUMMER | FALL
+	SeasonYear      int32                  `protobuf:"varint,8,opt,name=season_year,json=seasonYear,proto3" json:"season_year,omitempty"`
+	EpisodesCount   int32                  `protobuf:"varint,9,opt,name=episodes_count,json=episodesCount,proto3" json:"episodes_count,omitempty"`
+	EpisodeDuration int32                  `protobuf:"varint,10,opt,name=episode_duration,json=episodeDuration,proto3" json:"episode_duration,omitempty"`
+	StartDate       string                 `protobuf:"bytes,11,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
+	EndDate         string                 `protobuf:"bytes,12,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
+	Language        string                 `protobuf:"bytes,13,opt,name=language,proto3" json:"language,omitempty"`
+	GenresJson      string                 `protobuf:"bytes,14,opt,name=genres_json,json=genresJson,proto3" json:"genres_json,omitempty"`
+	TagsJson        string                 `protobuf:"bytes,15,opt,name=tags_json,json=tagsJson,proto3" json:"tags_json,omitempty"`
+	StudiosJson     string                 `protobuf:"bytes,16,opt,name=studios_json,json=studiosJson,proto3" json:"studios_json,omitempty"`
+	CharactersJson  string                 `protobuf:"bytes,17,opt,name=characters_json,json=charactersJson,proto3" json:"characters_json,omitempty"`
+	VoiceActorsJson string                 `protobuf:"bytes,18,opt,name=voice_actors_json,json=voiceActorsJson,proto3" json:"voice_actors_json,omitempty"`
+	MeanScore       int32                  `protobuf:"varint,19,opt,name=mean_score,json=meanScore,proto3" json:"mean_score,omitempty"`
+	Popularity      int32                  `protobuf:"varint,20,opt,name=popularity,proto3" json:"popularity,omitempty"`
+	Favourites      int32                  `protobuf:"varint,21,opt,name=favourites,proto3" json:"favourites,omitempty"`
+	TrailerUrl      string                 `protobuf:"bytes,22,opt,name=trailer_url,json=trailerUrl,proto3" json:"trailer_url,omitempty"`
+	RawJson         string                 `protobuf:"bytes,23,opt,name=raw_json,json=rawJson,proto3" json:"raw_json,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *AnimeDetails) Reset() {
 	*x = AnimeDetails{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[2]
+	mi := &file_catalog_system_catalog_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -377,7 +550,7 @@ func (x *AnimeDetails) String() string {
 func (*AnimeDetails) ProtoMessage() {}
 
 func (x *AnimeDetails) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[2]
+	mi := &file_catalog_system_catalog_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -390,7 +563,7 @@ func (x *AnimeDetails) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AnimeDetails.ProtoReflect.Descriptor instead.
 func (*AnimeDetails) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{2}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *AnimeDetails) GetContentId() string {
@@ -414,11 +587,18 @@ func (x *AnimeDetails) GetMalId() int32 {
 	return 0
 }
 
-func (x *AnimeDetails) GetEpisodesCount() int32 {
+func (x *AnimeDetails) GetOriginalTitle() string {
 	if x != nil {
-		return x.EpisodesCount
+		return x.OriginalTitle
 	}
-	return 0
+	return ""
+}
+
+func (x *AnimeDetails) GetFormat() string {
+	if x != nil {
+		return x.Format
+	}
+	return ""
 }
 
 func (x *AnimeDetails) GetStatus() string {
@@ -435,9 +615,44 @@ func (x *AnimeDetails) GetSeason() string {
 	return ""
 }
 
-func (x *AnimeDetails) GetStudiosJson() string {
+func (x *AnimeDetails) GetSeasonYear() int32 {
 	if x != nil {
-		return x.StudiosJson
+		return x.SeasonYear
+	}
+	return 0
+}
+
+func (x *AnimeDetails) GetEpisodesCount() int32 {
+	if x != nil {
+		return x.EpisodesCount
+	}
+	return 0
+}
+
+func (x *AnimeDetails) GetEpisodeDuration() int32 {
+	if x != nil {
+		return x.EpisodeDuration
+	}
+	return 0
+}
+
+func (x *AnimeDetails) GetStartDate() string {
+	if x != nil {
+		return x.StartDate
+	}
+	return ""
+}
+
+func (x *AnimeDetails) GetEndDate() string {
+	if x != nil {
+		return x.EndDate
+	}
+	return ""
+}
+
+func (x *AnimeDetails) GetLanguage() string {
+	if x != nil {
+		return x.Language
 	}
 	return ""
 }
@@ -447,6 +662,55 @@ func (x *AnimeDetails) GetGenresJson() string {
 		return x.GenresJson
 	}
 	return ""
+}
+
+func (x *AnimeDetails) GetTagsJson() string {
+	if x != nil {
+		return x.TagsJson
+	}
+	return ""
+}
+
+func (x *AnimeDetails) GetStudiosJson() string {
+	if x != nil {
+		return x.StudiosJson
+	}
+	return ""
+}
+
+func (x *AnimeDetails) GetCharactersJson() string {
+	if x != nil {
+		return x.CharactersJson
+	}
+	return ""
+}
+
+func (x *AnimeDetails) GetVoiceActorsJson() string {
+	if x != nil {
+		return x.VoiceActorsJson
+	}
+	return ""
+}
+
+func (x *AnimeDetails) GetMeanScore() int32 {
+	if x != nil {
+		return x.MeanScore
+	}
+	return 0
+}
+
+func (x *AnimeDetails) GetPopularity() int32 {
+	if x != nil {
+		return x.Popularity
+	}
+	return 0
+}
+
+func (x *AnimeDetails) GetFavourites() int32 {
+	if x != nil {
+		return x.Favourites
+	}
+	return 0
 }
 
 func (x *AnimeDetails) GetTrailerUrl() string {
@@ -463,17 +727,16 @@ func (x *AnimeDetails) GetRawJson() string {
 	return ""
 }
 
-// Games (games_details)
 type GameDetails struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
 	ContentId       string                 `protobuf:"bytes,1,opt,name=content_id,json=contentId,proto3" json:"content_id,omitempty"`
 	IgdbId          int32                  `protobuf:"varint,2,opt,name=igdb_id,json=igdbId,proto3" json:"igdb_id,omitempty"`
-	PlatformsJson   string                 `protobuf:"bytes,3,opt,name=platforms_json,json=platformsJson,proto3" json:"platforms_json,omitempty"`
-	ScreenshotsJson string                 `protobuf:"bytes,4,opt,name=screenshots_json,json=screenshotsJson,proto3" json:"screenshots_json,omitempty"`
-	Rating          float64                `protobuf:"fixed64,5,opt,name=rating,proto3" json:"rating,omitempty"`
-	GenresJson      string                 `protobuf:"bytes,6,opt,name=genres_json,json=genresJson,proto3" json:"genres_json,omitempty"`
-	DevelopersJson  string                 `protobuf:"bytes,7,opt,name=developers_json,json=developersJson,proto3" json:"developers_json,omitempty"`
-	PublishersJson  string                 `protobuf:"bytes,8,opt,name=publishers_json,json=publishersJson,proto3" json:"publishers_json,omitempty"`
+	Rating          float64                `protobuf:"fixed64,3,opt,name=rating,proto3" json:"rating,omitempty"`
+	GenresJson      string                 `protobuf:"bytes,4,opt,name=genres_json,json=genresJson,proto3" json:"genres_json,omitempty"`
+	PlatformsJson   string                 `protobuf:"bytes,5,opt,name=platforms_json,json=platformsJson,proto3" json:"platforms_json,omitempty"`
+	DevelopersJson  string                 `protobuf:"bytes,6,opt,name=developers_json,json=developersJson,proto3" json:"developers_json,omitempty"`
+	PublishersJson  string                 `protobuf:"bytes,7,opt,name=publishers_json,json=publishersJson,proto3" json:"publishers_json,omitempty"`
+	ScreenshotsJson string                 `protobuf:"bytes,8,opt,name=screenshots_json,json=screenshotsJson,proto3" json:"screenshots_json,omitempty"`
 	RawJson         string                 `protobuf:"bytes,9,opt,name=raw_json,json=rawJson,proto3" json:"raw_json,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
@@ -481,7 +744,7 @@ type GameDetails struct {
 
 func (x *GameDetails) Reset() {
 	*x = GameDetails{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[3]
+	mi := &file_catalog_system_catalog_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -493,7 +756,7 @@ func (x *GameDetails) String() string {
 func (*GameDetails) ProtoMessage() {}
 
 func (x *GameDetails) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[3]
+	mi := &file_catalog_system_catalog_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -506,7 +769,7 @@ func (x *GameDetails) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GameDetails.ProtoReflect.Descriptor instead.
 func (*GameDetails) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{3}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GameDetails) GetContentId() string {
@@ -523,20 +786,6 @@ func (x *GameDetails) GetIgdbId() int32 {
 	return 0
 }
 
-func (x *GameDetails) GetPlatformsJson() string {
-	if x != nil {
-		return x.PlatformsJson
-	}
-	return ""
-}
-
-func (x *GameDetails) GetScreenshotsJson() string {
-	if x != nil {
-		return x.ScreenshotsJson
-	}
-	return ""
-}
-
 func (x *GameDetails) GetRating() float64 {
 	if x != nil {
 		return x.Rating
@@ -547,6 +796,13 @@ func (x *GameDetails) GetRating() float64 {
 func (x *GameDetails) GetGenresJson() string {
 	if x != nil {
 		return x.GenresJson
+	}
+	return ""
+}
+
+func (x *GameDetails) GetPlatformsJson() string {
+	if x != nil {
+		return x.PlatformsJson
 	}
 	return ""
 }
@@ -565,116 +821,14 @@ func (x *GameDetails) GetPublishersJson() string {
 	return ""
 }
 
+func (x *GameDetails) GetScreenshotsJson() string {
+	if x != nil {
+		return x.ScreenshotsJson
+	}
+	return ""
+}
+
 func (x *GameDetails) GetRawJson() string {
-	if x != nil {
-		return x.RawJson
-	}
-	return ""
-}
-
-// Series (series_details)
-type SeriesDetails struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ContentId     string                 `protobuf:"bytes,1,opt,name=content_id,json=contentId,proto3" json:"content_id,omitempty"`
-	TmdbId        int32                  `protobuf:"varint,2,opt,name=tmdb_id,json=tmdbId,proto3" json:"tmdb_id,omitempty"`
-	SeasonsJson   string                 `protobuf:"bytes,3,opt,name=seasons_json,json=seasonsJson,proto3" json:"seasons_json,omitempty"`
-	EpisodesJson  string                 `protobuf:"bytes,4,opt,name=episodes_json,json=episodesJson,proto3" json:"episodes_json,omitempty"`
-	NetworksJson  string                 `protobuf:"bytes,5,opt,name=networks_json,json=networksJson,proto3" json:"networks_json,omitempty"`
-	GenresJson    string                 `protobuf:"bytes,6,opt,name=genres_json,json=genresJson,proto3" json:"genres_json,omitempty"`
-	CastJson      string                 `protobuf:"bytes,7,opt,name=cast_json,json=castJson,proto3" json:"cast_json,omitempty"`
-	ImagesJson    string                 `protobuf:"bytes,8,opt,name=images_json,json=imagesJson,proto3" json:"images_json,omitempty"`
-	RawJson       string                 `protobuf:"bytes,9,opt,name=raw_json,json=rawJson,proto3" json:"raw_json,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *SeriesDetails) Reset() {
-	*x = SeriesDetails{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *SeriesDetails) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SeriesDetails) ProtoMessage() {}
-
-func (x *SeriesDetails) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SeriesDetails.ProtoReflect.Descriptor instead.
-func (*SeriesDetails) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *SeriesDetails) GetContentId() string {
-	if x != nil {
-		return x.ContentId
-	}
-	return ""
-}
-
-func (x *SeriesDetails) GetTmdbId() int32 {
-	if x != nil {
-		return x.TmdbId
-	}
-	return 0
-}
-
-func (x *SeriesDetails) GetSeasonsJson() string {
-	if x != nil {
-		return x.SeasonsJson
-	}
-	return ""
-}
-
-func (x *SeriesDetails) GetEpisodesJson() string {
-	if x != nil {
-		return x.EpisodesJson
-	}
-	return ""
-}
-
-func (x *SeriesDetails) GetNetworksJson() string {
-	if x != nil {
-		return x.NetworksJson
-	}
-	return ""
-}
-
-func (x *SeriesDetails) GetGenresJson() string {
-	if x != nil {
-		return x.GenresJson
-	}
-	return ""
-}
-
-func (x *SeriesDetails) GetCastJson() string {
-	if x != nil {
-		return x.CastJson
-	}
-	return ""
-}
-
-func (x *SeriesDetails) GetImagesJson() string {
-	if x != nil {
-		return x.ImagesJson
-	}
-	return ""
-}
-
-func (x *SeriesDetails) GetRawJson() string {
 	if x != nil {
 		return x.RawJson
 	}
@@ -688,10 +842,11 @@ type BookDetails struct {
 	Isbn_13        string                 `protobuf:"bytes,3,opt,name=isbn_13,json=isbn13,proto3" json:"isbn_13,omitempty"`
 	Language       string                 `protobuf:"bytes,4,opt,name=language,proto3" json:"language,omitempty"`
 	Pages          int32                  `protobuf:"varint,5,opt,name=pages,proto3" json:"pages,omitempty"`
-	AuthorsJson    string                 `protobuf:"bytes,6,opt,name=authors_json,json=authorsJson,proto3" json:"authors_json,omitempty"`
-	PublishersJson string                 `protobuf:"bytes,7,opt,name=publishers_json,json=publishersJson,proto3" json:"publishers_json,omitempty"`
-	GenresJson     string                 `protobuf:"bytes,8,opt,name=genres_json,json=genresJson,proto3" json:"genres_json,omitempty"`
-	RawJson        string                 `protobuf:"bytes,9,opt,name=raw_json,json=rawJson,proto3" json:"raw_json,omitempty"` // full JSON from OpenLibrary / Google Books
+	PublishDate    string                 `protobuf:"bytes,6,opt,name=publish_date,json=publishDate,proto3" json:"publish_date,omitempty"`
+	AuthorsJson    string                 `protobuf:"bytes,7,opt,name=authors_json,json=authorsJson,proto3" json:"authors_json,omitempty"`
+	PublishersJson string                 `protobuf:"bytes,8,opt,name=publishers_json,json=publishersJson,proto3" json:"publishers_json,omitempty"`
+	GenresJson     string                 `protobuf:"bytes,9,opt,name=genres_json,json=genresJson,proto3" json:"genres_json,omitempty"`
+	RawJson        string                 `protobuf:"bytes,10,opt,name=raw_json,json=rawJson,proto3" json:"raw_json,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -759,6 +914,13 @@ func (x *BookDetails) GetPages() int32 {
 		return x.Pages
 	}
 	return 0
+}
+
+func (x *BookDetails) GetPublishDate() string {
+	if x != nil {
+		return x.PublishDate
+	}
+	return ""
 }
 
 func (x *BookDetails) GetAuthorsJson() string {
@@ -973,7 +1135,6 @@ func (x *FindContentByExternalResponse) GetContent() *Content {
 	return nil
 }
 
-// Create New Content
 type CreateContentRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Content       *Content               `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`
@@ -1062,7 +1223,6 @@ func (x *CreateContentResponse) GetContent() *Content {
 	return nil
 }
 
-// Обновление метаданных контента
 type UpdateContentRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Content       *Content               `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`
@@ -1611,68 +1771,97 @@ const file_catalog_system_catalog_proto_rawDesc = "" +
 	"created_at\x18\t \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
 	"updated_at\x18\n" +
-	" \x01(\tR\tupdatedAt\"\x98\x03\n" +
+	" \x01(\tR\tupdatedAt\"\xbf\x03\n" +
 	"\fMovieDetails\x12\x1d\n" +
 	"\n" +
 	"content_id\x18\x01 \x01(\tR\tcontentId\x12\x17\n" +
-	"\atmdb_id\x18\x02 \x01(\x05R\x06tmdbId\x12\x18\n" +
-	"\aruntime\x18\x03 \x01(\x05R\aruntime\x12\x18\n" +
-	"\atagline\x18\x04 \x01(\tR\atagline\x12\x16\n" +
-	"\x06status\x18\x05 \x01(\tR\x06status\x12\x16\n" +
-	"\x06budget\x18\x06 \x01(\x03R\x06budget\x12\x18\n" +
-	"\arevenue\x18\a \x01(\x03R\arevenue\x12\x1a\n" +
-	"\blanguage\x18\b \x01(\tR\blanguage\x12\x1f\n" +
-	"\vgenres_json\x18\t \x01(\tR\n" +
+	"\atmdb_id\x18\x02 \x01(\x05R\x06tmdbId\x12%\n" +
+	"\x0eoriginal_title\x18\x03 \x01(\tR\roriginalTitle\x12\x18\n" +
+	"\aruntime\x18\x04 \x01(\x05R\aruntime\x12\x18\n" +
+	"\atagline\x18\x05 \x01(\tR\atagline\x12\x16\n" +
+	"\x06status\x18\x06 \x01(\tR\x06status\x12\x16\n" +
+	"\x06budget\x18\a \x01(\x03R\x06budget\x12\x18\n" +
+	"\arevenue\x18\b \x01(\x03R\arevenue\x12\x1a\n" +
+	"\blanguage\x18\t \x01(\tR\blanguage\x12\x1f\n" +
+	"\vgenres_json\x18\n" +
+	" \x01(\tR\n" +
 	"genresJson\x12\x1b\n" +
-	"\tcast_json\x18\n" +
-	" \x01(\tR\bcastJson\x12\x1b\n" +
-	"\tcrew_json\x18\v \x01(\tR\bcrewJson\x12\x1f\n" +
-	"\vimages_json\x18\f \x01(\tR\n" +
+	"\tcast_json\x18\v \x01(\tR\bcastJson\x12\x1b\n" +
+	"\tcrew_json\x18\f \x01(\tR\bcrewJson\x12\x1f\n" +
+	"\vimages_json\x18\r \x01(\tR\n" +
 	"imagesJson\x12\x1f\n" +
-	"\vvideos_json\x18\r \x01(\tR\n" +
+	"\vvideos_json\x18\x0e \x01(\tR\n" +
 	"videosJson\x12\x19\n" +
-	"\braw_json\x18\x0e \x01(\tR\arawJson\"\xba\x02\n" +
+	"\braw_json\x18\x0f \x01(\tR\arawJson\"\x84\x04\n" +
+	"\rSeriesDetails\x12\x1d\n" +
+	"\n" +
+	"content_id\x18\x01 \x01(\tR\tcontentId\x12\x17\n" +
+	"\atmdb_id\x18\x02 \x01(\x05R\x06tmdbId\x12#\n" +
+	"\roriginal_name\x18\x03 \x01(\tR\foriginalName\x12\x16\n" +
+	"\x06status\x18\x04 \x01(\tR\x06status\x12$\n" +
+	"\x0efirst_air_date\x18\x05 \x01(\tR\ffirstAirDate\x12\"\n" +
+	"\rlast_air_date\x18\x06 \x01(\tR\vlastAirDate\x12*\n" +
+	"\x11number_of_seasons\x18\a \x01(\x05R\x0fnumberOfSeasons\x12,\n" +
+	"\x12number_of_episodes\x18\b \x01(\x05R\x10numberOfEpisodes\x12\x1a\n" +
+	"\blanguage\x18\t \x01(\tR\blanguage\x12\x1f\n" +
+	"\vgenres_json\x18\n" +
+	" \x01(\tR\n" +
+	"genresJson\x12#\n" +
+	"\rnetworks_json\x18\v \x01(\tR\fnetworksJson\x12\x1b\n" +
+	"\tcast_json\x18\f \x01(\tR\bcastJson\x12\x1f\n" +
+	"\vimages_json\x18\r \x01(\tR\n" +
+	"imagesJson\x12\x1f\n" +
+	"\vvideos_json\x18\x0e \x01(\tR\n" +
+	"videosJson\x12\x19\n" +
+	"\braw_json\x18\x0f \x01(\tR\arawJson\"\xec\x05\n" +
 	"\fAnimeDetails\x12\x1d\n" +
 	"\n" +
 	"content_id\x18\x01 \x01(\tR\tcontentId\x12\x1d\n" +
 	"\n" +
 	"anilist_id\x18\x02 \x01(\x05R\tanilistId\x12\x15\n" +
 	"\x06mal_id\x18\x03 \x01(\x05R\x05malId\x12%\n" +
-	"\x0eepisodes_count\x18\x04 \x01(\x05R\repisodesCount\x12\x16\n" +
-	"\x06status\x18\x05 \x01(\tR\x06status\x12\x16\n" +
-	"\x06season\x18\x06 \x01(\tR\x06season\x12!\n" +
-	"\fstudios_json\x18\a \x01(\tR\vstudiosJson\x12\x1f\n" +
-	"\vgenres_json\x18\b \x01(\tR\n" +
-	"genresJson\x12\x1f\n" +
-	"\vtrailer_url\x18\t \x01(\tR\n" +
+	"\x0eoriginal_title\x18\x04 \x01(\tR\roriginalTitle\x12\x16\n" +
+	"\x06format\x18\x05 \x01(\tR\x06format\x12\x16\n" +
+	"\x06status\x18\x06 \x01(\tR\x06status\x12\x16\n" +
+	"\x06season\x18\a \x01(\tR\x06season\x12\x1f\n" +
+	"\vseason_year\x18\b \x01(\x05R\n" +
+	"seasonYear\x12%\n" +
+	"\x0eepisodes_count\x18\t \x01(\x05R\repisodesCount\x12)\n" +
+	"\x10episode_duration\x18\n" +
+	" \x01(\x05R\x0fepisodeDuration\x12\x1d\n" +
+	"\n" +
+	"start_date\x18\v \x01(\tR\tstartDate\x12\x19\n" +
+	"\bend_date\x18\f \x01(\tR\aendDate\x12\x1a\n" +
+	"\blanguage\x18\r \x01(\tR\blanguage\x12\x1f\n" +
+	"\vgenres_json\x18\x0e \x01(\tR\n" +
+	"genresJson\x12\x1b\n" +
+	"\ttags_json\x18\x0f \x01(\tR\btagsJson\x12!\n" +
+	"\fstudios_json\x18\x10 \x01(\tR\vstudiosJson\x12'\n" +
+	"\x0fcharacters_json\x18\x11 \x01(\tR\x0echaractersJson\x12*\n" +
+	"\x11voice_actors_json\x18\x12 \x01(\tR\x0fvoiceActorsJson\x12\x1d\n" +
+	"\n" +
+	"mean_score\x18\x13 \x01(\x05R\tmeanScore\x12\x1e\n" +
+	"\n" +
+	"popularity\x18\x14 \x01(\x05R\n" +
+	"popularity\x12\x1e\n" +
+	"\n" +
+	"favourites\x18\x15 \x01(\x05R\n" +
+	"favourites\x12\x1f\n" +
+	"\vtrailer_url\x18\x16 \x01(\tR\n" +
 	"trailerUrl\x12\x19\n" +
-	"\braw_json\x18\n" +
-	" \x01(\tR\arawJson\"\xbd\x02\n" +
+	"\braw_json\x18\x17 \x01(\tR\arawJson\"\xbd\x02\n" +
 	"\vGameDetails\x12\x1d\n" +
 	"\n" +
 	"content_id\x18\x01 \x01(\tR\tcontentId\x12\x17\n" +
-	"\aigdb_id\x18\x02 \x01(\x05R\x06igdbId\x12%\n" +
-	"\x0eplatforms_json\x18\x03 \x01(\tR\rplatformsJson\x12)\n" +
-	"\x10screenshots_json\x18\x04 \x01(\tR\x0fscreenshotsJson\x12\x16\n" +
-	"\x06rating\x18\x05 \x01(\x01R\x06rating\x12\x1f\n" +
-	"\vgenres_json\x18\x06 \x01(\tR\n" +
-	"genresJson\x12'\n" +
-	"\x0fdevelopers_json\x18\a \x01(\tR\x0edevelopersJson\x12'\n" +
-	"\x0fpublishers_json\x18\b \x01(\tR\x0epublishersJson\x12\x19\n" +
-	"\braw_json\x18\t \x01(\tR\arawJson\"\xae\x02\n" +
-	"\rSeriesDetails\x12\x1d\n" +
-	"\n" +
-	"content_id\x18\x01 \x01(\tR\tcontentId\x12\x17\n" +
-	"\atmdb_id\x18\x02 \x01(\x05R\x06tmdbId\x12!\n" +
-	"\fseasons_json\x18\x03 \x01(\tR\vseasonsJson\x12#\n" +
-	"\repisodes_json\x18\x04 \x01(\tR\fepisodesJson\x12#\n" +
-	"\rnetworks_json\x18\x05 \x01(\tR\fnetworksJson\x12\x1f\n" +
-	"\vgenres_json\x18\x06 \x01(\tR\n" +
-	"genresJson\x12\x1b\n" +
-	"\tcast_json\x18\a \x01(\tR\bcastJson\x12\x1f\n" +
-	"\vimages_json\x18\b \x01(\tR\n" +
-	"imagesJson\x12\x19\n" +
-	"\braw_json\x18\t \x01(\tR\arawJson\"\x98\x02\n" +
+	"\aigdb_id\x18\x02 \x01(\x05R\x06igdbId\x12\x16\n" +
+	"\x06rating\x18\x03 \x01(\x01R\x06rating\x12\x1f\n" +
+	"\vgenres_json\x18\x04 \x01(\tR\n" +
+	"genresJson\x12%\n" +
+	"\x0eplatforms_json\x18\x05 \x01(\tR\rplatformsJson\x12'\n" +
+	"\x0fdevelopers_json\x18\x06 \x01(\tR\x0edevelopersJson\x12'\n" +
+	"\x0fpublishers_json\x18\a \x01(\tR\x0epublishersJson\x12)\n" +
+	"\x10screenshots_json\x18\b \x01(\tR\x0fscreenshotsJson\x12\x19\n" +
+	"\braw_json\x18\t \x01(\tR\arawJson\"\xbb\x02\n" +
 	"\vBookDetails\x12\x1d\n" +
 	"\n" +
 	"content_id\x18\x01 \x01(\tR\tcontentId\x12\x17\n" +
@@ -1680,11 +1869,13 @@ const file_catalog_system_catalog_proto_rawDesc = "" +
 	"\aisbn_13\x18\x03 \x01(\tR\x06isbn13\x12\x1a\n" +
 	"\blanguage\x18\x04 \x01(\tR\blanguage\x12\x14\n" +
 	"\x05pages\x18\x05 \x01(\x05R\x05pages\x12!\n" +
-	"\fauthors_json\x18\x06 \x01(\tR\vauthorsJson\x12'\n" +
-	"\x0fpublishers_json\x18\a \x01(\tR\x0epublishersJson\x12\x1f\n" +
-	"\vgenres_json\x18\b \x01(\tR\n" +
+	"\fpublish_date\x18\x06 \x01(\tR\vpublishDate\x12!\n" +
+	"\fauthors_json\x18\a \x01(\tR\vauthorsJson\x12'\n" +
+	"\x0fpublishers_json\x18\b \x01(\tR\x0epublishersJson\x12\x1f\n" +
+	"\vgenres_json\x18\t \x01(\tR\n" +
 	"genresJson\x12\x19\n" +
-	"\braw_json\x18\t \x01(\tR\arawJson\"#\n" +
+	"\braw_json\x18\n" +
+	" \x01(\tR\arawJson\"#\n" +
 	"\x11GetContentRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"@\n" +
 	"\x12GetContentResponse\x12*\n" +
@@ -1766,9 +1957,9 @@ var file_catalog_system_catalog_proto_goTypes = []any{
 	(ContentType)(0),                      // 0: catalog.ContentType
 	(*Content)(nil),                       // 1: catalog.Content
 	(*MovieDetails)(nil),                  // 2: catalog.MovieDetails
-	(*AnimeDetails)(nil),                  // 3: catalog.AnimeDetails
-	(*GameDetails)(nil),                   // 4: catalog.GameDetails
-	(*SeriesDetails)(nil),                 // 5: catalog.SeriesDetails
+	(*SeriesDetails)(nil),                 // 3: catalog.SeriesDetails
+	(*AnimeDetails)(nil),                  // 4: catalog.AnimeDetails
+	(*GameDetails)(nil),                   // 5: catalog.GameDetails
 	(*BookDetails)(nil),                   // 6: catalog.BookDetails
 	(*GetContentRequest)(nil),             // 7: catalog.GetContentRequest
 	(*GetContentResponse)(nil),            // 8: catalog.GetContentResponse
@@ -1798,9 +1989,9 @@ var file_catalog_system_catalog_proto_depIdxs = []int32{
 	1,  // 5: catalog.UpdateContentRequest.content:type_name -> catalog.Content
 	1,  // 6: catalog.UpdateContentResponse.content:type_name -> catalog.Content
 	2,  // 7: catalog.GetMovieDetailsResponse.details:type_name -> catalog.MovieDetails
-	3,  // 8: catalog.GetAnimeDetailsResponse.details:type_name -> catalog.AnimeDetails
-	4,  // 9: catalog.GetGameDetailsResponse.details:type_name -> catalog.GameDetails
-	5,  // 10: catalog.GetSeriesDetailsResponse.details:type_name -> catalog.SeriesDetails
+	4,  // 8: catalog.GetAnimeDetailsResponse.details:type_name -> catalog.AnimeDetails
+	5,  // 9: catalog.GetGameDetailsResponse.details:type_name -> catalog.GameDetails
+	3,  // 10: catalog.GetSeriesDetailsResponse.details:type_name -> catalog.SeriesDetails
 	6,  // 11: catalog.GetBookDetailsResponse.details:type_name -> catalog.BookDetails
 	11, // 12: catalog.CatalogService.CreateContent:input_type -> catalog.CreateContentRequest
 	7,  // 13: catalog.CatalogService.GetContent:input_type -> catalog.GetContentRequest

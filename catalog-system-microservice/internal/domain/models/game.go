@@ -1,3 +1,5 @@
 package models
 
-type GameDetails struct{}
+type GameDetails struct {
+	ContentID string
+}
