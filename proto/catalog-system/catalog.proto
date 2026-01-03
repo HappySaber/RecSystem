@@ -18,6 +18,12 @@ service CatalogService {
   rpc GetGameDetails(GetGameDetailsRequest) returns (GetGameDetailsResponse);
   rpc GetSeriesDetails(GetSeriesDetailsRequest) returns (GetSeriesDetailsResponse);
   rpc GetBookDetails(GetBookDetailsRequest) returns (GetBookDetailsResponse);
+
+  rpc GetAllMovieDetails(GetAllMovieDetailsRequest) returns (GetAllMovieDetailsResponse);
+  rpc GetAllAnimeDetails(GetAllAnimeDetailsRequest) returns (GetAllAnimeDetailsResponse);
+  rpc GetAllGameDetails(GetAllGameDetailsRequest) returns (GetAllGameDetailsResponse);
+  rpc GetAllSeriesDetails(GetAllSeriesDetailsRequest) returns (GetAllSeriesDetailsResponse);
+  rpc GetAllBookDetails(GetAllBookDetailsRequest) returns (GetAllBookDetailsResponse);
 }
 
 // ----------------------
@@ -260,4 +266,48 @@ message GetBookDetailsRequest {
 
 message GetBookDetailsResponse {
   BookDetails details = 1;
+}
+
+
+
+// ----getter of all details
+
+message GetAllMovieDetailsRequest {
+
+}
+
+message GetAllMovieDetailsResponse {
+  repeated MovieDetails details = 1;
+}
+
+message GetAllAnimeDetailsRequest {
+
+}
+
+message GetAllAnimeDetailsResponse {
+  repeated AnimeDetails details = 1;
+}
+
+message GetAllGameDetailsRequest {
+
+}
+
+message GetAllGameDetailsResponse {
+  repeated GameDetails details = 1;
+}
+
+message GetAllSeriesDetailsRequest {
+
+}
+
+message GetAllSeriesDetailsResponse {
+  repeated SeriesDetails details = 1;
+}
+
+message GetAllBookDetailsRequest {
+
+}
+
+message GetAllBookDetailsResponse {
+  repeated BookDetails details = 1;
 }

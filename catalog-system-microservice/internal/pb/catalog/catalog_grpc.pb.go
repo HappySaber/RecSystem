@@ -28,6 +28,11 @@ const (
 	CatalogService_GetGameDetails_FullMethodName        = "/catalog.CatalogService/GetGameDetails"
 	CatalogService_GetSeriesDetails_FullMethodName      = "/catalog.CatalogService/GetSeriesDetails"
 	CatalogService_GetBookDetails_FullMethodName        = "/catalog.CatalogService/GetBookDetails"
+	CatalogService_GetAllMovieDetails_FullMethodName    = "/catalog.CatalogService/GetAllMovieDetails"
+	CatalogService_GetAllAnimeDetails_FullMethodName    = "/catalog.CatalogService/GetAllAnimeDetails"
+	CatalogService_GetAllGameDetails_FullMethodName     = "/catalog.CatalogService/GetAllGameDetails"
+	CatalogService_GetAllSeriesDetails_FullMethodName   = "/catalog.CatalogService/GetAllSeriesDetails"
+	CatalogService_GetAllBookDetails_FullMethodName     = "/catalog.CatalogService/GetAllBookDetails"
 )
 
 // CatalogServiceClient is the client API for CatalogService service.
@@ -43,6 +48,11 @@ type CatalogServiceClient interface {
 	GetGameDetails(ctx context.Context, in *GetGameDetailsRequest, opts ...grpc.CallOption) (*GetGameDetailsResponse, error)
 	GetSeriesDetails(ctx context.Context, in *GetSeriesDetailsRequest, opts ...grpc.CallOption) (*GetSeriesDetailsResponse, error)
 	GetBookDetails(ctx context.Context, in *GetBookDetailsRequest, opts ...grpc.CallOption) (*GetBookDetailsResponse, error)
+	GetAllMovieDetails(ctx context.Context, in *GetAllMovieDetailsRequest, opts ...grpc.CallOption) (*GetAllMovieDetailsResponse, error)
+	GetAllAnimeDetails(ctx context.Context, in *GetAllAnimeDetailsRequest, opts ...grpc.CallOption) (*GetAllAnimeDetailsResponse, error)
+	GetAllGameDetails(ctx context.Context, in *GetAllGameDetailsRequest, opts ...grpc.CallOption) (*GetAllGameDetailsResponse, error)
+	GetAllSeriesDetails(ctx context.Context, in *GetAllSeriesDetailsRequest, opts ...grpc.CallOption) (*GetAllSeriesDetailsResponse, error)
+	GetAllBookDetails(ctx context.Context, in *GetAllBookDetailsRequest, opts ...grpc.CallOption) (*GetAllBookDetailsResponse, error)
 }
 
 type catalogServiceClient struct {
@@ -143,6 +153,56 @@ func (c *catalogServiceClient) GetBookDetails(ctx context.Context, in *GetBookDe
 	return out, nil
 }
 
+func (c *catalogServiceClient) GetAllMovieDetails(ctx context.Context, in *GetAllMovieDetailsRequest, opts ...grpc.CallOption) (*GetAllMovieDetailsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllMovieDetailsResponse)
+	err := c.cc.Invoke(ctx, CatalogService_GetAllMovieDetails_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *catalogServiceClient) GetAllAnimeDetails(ctx context.Context, in *GetAllAnimeDetailsRequest, opts ...grpc.CallOption) (*GetAllAnimeDetailsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllAnimeDetailsResponse)
+	err := c.cc.Invoke(ctx, CatalogService_GetAllAnimeDetails_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *catalogServiceClient) GetAllGameDetails(ctx context.Context, in *GetAllGameDetailsRequest, opts ...grpc.CallOption) (*GetAllGameDetailsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllGameDetailsResponse)
+	err := c.cc.Invoke(ctx, CatalogService_GetAllGameDetails_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *catalogServiceClient) GetAllSeriesDetails(ctx context.Context, in *GetAllSeriesDetailsRequest, opts ...grpc.CallOption) (*GetAllSeriesDetailsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllSeriesDetailsResponse)
+	err := c.cc.Invoke(ctx, CatalogService_GetAllSeriesDetails_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *catalogServiceClient) GetAllBookDetails(ctx context.Context, in *GetAllBookDetailsRequest, opts ...grpc.CallOption) (*GetAllBookDetailsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllBookDetailsResponse)
+	err := c.cc.Invoke(ctx, CatalogService_GetAllBookDetails_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CatalogServiceServer is the server API for CatalogService service.
 // All implementations must embed UnimplementedCatalogServiceServer
 // for forward compatibility.
@@ -156,6 +216,11 @@ type CatalogServiceServer interface {
 	GetGameDetails(context.Context, *GetGameDetailsRequest) (*GetGameDetailsResponse, error)
 	GetSeriesDetails(context.Context, *GetSeriesDetailsRequest) (*GetSeriesDetailsResponse, error)
 	GetBookDetails(context.Context, *GetBookDetailsRequest) (*GetBookDetailsResponse, error)
+	GetAllMovieDetails(context.Context, *GetAllMovieDetailsRequest) (*GetAllMovieDetailsResponse, error)
+	GetAllAnimeDetails(context.Context, *GetAllAnimeDetailsRequest) (*GetAllAnimeDetailsResponse, error)
+	GetAllGameDetails(context.Context, *GetAllGameDetailsRequest) (*GetAllGameDetailsResponse, error)
+	GetAllSeriesDetails(context.Context, *GetAllSeriesDetailsRequest) (*GetAllSeriesDetailsResponse, error)
+	GetAllBookDetails(context.Context, *GetAllBookDetailsRequest) (*GetAllBookDetailsResponse, error)
 	mustEmbedUnimplementedCatalogServiceServer()
 }
 
@@ -192,6 +257,21 @@ func (UnimplementedCatalogServiceServer) GetSeriesDetails(context.Context, *GetS
 }
 func (UnimplementedCatalogServiceServer) GetBookDetails(context.Context, *GetBookDetailsRequest) (*GetBookDetailsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBookDetails not implemented")
+}
+func (UnimplementedCatalogServiceServer) GetAllMovieDetails(context.Context, *GetAllMovieDetailsRequest) (*GetAllMovieDetailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllMovieDetails not implemented")
+}
+func (UnimplementedCatalogServiceServer) GetAllAnimeDetails(context.Context, *GetAllAnimeDetailsRequest) (*GetAllAnimeDetailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllAnimeDetails not implemented")
+}
+func (UnimplementedCatalogServiceServer) GetAllGameDetails(context.Context, *GetAllGameDetailsRequest) (*GetAllGameDetailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllGameDetails not implemented")
+}
+func (UnimplementedCatalogServiceServer) GetAllSeriesDetails(context.Context, *GetAllSeriesDetailsRequest) (*GetAllSeriesDetailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllSeriesDetails not implemented")
+}
+func (UnimplementedCatalogServiceServer) GetAllBookDetails(context.Context, *GetAllBookDetailsRequest) (*GetAllBookDetailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllBookDetails not implemented")
 }
 func (UnimplementedCatalogServiceServer) mustEmbedUnimplementedCatalogServiceServer() {}
 func (UnimplementedCatalogServiceServer) testEmbeddedByValue()                        {}
@@ -376,6 +456,96 @@ func _CatalogService_GetBookDetails_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CatalogService_GetAllMovieDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllMovieDetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogServiceServer).GetAllMovieDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CatalogService_GetAllMovieDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogServiceServer).GetAllMovieDetails(ctx, req.(*GetAllMovieDetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CatalogService_GetAllAnimeDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllAnimeDetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogServiceServer).GetAllAnimeDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CatalogService_GetAllAnimeDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogServiceServer).GetAllAnimeDetails(ctx, req.(*GetAllAnimeDetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CatalogService_GetAllGameDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllGameDetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogServiceServer).GetAllGameDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CatalogService_GetAllGameDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogServiceServer).GetAllGameDetails(ctx, req.(*GetAllGameDetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CatalogService_GetAllSeriesDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllSeriesDetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogServiceServer).GetAllSeriesDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CatalogService_GetAllSeriesDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogServiceServer).GetAllSeriesDetails(ctx, req.(*GetAllSeriesDetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CatalogService_GetAllBookDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllBookDetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogServiceServer).GetAllBookDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CatalogService_GetAllBookDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogServiceServer).GetAllBookDetails(ctx, req.(*GetAllBookDetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CatalogService_ServiceDesc is the grpc.ServiceDesc for CatalogService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -418,6 +588,26 @@ var CatalogService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetBookDetails",
 			Handler:    _CatalogService_GetBookDetails_Handler,
+		},
+		{
+			MethodName: "GetAllMovieDetails",
+			Handler:    _CatalogService_GetAllMovieDetails_Handler,
+		},
+		{
+			MethodName: "GetAllAnimeDetails",
+			Handler:    _CatalogService_GetAllAnimeDetails_Handler,
+		},
+		{
+			MethodName: "GetAllGameDetails",
+			Handler:    _CatalogService_GetAllGameDetails_Handler,
+		},
+		{
+			MethodName: "GetAllSeriesDetails",
+			Handler:    _CatalogService_GetAllSeriesDetails_Handler,
+		},
+		{
+			MethodName: "GetAllBookDetails",
+			Handler:    _CatalogService_GetAllBookDetails_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

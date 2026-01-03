@@ -20,6 +20,11 @@ type Catalog interface {
 	GetGameDetails(ctx context.Context, id string) (models.GameDetails, error)
 	GetSeriesDetails(ctx context.Context, id string) (models.SeriesDetails, error)
 	GetBookDetails(ctx context.Context, id string) (models.BookDetails, error)
+	GetAllMovieDetails(ctx context.Context) ([]models.MovieDetails, error)
+	GetAllAnimeDetails(ctx context.Context) ([]models.AnimeDetails, error)
+	GetAllGameDetails(ctx context.Context) ([]models.GameDetails, error)
+	GetAllSeriesDetails(ctx context.Context) ([]models.SeriesDetails, error)
+	GetAllBookDetails(ctx context.Context) ([]models.BookDetails, error)
 }
 
 type serverAPI struct {
@@ -207,4 +212,103 @@ func (s *serverAPI) GetSeriesDetails(ctx context.Context, req *catalog1.GetSerie
 			ContentId: seriesDetails.ContentID,
 		},
 	}, nil
+}
+
+func (s *serverAPI) GetAllAnimeDetails(ctx context.Context, req *catalog1.GetAllAnimeDetailsRequest) (*catalog1.GetAllAnimeDetailsResponse, error) {
+	animeDetails, err := s.catalog.GetAllAnimeDetails(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	details := make([]catalog1.AnimeDetails, len(animeDetails))
+	for i := range animeDetails {
+		details[i] = catalog1.AnimeDetails{
+			ContentId: animeDetails[i].ContentID,
+		}
+	}
+
+	responce := &catalog1.GetAllAnimeDetailsResponse{
+		Details: &details,
+	}
+
+	return responce, nil
+}
+
+func (s *serverAPI) GetAllBookDetails(ctx context.Context, req *catalog1.GetAllBookDetailsRequest) (*catalog1.GetAllBookDetailsResponse, error) {
+	bookDetails, err := s.catalog.GetAllBookDetails(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	details := make([]catalog1.BookDetails, len(bookDetails))
+	for i := range bookDetails {
+		details[i] = catalog1.BookDetails{
+			ContentId: bookDetails[i].ContentID,
+		}
+	}
+
+	responce := &catalog1.GetAllBookDetailsResponse{
+		Details: &details,
+	}
+
+	return responce, nil
+}
+
+func (s *serverAPI) GetAllMovieDetails(ctx context.Context, req *catalog1.GetAllMovieDetailsRequest) (*catalog1.GetAllMovieDetailsResponse, error) {
+	movieDetails, err := s.catalog.GetAllMovieDetails(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	details := make([]catalog1.MovieDetails, len(movieDetails))
+	for i := range movieDetails {
+		details[i] = catalog1.MovieDetails{
+			ContentId: movieDetails[i].ContentID,
+		}
+	}
+
+	responce := &catalog1.GetAllMovieDetailsResponse{
+		Details: &details,
+	}
+
+	return responce, nil
+}
+
+func (s *serverAPI) GetAllSeriesDetails(ctx context.Context, req *catalog1.GetAllSeriesDetailsRequest) (*catalog1.GetAllSeriesDetailsResponse, error) {
+	seriesDetails, err := s.catalog.GetAllMovieDetails(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	details := make([]catalog1.SeriesDetails, len(seriesDetails))
+	for i := range seriesDetails {
+		details[i] = catalog1.SeriesDetails{
+			ContentId: seriesDetails[i].ContentID,
+		}
+	}
+
+	responce := &catalog1.GetAllSeriesDetailsResponse{
+		Details: &details,
+	}
+
+	return responce, nil
+}
+func (s *serverAPI) GetAllGameDetails(ctx context.Context, req *catalog1.GetAllGameDetailsRequest) (*catalog1.GetAllGameDetailsResponse, error) {
+	gameDetails, err := s.catalog.GetAllGameDetails(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	details := make([]catalog1.GameDetails, len(gameDetails))
+	for i := range gameDetails {
+		details[i] = catalog1.GameDetails{
+			ContentId: gameDetails[i].ContentID,
+		}
+	}
+
+	responce := &catalog1.GetAllGameDetailsResponse{
+		Details: &details,
+	}
+
+	return responce, nil
 }
