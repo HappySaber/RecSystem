@@ -220,15 +220,15 @@ func (s *serverAPI) GetAllAnimeDetails(ctx context.Context, req *catalog1.GetAll
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
-	details := make([]catalog1.AnimeDetails, len(animeDetails))
+	details := make([]*catalog1.AnimeDetails, len(animeDetails))
 	for i := range animeDetails {
-		details[i] = catalog1.AnimeDetails{
+		details[i] = &catalog1.AnimeDetails{
 			ContentId: animeDetails[i].ContentID,
 		}
 	}
 
 	responce := &catalog1.GetAllAnimeDetailsResponse{
-		Details: &details,
+		Details: details,
 	}
 
 	return responce, nil
@@ -240,15 +240,15 @@ func (s *serverAPI) GetAllBookDetails(ctx context.Context, req *catalog1.GetAllB
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
-	details := make([]catalog1.BookDetails, len(bookDetails))
+	details := make([]*catalog1.BookDetails, len(bookDetails))
 	for i := range bookDetails {
-		details[i] = catalog1.BookDetails{
+		details[i] = &catalog1.BookDetails{
 			ContentId: bookDetails[i].ContentID,
 		}
 	}
 
 	responce := &catalog1.GetAllBookDetailsResponse{
-		Details: &details,
+		Details: details,
 	}
 
 	return responce, nil
@@ -260,15 +260,15 @@ func (s *serverAPI) GetAllMovieDetails(ctx context.Context, req *catalog1.GetAll
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
-	details := make([]catalog1.MovieDetails, len(movieDetails))
+	details := make([]*catalog1.MovieDetails, len(movieDetails))
 	for i := range movieDetails {
-		details[i] = catalog1.MovieDetails{
+		details[i] = &catalog1.MovieDetails{
 			ContentId: movieDetails[i].ContentID,
 		}
 	}
 
 	responce := &catalog1.GetAllMovieDetailsResponse{
-		Details: &details,
+		Details: details,
 	}
 
 	return responce, nil
@@ -280,15 +280,15 @@ func (s *serverAPI) GetAllSeriesDetails(ctx context.Context, req *catalog1.GetAl
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
-	details := make([]catalog1.SeriesDetails, len(seriesDetails))
+	details := make([]*catalog1.SeriesDetails, len(seriesDetails))
 	for i := range seriesDetails {
-		details[i] = catalog1.SeriesDetails{
+		details[i] = &catalog1.SeriesDetails{
 			ContentId: seriesDetails[i].ContentID,
 		}
 	}
 
 	responce := &catalog1.GetAllSeriesDetailsResponse{
-		Details: &details,
+		Details: details,
 	}
 
 	return responce, nil
@@ -299,15 +299,15 @@ func (s *serverAPI) GetAllGameDetails(ctx context.Context, req *catalog1.GetAllG
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
-	details := make([]catalog1.GameDetails, len(gameDetails))
+	details := make([]*catalog1.GameDetails, len(gameDetails))
 	for i := range gameDetails {
-		details[i] = catalog1.GameDetails{
+		details[i] = &catalog1.GameDetails{
 			ContentId: gameDetails[i].ContentID,
 		}
 	}
 
 	responce := &catalog1.GetAllGameDetailsResponse{
-		Details: &details,
+		Details: details,
 	}
 
 	return responce, nil

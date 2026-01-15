@@ -1,0 +1,120 @@
+syntax = "proto3";
+
+package recommendation;
+
+option go_package = "catalog-system-microservice/internal/pb/recommendation;recommendationpb";
+
+service RecommendationService {
+
+    //core
+    rpc GetRecommendations(GetRecommendationsRequest) returns (GetRecommendationsResponse);
+    rpc TrackUserAction(TrackUserActionRequest) returns (TrackUserActionResponse);
+
+    rpc GetRecommendationsByGenres(GetRecommendationsByGenresRequest) returns (GetRecommendationsByGenresResponse);
+    rpc GetSimilarContent(GetSimilarContentRequest) returns (GetSimilarContentResponse);
+    rpc GetTrendingContent(GetTrendingContentRequest) returns (GetTrendingContentResponse);
+       // preferences
+    rpc GetUserPreferences(GetUserPreferencesRequest) returns (GetUserPreferencesResponse);
+    rpc SetUserPreferences(SetUserPreferencesRequest) returns (SetUserPreferencesResponse);
+    rpc ResetUserPreferences(ResetUserPreferencesRequest) returns (ResetUserPreferencesResponse);
+    rpc RebuildUserPreferences(RebuildUserPreferencesRequest) returns (RebuildUserPreferencesResponce);
+
+    // cold start
+    rpc GetPopularContent(GetPopularContentRequest) returns (GetPopularContentResponse);
+
+}
+
+//core
+message GetRecommendationsRequest {
+  string user_id = 1;
+  int32 limit = 2;
+}
+
+message GetRecommendationsResponse {
+  repeated string content_ids = 1;
+}
+
+message GetRecommendationsByGenresRequest {
+  repeated string genres = 1;
+  int32 limit = 2;
+}
+
+message GetRecommendationsByGenresResponse {
+  repeated string content_ids = 1;
+}
+
+message TrackUserActionResponse  {
+}
+
+message TrackUserActionRequest {
+  string user_id = 1;
+  string content_id = 2;
+  UserAction action = 3;
+  optional int32 rating = 4;
+  optional int32 duration_sec = 5;
+}
+
+enum UserAction {
+  VIEW = 0;
+  LIKE = 1;
+  DISLIKE = 2;
+  RATE = 3;
+  ADD_TO_FAVORITES = 4;
+}
+
+message GetSimilarContentRequest {
+  string content_id = 1;
+  int32 limit = 2;
+}
+
+message GetSimilarContentResponse {
+  repeated string content_ids = 1;
+}
+
+message GetTrendingContentRequest {
+  int32 limit = 1;
+}
+
+message GetTrendingContentResponse {
+  repeated string content_ids = 1;
+}
+
+// preferences
+message GetUserPreferencesRequest {
+    string user_id = 1;
+}
+
+message GetUserPreferencesResponse {
+    repeated string preferred_genres = 1;
+}
+message SetUserPreferencesRequest {
+    string user_id = 1;
+    repeated string preferred_genres = 2;
+}
+
+message SetUserPreferencesResponse {
+    bool UserPreferencesSetted = 1;
+}
+
+message ResetUserPreferencesRequest {
+    string user_id = 1;    
+}
+message ResetUserPreferencesResponse {
+    bool UserPreferencesResetted = 1;
+}
+
+message RebuildUserPreferencesRequest {
+    string user_id = 1;
+}
+
+message RebuildUserPreferencesResponce{
+
+}
+// cold start
+message GetPopularContentRequest {
+  int32 limit = 1;
+}
+
+message GetPopularContentResponse {
+  repeated string content_ids = 1;
+}
