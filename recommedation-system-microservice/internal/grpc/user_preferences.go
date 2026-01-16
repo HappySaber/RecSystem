@@ -32,10 +32,6 @@ type UserPreferencesService interface {
 	) error
 }
 
-//
-// preferences
-//
-
 func (s serverAPI) GetUserPreferences(
 	ctx context.Context,
 	req *recs.GetUserPreferencesRequest,
