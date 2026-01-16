@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package recommendation;
 
-option go_package = "catalog-system-microservice/internal/pb/recommendation;recommendationpb";
+option go_package = "rec-system-microservice/internal/pb/recommendation;recommendationpb";
 
 service RecommendationService {
 
