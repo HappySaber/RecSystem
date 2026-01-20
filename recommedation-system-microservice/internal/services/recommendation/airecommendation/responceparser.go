@@ -8,6 +8,10 @@ type AIResponseParser interface {
 
 type JSONContentIDParser struct{}
 
+func NewAIResponseParser() (*JSONContentIDParser, error) {
+	return &JSONContentIDParser{}, nil
+}
+
 func (p *JSONContentIDParser) ParseContentIDs(
 	raw string,
 ) ([]string, error) {

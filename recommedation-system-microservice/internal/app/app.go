@@ -2,8 +2,9 @@ package app
 
 import (
 	"log/slog"
-	grpcapp "recommedation-system-microservice/internal/app/grpc"
-	"time"
+	grpcapp "rec-system-microservice/internal/app/grpc"
+	"rec-system-microservice/internal/services/recommendation/airecommendation"
+	"rec-system-microservice/internal/storage/postgresql"
 )
 
 type App struct {
@@ -13,17 +14,32 @@ type App struct {
 func New(
 	log *slog.Logger,
 	grpcPort int,
-	tokenTTL time.Duration,
 ) *App {
 	storage, err := postgresql.New()
 	if err != nil {
 		panic(err)
 	}
+	_ = storage // Placeholder to avoid unused variable error
+	aiRecService := initAIRecommendationService(log)
 
-	authService := auth.New(log, storage, storage, storage, tokenTTL)
-
-	grpcApp := grpcapp.New(log, grpcPort, authService)
+	grpcApp := grpcapp.New(log, grpcPort, aiRecService)
 	return &App{
 		GRPCSrv: grpcApp,
 	}
+}
+
+func initAIRecommendationService(log *slog.Logger) *airecommendation.AIRecommendation {
+	aiClient, err := airecommendation.NewOpenAIClient()
+	if err != nil {
+		panic(err)
+	}
+	promptBuilder, err := airecommendation.NewPromptBuilder()
+	if err != nil {
+		panic(err)
+	}
+	aiParser, err := airecommendation.NewAIResponseParser()
+	if err != nil {
+		panic(err)
+	}
+	return airecommendation.NewAIRecommendation(log, aiClient, promptBuilder, aiParser)
 }

@@ -23,7 +23,12 @@ func NewAIRecommendation(
 	prompts PromptBuilder,
 	parser AIResponseParser,
 ) *AIRecommendation {
-	return &AIRecommendation{log, client, prompts, parser}
+	return &AIRecommendation{
+		log:     log,
+		client:  client,
+		prompts: prompts,
+		parser:  parser,
+	}
 }
 
 type AIRecommendationProvider interface {

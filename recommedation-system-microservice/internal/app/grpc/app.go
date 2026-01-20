@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net"
+	recsgrpc "rec-system-microservice/internal/grpc"
 
 	"google.golang.org/grpc"
 )
@@ -17,11 +18,14 @@ type App struct {
 func New(
 	log *slog.Logger,
 	port int,
-	//authService authgrpc.Auth,
+	engine recsgrpc.RecommendationEngine,
+	prefs recsgrpc.UserPreferencesService,
+	actions recsgrpc.UserActionTracker,
+	aiEngine recsgrpc.AIRecommendationEngine,
 ) *App {
 	gRPCServer := grpc.NewServer()
 
-	authgrpc.Register(gRPCServer)
+	recsgrpc.Register(gRPCServer, engine, prefs, actions, aiEngine)
 	return &App{
 		log:        log,
 		gRPCServer: gRPCServer,

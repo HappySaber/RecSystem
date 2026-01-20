@@ -8,6 +8,10 @@ type PromptBuilder interface {
 
 type DefaultPromptBuilder struct{}
 
+func NewPromptBuilder() (*DefaultPromptBuilder, error) {
+	return &DefaultPromptBuilder{}, nil
+}
+
 func (p *DefaultPromptBuilder) BuildExplicit(query string, limit int) string {
 	return fmt.Sprintf(`
 You are a recommendation engine.
@@ -15,11 +19,12 @@ You are a recommendation engine.
 User request:
 "%s"
 
-Return EXACTLY %d content IDs from catalog.
-Format response as JSON array of strings.
-Example:
-["anime-1","book-7"]
+Return ONLY valid JSON.
+NO text before or after.
 
-DO NOT add explanations.
+JSON schema:
+["content-id-1","content-id-2"]
+
+Return EXACTLY %d items.
 `, query, limit)
 }
