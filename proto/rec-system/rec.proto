@@ -9,6 +9,7 @@ service RecommendationService {
     //core
     rpc GetRecommendations(GetRecommendationsRequest) returns (GetRecommendationsResponse);
     rpc TrackUserAction(TrackUserActionRequest) returns (TrackUserActionResponse);
+    rpc GetAIRecommendations(GetAIRecommendationsRequest) returns (GetAIRecommendationsResponse);
 
     rpc GetRecommendationsByGenres(GetRecommendationsByGenresRequest) returns (GetRecommendationsByGenresResponse);
     rpc GetSimilarContent(GetSimilarContentRequest) returns (GetSimilarContentResponse);
@@ -116,5 +117,24 @@ message GetPopularContentRequest {
 }
 
 message GetPopularContentResponse {
+  repeated string content_ids = 1;
+}
+
+enum RecommendationMode {
+  IMPLICIT = 0; // по истории пользователя
+  EXPLICIT = 1; // пользовательский ввод
+}
+
+message GetAIRecommendationsRequest {
+  string user_id = 1;
+  RecommendationMode mode = 2;
+
+  // Только для EXPLICIT
+  optional string query = 3;
+
+  int32 limit = 4;
+}
+
+message GetAIRecommendationsResponse {
   repeated string content_ids = 1;
 }

@@ -3,3 +3,8 @@ token_ttl: 1h
 grpc: 
   port: 44044
   timeout: 1h
+redis:
+  user: ""
+  max_retries: 3
+  dial_timeout: 5s
+  timeout: 3s

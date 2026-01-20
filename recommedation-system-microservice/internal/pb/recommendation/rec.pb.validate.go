@@ -2124,3 +2124,219 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GetPopularContentResponseValidationError{}
+
+// Validate checks the field values on GetAIRecommendationsRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetAIRecommendationsRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetAIRecommendationsRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetAIRecommendationsRequestMultiError, or nil if none found.
+func (m *GetAIRecommendationsRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetAIRecommendationsRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for UserId
+
+	// no validation rules for Mode
+
+	// no validation rules for Limit
+
+	if m.Query != nil {
+		// no validation rules for Query
+	}
+
+	if len(errors) > 0 {
+		return GetAIRecommendationsRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetAIRecommendationsRequestMultiError is an error wrapping multiple
+// validation errors returned by GetAIRecommendationsRequest.ValidateAll() if
+// the designated constraints aren't met.
+type GetAIRecommendationsRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetAIRecommendationsRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetAIRecommendationsRequestMultiError) AllErrors() []error { return m }
+
+// GetAIRecommendationsRequestValidationError is the validation error returned
+// by GetAIRecommendationsRequest.Validate if the designated constraints
+// aren't met.
+type GetAIRecommendationsRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetAIRecommendationsRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetAIRecommendationsRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetAIRecommendationsRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetAIRecommendationsRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetAIRecommendationsRequestValidationError) ErrorName() string {
+	return "GetAIRecommendationsRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetAIRecommendationsRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetAIRecommendationsRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetAIRecommendationsRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetAIRecommendationsRequestValidationError{}
+
+// Validate checks the field values on GetAIRecommendationsResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetAIRecommendationsResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetAIRecommendationsResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetAIRecommendationsResponseMultiError, or nil if none found.
+func (m *GetAIRecommendationsResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetAIRecommendationsResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if len(errors) > 0 {
+		return GetAIRecommendationsResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetAIRecommendationsResponseMultiError is an error wrapping multiple
+// validation errors returned by GetAIRecommendationsResponse.ValidateAll() if
+// the designated constraints aren't met.
+type GetAIRecommendationsResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetAIRecommendationsResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetAIRecommendationsResponseMultiError) AllErrors() []error { return m }
+
+// GetAIRecommendationsResponseValidationError is the validation error returned
+// by GetAIRecommendationsResponse.Validate if the designated constraints
+// aren't met.
+type GetAIRecommendationsResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetAIRecommendationsResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetAIRecommendationsResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetAIRecommendationsResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetAIRecommendationsResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetAIRecommendationsResponseValidationError) ErrorName() string {
+	return "GetAIRecommendationsResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetAIRecommendationsResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetAIRecommendationsResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetAIRecommendationsResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetAIRecommendationsResponseValidationError{}

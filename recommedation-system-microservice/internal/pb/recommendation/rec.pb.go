@@ -76,6 +76,52 @@ func (UserAction) EnumDescriptor() ([]byte, []int) {
 	return file_rec_system_rec_proto_rawDescGZIP(), []int{0}
 }
 
+type RecommendationMode int32
+
+const (
+	RecommendationMode_IMPLICIT RecommendationMode = 0 // по истории пользователя
+	RecommendationMode_EXPLICIT RecommendationMode = 1 // пользовательский ввод
+)
+
+// Enum value maps for RecommendationMode.
+var (
+	RecommendationMode_name = map[int32]string{
+		0: "IMPLICIT",
+		1: "EXPLICIT",
+	}
+	RecommendationMode_value = map[string]int32{
+		"IMPLICIT": 0,
+		"EXPLICIT": 1,
+	}
+)
+
+func (x RecommendationMode) Enum() *RecommendationMode {
+	p := new(RecommendationMode)
+	*p = x
+	return p
+}
+
+func (x RecommendationMode) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (RecommendationMode) Descriptor() protoreflect.EnumDescriptor {
+	return file_rec_system_rec_proto_enumTypes[1].Descriptor()
+}
+
+func (RecommendationMode) Type() protoreflect.EnumType {
+	return &file_rec_system_rec_proto_enumTypes[1]
+}
+
+func (x RecommendationMode) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use RecommendationMode.Descriptor instead.
+func (RecommendationMode) EnumDescriptor() ([]byte, []int) {
+	return file_rec_system_rec_proto_rawDescGZIP(), []int{1}
+}
+
 //core
 type GetRecommendationsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -1007,6 +1053,119 @@ func (x *GetPopularContentResponse) GetContentIds() []string {
 	return nil
 }
 
+type GetAIRecommendationsRequest struct {
+	state  protoimpl.MessageState `protogen:"open.v1"`
+	UserId string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Mode   RecommendationMode     `protobuf:"varint,2,opt,name=mode,proto3,enum=recommendation.RecommendationMode" json:"mode,omitempty"`
+	// Только для EXPLICIT
+	Query         *string `protobuf:"bytes,3,opt,name=query,proto3,oneof" json:"query,omitempty"`
+	Limit         int32   `protobuf:"varint,4,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAIRecommendationsRequest) Reset() {
+	*x = GetAIRecommendationsRequest{}
+	mi := &file_rec_system_rec_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAIRecommendationsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAIRecommendationsRequest) ProtoMessage() {}
+
+func (x *GetAIRecommendationsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_rec_system_rec_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAIRecommendationsRequest.ProtoReflect.Descriptor instead.
+func (*GetAIRecommendationsRequest) Descriptor() ([]byte, []int) {
+	return file_rec_system_rec_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *GetAIRecommendationsRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *GetAIRecommendationsRequest) GetMode() RecommendationMode {
+	if x != nil {
+		return x.Mode
+	}
+	return RecommendationMode_IMPLICIT
+}
+
+func (x *GetAIRecommendationsRequest) GetQuery() string {
+	if x != nil && x.Query != nil {
+		return *x.Query
+	}
+	return ""
+}
+
+func (x *GetAIRecommendationsRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type GetAIRecommendationsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ContentIds    []string               `protobuf:"bytes,1,rep,name=content_ids,json=contentIds,proto3" json:"content_ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAIRecommendationsResponse) Reset() {
+	*x = GetAIRecommendationsResponse{}
+	mi := &file_rec_system_rec_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAIRecommendationsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAIRecommendationsResponse) ProtoMessage() {}
+
+func (x *GetAIRecommendationsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_rec_system_rec_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAIRecommendationsResponse.ProtoReflect.Descriptor instead.
+func (*GetAIRecommendationsResponse) Descriptor() ([]byte, []int) {
+	return file_rec_system_rec_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *GetAIRecommendationsResponse) GetContentIds() []string {
+	if x != nil {
+		return x.ContentIds
+	}
+	return nil
+}
+
 var File_rec_system_rec_proto protoreflect.FileDescriptor
 
 const file_rec_system_rec_proto_rawDesc = "" +
@@ -1066,6 +1225,15 @@ const file_rec_system_rec_proto_rawDesc = "" +
 	"\x05limit\x18\x01 \x01(\x05R\x05limit\"<\n" +
 	"\x19GetPopularContentResponse\x12\x1f\n" +
 	"\vcontent_ids\x18\x01 \x03(\tR\n" +
+	"contentIds\"\xa9\x01\n" +
+	"\x1bGetAIRecommendationsRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x126\n" +
+	"\x04mode\x18\x02 \x01(\x0e2\".recommendation.RecommendationModeR\x04mode\x12\x19\n" +
+	"\x05query\x18\x03 \x01(\tH\x00R\x05query\x88\x01\x01\x12\x14\n" +
+	"\x05limit\x18\x04 \x01(\x05R\x05limitB\b\n" +
+	"\x06_query\"?\n" +
+	"\x1cGetAIRecommendationsResponse\x12\x1f\n" +
+	"\vcontent_ids\x18\x01 \x03(\tR\n" +
 	"contentIds*M\n" +
 	"\n" +
 	"UserAction\x12\b\n" +
@@ -1073,10 +1241,14 @@ const file_rec_system_rec_proto_rawDesc = "" +
 	"\x04LIKE\x10\x01\x12\v\n" +
 	"\aDISLIKE\x10\x02\x12\b\n" +
 	"\x04RATE\x10\x03\x12\x14\n" +
-	"\x10ADD_TO_FAVORITES\x10\x042\xf5\b\n" +
+	"\x10ADD_TO_FAVORITES\x10\x04*0\n" +
+	"\x12RecommendationMode\x12\f\n" +
+	"\bIMPLICIT\x10\x00\x12\f\n" +
+	"\bEXPLICIT\x10\x012\xe8\t\n" +
 	"\x15RecommendationService\x12k\n" +
 	"\x12GetRecommendations\x12).recommendation.GetRecommendationsRequest\x1a*.recommendation.GetRecommendationsResponse\x12b\n" +
-	"\x0fTrackUserAction\x12&.recommendation.TrackUserActionRequest\x1a'.recommendation.TrackUserActionResponse\x12\x83\x01\n" +
+	"\x0fTrackUserAction\x12&.recommendation.TrackUserActionRequest\x1a'.recommendation.TrackUserActionResponse\x12q\n" +
+	"\x14GetAIRecommendations\x12+.recommendation.GetAIRecommendationsRequest\x1a,.recommendation.GetAIRecommendationsResponse\x12\x83\x01\n" +
 	"\x1aGetRecommendationsByGenres\x121.recommendation.GetRecommendationsByGenresRequest\x1a2.recommendation.GetRecommendationsByGenresResponse\x12h\n" +
 	"\x11GetSimilarContent\x12(.recommendation.GetSimilarContentRequest\x1a).recommendation.GetSimilarContentResponse\x12k\n" +
 	"\x12GetTrendingContent\x12).recommendation.GetTrendingContentRequest\x1a*.recommendation.GetTrendingContentResponse\x12k\n" +
@@ -1098,58 +1270,64 @@ func file_rec_system_rec_proto_rawDescGZIP() []byte {
 	return file_rec_system_rec_proto_rawDescData
 }
 
-var file_rec_system_rec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_rec_system_rec_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
+var file_rec_system_rec_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_rec_system_rec_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_rec_system_rec_proto_goTypes = []any{
 	(UserAction)(0),                            // 0: recommendation.UserAction
-	(*GetRecommendationsRequest)(nil),          // 1: recommendation.GetRecommendationsRequest
-	(*GetRecommendationsResponse)(nil),         // 2: recommendation.GetRecommendationsResponse
-	(*GetRecommendationsByGenresRequest)(nil),  // 3: recommendation.GetRecommendationsByGenresRequest
-	(*GetRecommendationsByGenresResponse)(nil), // 4: recommendation.GetRecommendationsByGenresResponse
-	(*TrackUserActionResponse)(nil),            // 5: recommendation.TrackUserActionResponse
-	(*TrackUserActionRequest)(nil),             // 6: recommendation.TrackUserActionRequest
-	(*GetSimilarContentRequest)(nil),           // 7: recommendation.GetSimilarContentRequest
-	(*GetSimilarContentResponse)(nil),          // 8: recommendation.GetSimilarContentResponse
-	(*GetTrendingContentRequest)(nil),          // 9: recommendation.GetTrendingContentRequest
-	(*GetTrendingContentResponse)(nil),         // 10: recommendation.GetTrendingContentResponse
-	(*GetUserPreferencesRequest)(nil),          // 11: recommendation.GetUserPreferencesRequest
-	(*GetUserPreferencesResponse)(nil),         // 12: recommendation.GetUserPreferencesResponse
-	(*SetUserPreferencesRequest)(nil),          // 13: recommendation.SetUserPreferencesRequest
-	(*SetUserPreferencesResponse)(nil),         // 14: recommendation.SetUserPreferencesResponse
-	(*ResetUserPreferencesRequest)(nil),        // 15: recommendation.ResetUserPreferencesRequest
-	(*ResetUserPreferencesResponse)(nil),       // 16: recommendation.ResetUserPreferencesResponse
-	(*RebuildUserPreferencesRequest)(nil),      // 17: recommendation.RebuildUserPreferencesRequest
-	(*RebuildUserPreferencesResponce)(nil),     // 18: recommendation.RebuildUserPreferencesResponce
-	(*GetPopularContentRequest)(nil),           // 19: recommendation.GetPopularContentRequest
-	(*GetPopularContentResponse)(nil),          // 20: recommendation.GetPopularContentResponse
+	(RecommendationMode)(0),                    // 1: recommendation.RecommendationMode
+	(*GetRecommendationsRequest)(nil),          // 2: recommendation.GetRecommendationsRequest
+	(*GetRecommendationsResponse)(nil),         // 3: recommendation.GetRecommendationsResponse
+	(*GetRecommendationsByGenresRequest)(nil),  // 4: recommendation.GetRecommendationsByGenresRequest
+	(*GetRecommendationsByGenresResponse)(nil), // 5: recommendation.GetRecommendationsByGenresResponse
+	(*TrackUserActionResponse)(nil),            // 6: recommendation.TrackUserActionResponse
+	(*TrackUserActionRequest)(nil),             // 7: recommendation.TrackUserActionRequest
+	(*GetSimilarContentRequest)(nil),           // 8: recommendation.GetSimilarContentRequest
+	(*GetSimilarContentResponse)(nil),          // 9: recommendation.GetSimilarContentResponse
+	(*GetTrendingContentRequest)(nil),          // 10: recommendation.GetTrendingContentRequest
+	(*GetTrendingContentResponse)(nil),         // 11: recommendation.GetTrendingContentResponse
+	(*GetUserPreferencesRequest)(nil),          // 12: recommendation.GetUserPreferencesRequest
+	(*GetUserPreferencesResponse)(nil),         // 13: recommendation.GetUserPreferencesResponse
+	(*SetUserPreferencesRequest)(nil),          // 14: recommendation.SetUserPreferencesRequest
+	(*SetUserPreferencesResponse)(nil),         // 15: recommendation.SetUserPreferencesResponse
+	(*ResetUserPreferencesRequest)(nil),        // 16: recommendation.ResetUserPreferencesRequest
+	(*ResetUserPreferencesResponse)(nil),       // 17: recommendation.ResetUserPreferencesResponse
+	(*RebuildUserPreferencesRequest)(nil),      // 18: recommendation.RebuildUserPreferencesRequest
+	(*RebuildUserPreferencesResponce)(nil),     // 19: recommendation.RebuildUserPreferencesResponce
+	(*GetPopularContentRequest)(nil),           // 20: recommendation.GetPopularContentRequest
+	(*GetPopularContentResponse)(nil),          // 21: recommendation.GetPopularContentResponse
+	(*GetAIRecommendationsRequest)(nil),        // 22: recommendation.GetAIRecommendationsRequest
+	(*GetAIRecommendationsResponse)(nil),       // 23: recommendation.GetAIRecommendationsResponse
 }
 var file_rec_system_rec_proto_depIdxs = []int32{
 	0,  // 0: recommendation.TrackUserActionRequest.action:type_name -> recommendation.UserAction
-	1,  // 1: recommendation.RecommendationService.GetRecommendations:input_type -> recommendation.GetRecommendationsRequest
-	6,  // 2: recommendation.RecommendationService.TrackUserAction:input_type -> recommendation.TrackUserActionRequest
-	3,  // 3: recommendation.RecommendationService.GetRecommendationsByGenres:input_type -> recommendation.GetRecommendationsByGenresRequest
-	7,  // 4: recommendation.RecommendationService.GetSimilarContent:input_type -> recommendation.GetSimilarContentRequest
-	9,  // 5: recommendation.RecommendationService.GetTrendingContent:input_type -> recommendation.GetTrendingContentRequest
-	11, // 6: recommendation.RecommendationService.GetUserPreferences:input_type -> recommendation.GetUserPreferencesRequest
-	13, // 7: recommendation.RecommendationService.SetUserPreferences:input_type -> recommendation.SetUserPreferencesRequest
-	15, // 8: recommendation.RecommendationService.ResetUserPreferences:input_type -> recommendation.ResetUserPreferencesRequest
-	17, // 9: recommendation.RecommendationService.RebuildUserPreferences:input_type -> recommendation.RebuildUserPreferencesRequest
-	19, // 10: recommendation.RecommendationService.GetPopularContent:input_type -> recommendation.GetPopularContentRequest
-	2,  // 11: recommendation.RecommendationService.GetRecommendations:output_type -> recommendation.GetRecommendationsResponse
-	5,  // 12: recommendation.RecommendationService.TrackUserAction:output_type -> recommendation.TrackUserActionResponse
-	4,  // 13: recommendation.RecommendationService.GetRecommendationsByGenres:output_type -> recommendation.GetRecommendationsByGenresResponse
-	8,  // 14: recommendation.RecommendationService.GetSimilarContent:output_type -> recommendation.GetSimilarContentResponse
-	10, // 15: recommendation.RecommendationService.GetTrendingContent:output_type -> recommendation.GetTrendingContentResponse
-	12, // 16: recommendation.RecommendationService.GetUserPreferences:output_type -> recommendation.GetUserPreferencesResponse
-	14, // 17: recommendation.RecommendationService.SetUserPreferences:output_type -> recommendation.SetUserPreferencesResponse
-	16, // 18: recommendation.RecommendationService.ResetUserPreferences:output_type -> recommendation.ResetUserPreferencesResponse
-	18, // 19: recommendation.RecommendationService.RebuildUserPreferences:output_type -> recommendation.RebuildUserPreferencesResponce
-	20, // 20: recommendation.RecommendationService.GetPopularContent:output_type -> recommendation.GetPopularContentResponse
-	11, // [11:21] is the sub-list for method output_type
-	1,  // [1:11] is the sub-list for method input_type
-	1,  // [1:1] is the sub-list for extension type_name
-	1,  // [1:1] is the sub-list for extension extendee
-	0,  // [0:1] is the sub-list for field type_name
+	1,  // 1: recommendation.GetAIRecommendationsRequest.mode:type_name -> recommendation.RecommendationMode
+	2,  // 2: recommendation.RecommendationService.GetRecommendations:input_type -> recommendation.GetRecommendationsRequest
+	7,  // 3: recommendation.RecommendationService.TrackUserAction:input_type -> recommendation.TrackUserActionRequest
+	22, // 4: recommendation.RecommendationService.GetAIRecommendations:input_type -> recommendation.GetAIRecommendationsRequest
+	4,  // 5: recommendation.RecommendationService.GetRecommendationsByGenres:input_type -> recommendation.GetRecommendationsByGenresRequest
+	8,  // 6: recommendation.RecommendationService.GetSimilarContent:input_type -> recommendation.GetSimilarContentRequest
+	10, // 7: recommendation.RecommendationService.GetTrendingContent:input_type -> recommendation.GetTrendingContentRequest
+	12, // 8: recommendation.RecommendationService.GetUserPreferences:input_type -> recommendation.GetUserPreferencesRequest
+	14, // 9: recommendation.RecommendationService.SetUserPreferences:input_type -> recommendation.SetUserPreferencesRequest
+	16, // 10: recommendation.RecommendationService.ResetUserPreferences:input_type -> recommendation.ResetUserPreferencesRequest
+	18, // 11: recommendation.RecommendationService.RebuildUserPreferences:input_type -> recommendation.RebuildUserPreferencesRequest
+	20, // 12: recommendation.RecommendationService.GetPopularContent:input_type -> recommendation.GetPopularContentRequest
+	3,  // 13: recommendation.RecommendationService.GetRecommendations:output_type -> recommendation.GetRecommendationsResponse
+	6,  // 14: recommendation.RecommendationService.TrackUserAction:output_type -> recommendation.TrackUserActionResponse
+	23, // 15: recommendation.RecommendationService.GetAIRecommendations:output_type -> recommendation.GetAIRecommendationsResponse
+	5,  // 16: recommendation.RecommendationService.GetRecommendationsByGenres:output_type -> recommendation.GetRecommendationsByGenresResponse
+	9,  // 17: recommendation.RecommendationService.GetSimilarContent:output_type -> recommendation.GetSimilarContentResponse
+	11, // 18: recommendation.RecommendationService.GetTrendingContent:output_type -> recommendation.GetTrendingContentResponse
+	13, // 19: recommendation.RecommendationService.GetUserPreferences:output_type -> recommendation.GetUserPreferencesResponse
+	15, // 20: recommendation.RecommendationService.SetUserPreferences:output_type -> recommendation.SetUserPreferencesResponse
+	17, // 21: recommendation.RecommendationService.ResetUserPreferences:output_type -> recommendation.ResetUserPreferencesResponse
+	19, // 22: recommendation.RecommendationService.RebuildUserPreferences:output_type -> recommendation.RebuildUserPreferencesResponce
+	21, // 23: recommendation.RecommendationService.GetPopularContent:output_type -> recommendation.GetPopularContentResponse
+	13, // [13:24] is the sub-list for method output_type
+	2,  // [2:13] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_rec_system_rec_proto_init() }
@@ -1158,13 +1336,14 @@ func file_rec_system_rec_proto_init() {
 		return
 	}
 	file_rec_system_rec_proto_msgTypes[5].OneofWrappers = []any{}
+	file_rec_system_rec_proto_msgTypes[20].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_rec_system_rec_proto_rawDesc), len(file_rec_system_rec_proto_rawDesc)),
-			NumEnums:      1,
-			NumMessages:   20,
+			NumEnums:      2,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

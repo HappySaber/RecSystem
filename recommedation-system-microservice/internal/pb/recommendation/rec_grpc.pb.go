@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	RecommendationService_GetRecommendations_FullMethodName         = "/recommendation.RecommendationService/GetRecommendations"
 	RecommendationService_TrackUserAction_FullMethodName            = "/recommendation.RecommendationService/TrackUserAction"
+	RecommendationService_GetAIRecommendations_FullMethodName       = "/recommendation.RecommendationService/GetAIRecommendations"
 	RecommendationService_GetRecommendationsByGenres_FullMethodName = "/recommendation.RecommendationService/GetRecommendationsByGenres"
 	RecommendationService_GetSimilarContent_FullMethodName          = "/recommendation.RecommendationService/GetSimilarContent"
 	RecommendationService_GetTrendingContent_FullMethodName         = "/recommendation.RecommendationService/GetTrendingContent"
@@ -38,6 +39,7 @@ type RecommendationServiceClient interface {
 	//core
 	GetRecommendations(ctx context.Context, in *GetRecommendationsRequest, opts ...grpc.CallOption) (*GetRecommendationsResponse, error)
 	TrackUserAction(ctx context.Context, in *TrackUserActionRequest, opts ...grpc.CallOption) (*TrackUserActionResponse, error)
+	GetAIRecommendations(ctx context.Context, in *GetAIRecommendationsRequest, opts ...grpc.CallOption) (*GetAIRecommendationsResponse, error)
 	GetRecommendationsByGenres(ctx context.Context, in *GetRecommendationsByGenresRequest, opts ...grpc.CallOption) (*GetRecommendationsByGenresResponse, error)
 	GetSimilarContent(ctx context.Context, in *GetSimilarContentRequest, opts ...grpc.CallOption) (*GetSimilarContentResponse, error)
 	GetTrendingContent(ctx context.Context, in *GetTrendingContentRequest, opts ...grpc.CallOption) (*GetTrendingContentResponse, error)
@@ -72,6 +74,16 @@ func (c *recommendationServiceClient) TrackUserAction(ctx context.Context, in *T
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(TrackUserActionResponse)
 	err := c.cc.Invoke(ctx, RecommendationService_TrackUserAction_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *recommendationServiceClient) GetAIRecommendations(ctx context.Context, in *GetAIRecommendationsRequest, opts ...grpc.CallOption) (*GetAIRecommendationsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAIRecommendationsResponse)
+	err := c.cc.Invoke(ctx, RecommendationService_GetAIRecommendations_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -165,6 +177,7 @@ type RecommendationServiceServer interface {
 	//core
 	GetRecommendations(context.Context, *GetRecommendationsRequest) (*GetRecommendationsResponse, error)
 	TrackUserAction(context.Context, *TrackUserActionRequest) (*TrackUserActionResponse, error)
+	GetAIRecommendations(context.Context, *GetAIRecommendationsRequest) (*GetAIRecommendationsResponse, error)
 	GetRecommendationsByGenres(context.Context, *GetRecommendationsByGenresRequest) (*GetRecommendationsByGenresResponse, error)
 	GetSimilarContent(context.Context, *GetSimilarContentRequest) (*GetSimilarContentResponse, error)
 	GetTrendingContent(context.Context, *GetTrendingContentRequest) (*GetTrendingContentResponse, error)
@@ -190,6 +203,9 @@ func (UnimplementedRecommendationServiceServer) GetRecommendations(context.Conte
 }
 func (UnimplementedRecommendationServiceServer) TrackUserAction(context.Context, *TrackUserActionRequest) (*TrackUserActionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TrackUserAction not implemented")
+}
+func (UnimplementedRecommendationServiceServer) GetAIRecommendations(context.Context, *GetAIRecommendationsRequest) (*GetAIRecommendationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAIRecommendations not implemented")
 }
 func (UnimplementedRecommendationServiceServer) GetRecommendationsByGenres(context.Context, *GetRecommendationsByGenresRequest) (*GetRecommendationsByGenresResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRecommendationsByGenres not implemented")
@@ -268,6 +284,24 @@ func _RecommendationService_TrackUserAction_Handler(srv interface{}, ctx context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RecommendationServiceServer).TrackUserAction(ctx, req.(*TrackUserActionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RecommendationService_GetAIRecommendations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAIRecommendationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RecommendationServiceServer).GetAIRecommendations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RecommendationService_GetAIRecommendations_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RecommendationServiceServer).GetAIRecommendations(ctx, req.(*GetAIRecommendationsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -430,6 +464,10 @@ var RecommendationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TrackUserAction",
 			Handler:    _RecommendationService_TrackUserAction_Handler,
+		},
+		{
+			MethodName: "GetAIRecommendations",
+			Handler:    _RecommendationService_GetAIRecommendations_Handler,
 		},
 		{
 			MethodName: "GetRecommendationsByGenres",
