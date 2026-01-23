@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users
     name TEXT NOT NULL,
     surname TEXT NOT NULL,
     role VARCHAR(16) DEFAULT 'user',
-    pass_hash BLOB NOT NULL
+    pass_hash BYTEA NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_email ON users (email);
 -- +goose StatementEnd

@@ -1,6 +1,17 @@
+.PHONY: generate sso sso-migrator sso-migrator-test sso-test
+
 generate:
 	buf generate
 
 
-run sso:
-	cd sso-microservice/cmd/sso && go run main.go
+sso:
+	cd sso-microservice && go run cmd/sso/main.go --config=./config/local.yaml
+
+sso-migrator:
+	cd sso-microservice && go run cmd/migrator/main.go --migrations-path=./migrations
+
+sso-migrator-test:
+	cd sso-microservice && go run cmd/migrator/main.go --migrations-path=./tests/migrations --test
+
+sso-test:
+	cd sso-microservice && go run cmd/migrator/main.go --migrations-path=./tests/migrations

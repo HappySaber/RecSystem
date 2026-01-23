@@ -15,7 +15,7 @@ import (
 )
 
 type Storage struct {
-	db *sql.DB
+	DB *sql.DB
 }
 
 func New() (*Storage, error) {
@@ -30,7 +30,7 @@ func New() (*Storage, error) {
 	log.Println("Successfully connected to the database!")
 
 	return &Storage{
-		db: db,
+		DB: db,
 	}, nil
 }
 
@@ -68,9 +68,13 @@ func (s *Storage) SaveUser(ctx context.Context, email, name, surname, role strin
 
 	var id string
 
-	query := "INSERT INTO users (email, name, surname pass_hash) VALUES ($1, $2, $3, $4) RETURNING id"
+	query := `
+		INSERT INTO users (email, name, surname, role, pass_hash)
+		VALUES ($1, $2, $3, $4, $5)
+		RETURNING id
+		`
 
-	err := s.db.QueryRowContext(ctx, query, email, name, surname, passHash).Scan(&id)
+	err := s.DB.QueryRowContext(ctx, query, email, name, surname, role, passHash).Scan(&id)
 	if err != nil {
 		var pgErr *pq.Error
 		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
@@ -88,10 +92,10 @@ func (s *Storage) User(ctx context.Context, email string) (models.User, error) {
 
 	query := "SELECT * FROM users WHERE email = $1"
 	var user models.User
-	err := s.db.QueryRowContext(ctx, query, email).Scan(&user)
+	err := s.DB.QueryRowContext(ctx, query, email).Scan(&user.ID, &user.Email, &user.Name, &user.Surname, &user.Role, &user.PassHash)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return models.User{}, fmt.Errorf("%s: %w", op, storage.ErrUserExists)
+			return models.User{}, fmt.Errorf("%s: %w", op, storage.ErrUserNotFound)
 		}
 
 		return models.User{}, fmt.Errorf("%s: %w", op, err)
@@ -103,7 +107,7 @@ func (s *Storage) User(ctx context.Context, email string) (models.User, error) {
 func (s *Storage) App(ctx context.Context, id int) (models.App, error) {
 	const op = "storage.posgresql.App"
 
-	stmt, err := s.db.Prepare("SELECT id, name, secret FROM apps WHERE id = ?")
+	stmt, err := s.DB.Prepare("SELECT id, name, secret FROM apps WHERE id = $1")
 	if err != nil {
 		return models.App{}, fmt.Errorf("%s: %w", op, err)
 	}
@@ -126,7 +130,7 @@ func (s *Storage) App(ctx context.Context, id int) (models.App, error) {
 func (s *Storage) UserRole(ctx context.Context, userID string) (string, error) {
 	const op = "storage.posgresql.IsAdmin"
 
-	stmt, err := s.db.Prepare("SELECT role FROM users WHERE id = ?")
+	stmt, err := s.DB.Prepare("SELECT role FROM users WHERE id = ?")
 	if err != nil {
 		return "none", fmt.Errorf("%s: %w", op, err)
 	}

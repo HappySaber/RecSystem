@@ -45,3 +45,23 @@ func (ua *UserAction) TrackAction(
 	}
 	return nil
 }
+
+func (ua *UserAction) TrackActions(
+	ctx context.Context,
+	events []models.UserActionEvent,
+) error {
+	const op = "useractions.TrackUserActions"
+
+	log := ua.log.With(
+		slog.String("op", op),
+	)
+	log.Info("tracking user actions",
+		slog.Int("numberOfEvents", len(events)),
+	)
+	err := ua.uaTracker.SaveTrackActions(ctx, events)
+	if err != nil {
+		ua.log.Error("failed to track user actions", "error", err.Error())
+		return err
+	}
+	return nil
+}

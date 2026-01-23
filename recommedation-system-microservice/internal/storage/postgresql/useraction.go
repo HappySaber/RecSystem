@@ -29,3 +29,11 @@ func (s *Storage) SaveTrackAction(
 	}
 	return nil
 }
+
+func (s *Storage) SaveTrackActions(
+	ctx context.Context,
+	events []models.UserActionEvent,
+) error {
+	//TODO realisation of batch insert
+	return nil
+}

@@ -1,12 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
 	"sso-microservice/internal/app"
 	"sso-microservice/internal/config"
 	"syscall"
+
+	"github.com/joho/godotenv"
 )
 
 const (
@@ -18,6 +21,9 @@ const (
 func main() {
 	cfg := config.MustLoad()
 	log := setupLogger(cfg.Env)
+	if err := godotenv.Load(".env"); err != nil {
+		panic(fmt.Sprintf("failed to load .env: %v", err))
+	}
 	log.Info(
 		"starting application",
 		slog.String("env", cfg.Env),

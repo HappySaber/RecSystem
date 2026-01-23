@@ -1,9 +1,11 @@
 -- +goose Up
 -- +goose StatementBegin
-SELECT 'up SQL query';
+INSERT INTO apps (id, name, secret)
+VALUES (1, 'test', 'testsecret')
+ON CONFLICT DO NOTHING;
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-SELECT 'down SQL query';
+DELETE FROM apps WHERE id = 1;
 -- +goose StatementEnd

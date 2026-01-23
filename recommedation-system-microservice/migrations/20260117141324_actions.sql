@@ -1,9 +1,12 @@
 -- +goose Up
 -- +goose StatementBegin
-SELECT 'up SQL query';
+CREATE TABLE actions (
+    id SMALLSERIAL PRIMARY KEY,
+    code VARCHAR(32) NOT NULL UNIQUE -- VIEW, LIKE, DISLIKE, RATE, FAVORITE
+);
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-SELECT 'down SQL query';
+DROP TABLE IF EXISTS actions;
 -- +goose StatementEnd
