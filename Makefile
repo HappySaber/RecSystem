@@ -15,3 +15,13 @@ sso-migrator-test:
 
 sso-test:
 	cd sso-microservice && go run cmd/migrator/main.go --migrations-path=./tests/migrations
+
+
+catalog:
+	cd catalog-system-microservice && go run cmd/catalog/main.go --config=./config/local.yaml
+
+catalog-migrator:
+	cd catalog-system-microservice && go run cmd/migrator/main.go --migrations-path=./migrations
+
+catalog-importer:
+	cd catalog-system-microservice && go run cmd/importer/main.go

@@ -9,14 +9,13 @@ import (
 )
 
 type Config struct {
-	Env   string `yaml:"env"`
-	GRPCt GRPCConfig
-	Limit int
+	Env  string     `yaml:"env"`
+	GRPC GRPCConfig `yaml:"grpc"`
 }
 
 type GRPCConfig struct {
-	Port    int
-	Timeout time.Duration
+	Port    int           `yaml:"port"`
+	Timeout time.Duration `yaml:"timeout"`
 }
 
 func MustLoad() *Config {
@@ -25,15 +24,18 @@ func MustLoad() *Config {
 		panic("config path is empty")
 	}
 
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		panic("config file doens't exist: " + path)
+	return MustLoadByPath(path)
+}
+
+func MustLoadByPath(configPath string) *Config {
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		panic("config file doens't exist: " + configPath)
 	}
 
 	var cfg Config
-	if err := cleanenv.ReadConfig(path, &cfg); err != nil {
+	if err := cleanenv.ReadConfig(configPath, &cfg); err != nil {
 		panic("failed to read config: " + err.Error())
 	}
-
 	return &cfg
 }
 
