@@ -3,7 +3,10 @@ package app
 import (
 	"log/slog"
 	grpcapp "rec-system-microservice/internal/app/grpc"
+	recommendation "rec-system-microservice/internal/services/recommendation"
 	"rec-system-microservice/internal/services/recommendation/airecommendation"
+	useractions "rec-system-microservice/internal/services/user_actions"
+	userpreferences "rec-system-microservice/internal/services/user_preferences"
 	"rec-system-microservice/internal/storage/postgresql"
 )
 
@@ -22,7 +25,11 @@ func New(
 	_ = storage // Placeholder to avoid unused variable error
 	aiRecService := initAIRecommendationService(log)
 
-	grpcApp := grpcapp.New(log, grpcPort, aiRecService)
+	engine := recommendation.New(log, nil, 0)
+	prefs := &userpreferences.UserPreferences{}
+	actions := useractions.New(log, storage)
+
+	grpcApp := grpcapp.New(log, grpcPort, engine, prefs, actions, aiRecService)
 	return &App{
 		GRPCSrv: grpcApp,
 	}

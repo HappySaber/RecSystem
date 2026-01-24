@@ -2,10 +2,6 @@ package airecommendation
 
 import "encoding/json"
 
-type AIResponseParser interface {
-	ParseContentIDs(raw string) ([]string, error)
-}
-
 type JSONContentIDParser struct{}
 
 func NewAIResponseParser() (*JSONContentIDParser, error) {

@@ -2,10 +2,6 @@ package airecommendation
 
 import "fmt"
 
-type PromptBuilder interface {
-	BuildExplicit(query string, limit int) string
-}
-
 type DefaultPromptBuilder struct{}
 
 func NewPromptBuilder() (*DefaultPromptBuilder, error) {

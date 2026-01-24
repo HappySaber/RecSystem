@@ -31,19 +31,31 @@ func NewAIRecommendation(
 	}
 }
 
-type AIRecommendationProvider interface {
-	GetImplicitRecommendations(
-		ctx context.Context,
-		userID string,
-		limit int,
-	) ([]string, error)
-
-	GetExplicitRecommendations(
-		ctx context.Context,
-		query string,
-		limit int,
-	) ([]string, error)
+type AIClient interface {
+	Complete(ctx context.Context, prompt string) (string, error)
 }
+
+type PromptBuilder interface {
+	BuildExplicit(query string, limit int) string
+}
+
+type AIResponseParser interface {
+	ParseContentIDs(raw string) ([]string, error)
+}
+
+// type AIRecommendationProvider interface {
+// 	GetImplicitRecommendations(
+// 		ctx context.Context,
+// 		userID string,
+// 		limit int,
+// 	) ([]string, error)
+
+// 	GetExplicitRecommendations(
+// 		ctx context.Context,
+// 		query string,
+// 		limit int,
+// 	) ([]string, error)
+// }
 
 func (a *AIRecommendation) GetExplicitRecommendations(
 	ctx context.Context,
@@ -66,4 +78,12 @@ func (a *AIRecommendation) GetExplicitRecommendations(
 	}
 
 	return a.parser.ParseContentIDs(raw)
+}
+
+func (a *AIRecommendation) GetImplicitRecommendations(
+	ctx context.Context,
+	userID string,
+	limit int,
+) ([]string, error) {
+	return nil, errors.New("not implemented")
 }

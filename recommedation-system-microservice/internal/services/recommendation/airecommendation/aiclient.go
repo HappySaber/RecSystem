@@ -10,10 +10,6 @@ import (
 	"time"
 )
 
-type AIClient interface {
-	Complete(ctx context.Context, prompt string) (string, error)
-}
-
 type OpenAIClient struct {
 	apiKey string
 }
