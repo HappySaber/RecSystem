@@ -19,7 +19,7 @@ Return ONLY valid JSON.
 NO text before or after.
 
 JSON schema:
-["content-id-1","content-id-2"]
+["Movie name 1","Movie name 2"]
 
 Return EXACTLY %d items.
 `, query, limit)

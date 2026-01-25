@@ -74,6 +74,9 @@ func (a *AIRecommendation) GetExplicitRecommendations(
 	log.Info("sending prompt to AI client", slog.String("prompt", prompt))
 	raw, err := a.client.Complete(ctx, prompt)
 	if err != nil {
+		log.Error("failed to parse AI response",
+			slog.String("raw", raw),
+		)
 		return nil, err
 	}
 

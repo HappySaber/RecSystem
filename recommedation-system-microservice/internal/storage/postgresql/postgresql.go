@@ -6,14 +6,17 @@ import (
 	"log"
 	"os"
 	"strconv"
+
+	_ "github.com/lib/pq"
 )
 
 type Storage struct {
-	db *sql.DB
+	DB *sql.DB
 }
 
 func New() (*Storage, error) {
 	const op = "storage.postgresql.New"
+
 	dbConfig := buildDBConfig()
 	db, err := sql.Open("postgres", dbConfig.dsn())
 	if err != nil {
@@ -24,7 +27,7 @@ func New() (*Storage, error) {
 	log.Println("Successfully connected to the database!")
 
 	return &Storage{
-		db: db,
+		DB: db,
 	}, nil
 }
 

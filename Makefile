@@ -28,8 +28,8 @@ catalog-importer:
 
 
 
-catalog:
-	cd recommendation-system-microservice && go run cmd/catalog/main.go --config=./config/local.yaml
+recommendation:
+	cd recommedation-system-microservice && go run cmd/rec-system/main.go --config=./config/local.yaml
 
-catalog-migrator:
-	cd recommendation-system-microservice && go run cmd/migrator/main.go --migrations-path=./migrations
+recommendation-migrator:
+	cd recommedation-system-microservice && go run cmd/migrator/main.go --migrations-path=./migrations
