@@ -131,7 +131,6 @@ func (a *Auth) RegisterNewUser(
 
 	log := a.log.With(
 		slog.String("op", op),
-		//slog.String("email", email),
 	)
 
 	log.Info("registering user")

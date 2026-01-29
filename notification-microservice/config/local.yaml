@@ -1,0 +1,7 @@
+kafka:
+  brokers:
+    - "kafka:9092"
+  topic: "notifications_on_email"
+  group_id: "notifications-service"
+  read_timeout: 5s
+  retries: 10
