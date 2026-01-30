@@ -17,7 +17,7 @@ type Auth interface {
 		password string,
 		appID int,
 	) (accessToken string, err error)
-	//refreshToken string,
+	// refreshToken string,
 	RegisterNewUser(ctx context.Context,
 		email string,
 		name string,

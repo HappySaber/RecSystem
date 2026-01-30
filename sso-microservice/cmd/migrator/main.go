@@ -25,7 +25,6 @@ func main() {
 	}
 
 	log.Println("Running migrations with Goose...")
-	//var db *sql.DB
 
 	if err := goose.SetDialect("postgres"); err != nil {
 		panic(err)

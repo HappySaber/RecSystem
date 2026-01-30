@@ -11,7 +11,6 @@ import (
 
 type MailSender struct {
 	from     string
-	to       string
 	password string
 	smtpHost string
 	smtpPort string

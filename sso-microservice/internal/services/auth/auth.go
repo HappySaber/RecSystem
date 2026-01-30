@@ -76,7 +76,7 @@ func (a *Auth) Login(
 
 	log := a.log.With(
 		slog.String("op", op),
-		//slog.String("email", email),
+		// slog.String("email", email),
 	)
 
 	log.Info("attempting to login user")
