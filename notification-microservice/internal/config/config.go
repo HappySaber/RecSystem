@@ -10,6 +10,7 @@ import (
 
 type Config struct {
 	Kafka KafkaConfig `yaml:"kafka"`
+	Env   string      `yaml:"env"`
 }
 
 type KafkaConfig struct {

@@ -5,3 +5,4 @@ kafka:
   group_id: "notifications-service"
   read_timeout: 5s
   retries: 10
+env: "local"

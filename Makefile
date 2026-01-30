@@ -33,3 +33,6 @@ recommendation:
 
 recommendation-migrator:
 	cd recommedation-system-microservice && go run cmd/migrator/main.go --migrations-path=./migrations
+
+notifications:
+	cd notification-microservice && go run cmd/app/main.go --config=./config/local.yaml
