@@ -9,14 +9,20 @@ import (
 )
 
 type Config struct {
-	Env      string        `yaml:"env"`
-	TokenTTL time.Duration `yaml:"token_ttl" env-required:"true"`
-	GRPC     GRPCConfig    `yaml:"grpc"`
+	Env         string              `yaml:"env"`
+	TokenTTL    time.Duration       `yaml:"token_ttl" env-required:"true"`
+	GRPC        GRPCConfig          `yaml:"grpc"`
+	KafkaConfig KafkaProducerConfig `yaml:"kafka"`
 }
 
 type GRPCConfig struct {
 	Port    int           `yaml:"port"`
 	Timeout time.Duration `yaml:"timeout"`
+}
+
+type KafkaProducerConfig struct {
+	Brokers []string `yaml:"brokers"`
+	Topic   string   `yaml:"topic"`
 }
 
 func MustLoad() *Config {

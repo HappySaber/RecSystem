@@ -5,20 +5,23 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"sso-microservice/internal/domain/events"
 	"sso-microservice/internal/domain/models"
 	"sso-microservice/internal/lib/jwt"
 	"sso-microservice/internal/storage"
 	"time"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Auth struct {
-	log          *slog.Logger
-	userSaver    UserSaver
-	userProvider UserProvider
-	appProvider  AppProvider
-	tokenTTL     time.Duration
+	log           *slog.Logger
+	userSaver     UserSaver
+	userProvider  UserProvider
+	appProvider   AppProvider
+	tokenTTL      time.Duration
+	kafkaProducer NotificationProducer
 }
 
 type UserSaver interface {
@@ -41,6 +44,10 @@ type AppProvider interface {
 	App(ctx context.Context, appID int) (models.App, error)
 }
 
+type NotificationProducer interface {
+	SendUserRegistered(ctx context.Context, event events.UserRegisteredEvent) error
+}
+
 var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
 	ErrInvalidAppID       = errors.New("invalid app id")
@@ -55,13 +62,15 @@ func New(
 	userProvider UserProvider,
 	appProvider AppProvider,
 	tokenTTL time.Duration,
+	kafkaProducer NotificationProducer,
 ) *Auth {
 	return &Auth{
-		log:          log,
-		userSaver:    userSaver,
-		userProvider: userProvider,
-		appProvider:  appProvider,
-		tokenTTL:     tokenTTL,
+		log:           log,
+		userSaver:     userSaver,
+		userProvider:  userProvider,
+		appProvider:   appProvider,
+		tokenTTL:      tokenTTL,
+		kafkaProducer: kafkaProducer,
 	}
 }
 
@@ -152,6 +161,18 @@ func (a *Auth) RegisterNewUser(
 	}
 
 	log.Info("user registered")
+	event := events.UserRegisteredEvent{
+		EventID:   uuid.NewString(),
+		UserID:    id,
+		Email:     email,
+		Name:      name,
+		Surname:   surname,
+		CreatedAt: time.Now(),
+	}
+
+	if err := a.kafkaProducer.SendUserRegistered(ctx, event); err != nil {
+		log.Warn("failed to send user registered event", "error", err)
+	}
 
 	return id, nil
 }

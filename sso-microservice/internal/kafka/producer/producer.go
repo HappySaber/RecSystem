@@ -2,21 +2,20 @@ package producer
 
 import (
 	"context"
-	"log/slog"
+	"sso-microservice/internal/config"
 
 	"github.com/segmentio/kafka-go"
 )
 
 type KafkaProducer struct {
 	writer *kafka.Writer
-	log    *slog.Logger
 }
 
-func NewKafkaProducer(brokers []string, topic string) *KafkaProducer {
+func NewKafkaProducer(cfg config.KafkaProducerConfig) *KafkaProducer {
 	return &KafkaProducer{
 		writer: &kafka.Writer{
-			Addr:     kafka.TCP(brokers...),
-			Topic:    topic,
+			Addr:     kafka.TCP(cfg.Brokers...),
+			Topic:    cfg.Topic,
 			Balancer: &kafka.LeastBytes{},
 		},
 	}

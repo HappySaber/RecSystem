@@ -30,7 +30,8 @@ func main() {
 		slog.Any("env", cfg),
 		slog.Int("envPort", cfg.GRPC.Port),
 	)
-	application := app.New(log, cfg.GRPC.Port, cfg.TokenTTL)
+
+	application := app.New(log, cfg.GRPC.Port, cfg.TokenTTL, cfg.KafkaConfig)
 
 	go application.GRPCSrv.MustRun()
 
