@@ -12,3 +12,9 @@ type Content struct {
 	CreatedAt      string
 	UpdatedAt      string
 }
+
+type ContentShort struct {
+	ID    string
+	Type  string
+	Title string
+}

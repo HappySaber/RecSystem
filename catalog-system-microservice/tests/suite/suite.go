@@ -2,7 +2,7 @@ package suite
 
 import (
 	"catalog-microservice/internal/config"
-	catalogv1 "catalog-microservice/internal/pb/catalog"
+	catalogv1 "catalog-microservice/internal/pb/catalog-system"
 	"context"
 	"net"
 	"strconv"

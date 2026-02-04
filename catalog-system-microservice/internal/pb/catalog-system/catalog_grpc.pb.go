@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	CatalogService_CreateContent_FullMethodName         = "/catalog.CatalogService/CreateContent"
 	CatalogService_GetContent_FullMethodName            = "/catalog.CatalogService/GetContent"
+	CatalogService_GetContentByIDs_FullMethodName       = "/catalog.CatalogService/GetContentByIDs"
 	CatalogService_UpdateContent_FullMethodName         = "/catalog.CatalogService/UpdateContent"
 	CatalogService_FindContentByExternal_FullMethodName = "/catalog.CatalogService/FindContentByExternal"
 	CatalogService_GetMovieDetails_FullMethodName       = "/catalog.CatalogService/GetMovieDetails"
@@ -41,6 +42,7 @@ const (
 type CatalogServiceClient interface {
 	CreateContent(ctx context.Context, in *CreateContentRequest, opts ...grpc.CallOption) (*CreateContentResponse, error)
 	GetContent(ctx context.Context, in *GetContentRequest, opts ...grpc.CallOption) (*GetContentResponse, error)
+	GetContentByIDs(ctx context.Context, in *GetContentByIDsRequest, opts ...grpc.CallOption) (*GetContentByIDsResponse, error)
 	UpdateContent(ctx context.Context, in *UpdateContentRequest, opts ...grpc.CallOption) (*UpdateContentResponse, error)
 	FindContentByExternal(ctx context.Context, in *FindContentByExternalRequest, opts ...grpc.CallOption) (*FindContentByExternalResponse, error)
 	GetMovieDetails(ctx context.Context, in *GetMovieDetailsRequest, opts ...grpc.CallOption) (*GetMovieDetailsResponse, error)
@@ -77,6 +79,16 @@ func (c *catalogServiceClient) GetContent(ctx context.Context, in *GetContentReq
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetContentResponse)
 	err := c.cc.Invoke(ctx, CatalogService_GetContent_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *catalogServiceClient) GetContentByIDs(ctx context.Context, in *GetContentByIDsRequest, opts ...grpc.CallOption) (*GetContentByIDsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetContentByIDsResponse)
+	err := c.cc.Invoke(ctx, CatalogService_GetContentByIDs_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -209,6 +221,7 @@ func (c *catalogServiceClient) GetAllBookDetails(ctx context.Context, in *GetAll
 type CatalogServiceServer interface {
 	CreateContent(context.Context, *CreateContentRequest) (*CreateContentResponse, error)
 	GetContent(context.Context, *GetContentRequest) (*GetContentResponse, error)
+	GetContentByIDs(context.Context, *GetContentByIDsRequest) (*GetContentByIDsResponse, error)
 	UpdateContent(context.Context, *UpdateContentRequest) (*UpdateContentResponse, error)
 	FindContentByExternal(context.Context, *FindContentByExternalRequest) (*FindContentByExternalResponse, error)
 	GetMovieDetails(context.Context, *GetMovieDetailsRequest) (*GetMovieDetailsResponse, error)
@@ -236,6 +249,9 @@ func (UnimplementedCatalogServiceServer) CreateContent(context.Context, *CreateC
 }
 func (UnimplementedCatalogServiceServer) GetContent(context.Context, *GetContentRequest) (*GetContentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetContent not implemented")
+}
+func (UnimplementedCatalogServiceServer) GetContentByIDs(context.Context, *GetContentByIDsRequest) (*GetContentByIDsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetContentByIDs not implemented")
 }
 func (UnimplementedCatalogServiceServer) UpdateContent(context.Context, *UpdateContentRequest) (*UpdateContentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateContent not implemented")
@@ -326,6 +342,24 @@ func _CatalogService_GetContent_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CatalogServiceServer).GetContent(ctx, req.(*GetContentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CatalogService_GetContentByIDs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetContentByIDsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogServiceServer).GetContentByIDs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CatalogService_GetContentByIDs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogServiceServer).GetContentByIDs(ctx, req.(*GetContentByIDsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -560,6 +594,10 @@ var CatalogService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetContent",
 			Handler:    _CatalogService_GetContent_Handler,
+		},
+		{
+			MethodName: "GetContentByIDs",
+			Handler:    _CatalogService_GetContentByIDs_Handler,
 		},
 		{
 			MethodName: "UpdateContent",

@@ -41,10 +41,15 @@ type Client struct {
 }
 
 func NewClient(apiKey string) *Client {
+	transport := &http.Transport{
+		Proxy: nil,
+	}
+
 	return &Client{
 		apiKey: apiKey,
 		httpClient: &http.Client{
-			Timeout: 10 * time.Second,
+			Timeout:   10 * time.Second,
+			Transport: transport,
 		},
 	}
 }

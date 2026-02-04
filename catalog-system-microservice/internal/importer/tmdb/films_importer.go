@@ -110,12 +110,13 @@ func (i *Importer) ImportPopularMovies() error {
 				Videos:      toJSON(details["videos"]),
 				RawData:     raw,
 			}
+			_ = movie
 
-			log.Println(string(movie.Genres))
+			log.Println(movie.Tagline)
 
-			if err := i.movies.SaveMovie(movie); err != nil {
-				return fmt.Errorf("failed to save movie details: %w", err)
-			}
+			// if err := i.movies.SaveMovie(movie); err != nil {
+			// 	return fmt.Errorf("failed to save movie details: %w", err)
+			// }
 
 			//timeout to avoid hitting rate limits
 			time.Sleep(100 * time.Millisecond)

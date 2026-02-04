@@ -2,7 +2,7 @@ package catalog
 
 import (
 	"catalog-microservice/internal/domain/models"
-	catalog1 "catalog-microservice/internal/pb/catalog"
+	catalog1 "catalog-microservice/internal/pb/catalog-system"
 	"context"
 
 	"google.golang.org/grpc"
@@ -13,6 +13,7 @@ import (
 type Catalog interface {
 	CreateContent(ctx context.Context, context models.Content) (string, error)
 	GetContent(ctx context.Context, id string) (models.Content, error)
+	GetContentByIDs(ctx context.Context, ids []string) ([]models.ContentShort, error)
 	UpdateContent(ctx context.Context, id string, content models.Content) (models.Content, error)
 	FindContentByExternal(ctx context.Context, externalID string) (models.Content, error)
 	GetMovieDetails(ctx context.Context, id string) (models.MovieDetails, error)
@@ -31,6 +32,16 @@ type serverAPI struct {
 	catalog1.UnimplementedCatalogServiceServer
 	catalog Catalog
 }
+
+type ContentType string
+
+const (
+	ContentTypeMovie  ContentType = "movie"
+	ContentTypeSeries ContentType = "series"
+	ContentTypeAnime  ContentType = "anime"
+	ContentTypeGame   ContentType = "game"
+	ContentTypeBook   ContentType = "book"
+)
 
 func Register(gRPC *grpc.Server, catalog Catalog) {
 	catalog1.RegisterCatalogServiceServer(gRPC, &serverAPI{catalog: catalog})
@@ -86,6 +97,33 @@ func (s *serverAPI) GetContent(ctx context.Context, req *catalog1.GetContentRequ
 			UpdatedAt:      content.UpdatedAt,
 		},
 	}, nil
+}
+
+func (s *serverAPI) GetContentByIDs(ctx context.Context, req *catalog1.GetContentByIDsRequest) (*catalog1.GetContentByIDsResponse, error) {
+	content, err := s.catalog.GetContentByIDs(ctx, req.GetIds())
+	if err != nil {
+		if len(req.GetIds()) == 0 {
+			return nil, status.Error(codes.InvalidArgument, "wrong argument")
+		}
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	details := make([]*catalog1.ContentShort, len(content))
+	for i := range content {
+		details[i] = &catalog1.ContentShort{
+			Id:    content[i].ID,
+			Type:  mapContentTypeToProto(content[i].Type),
+			Title: content[i].Title,
+		}
+
+	}
+
+	responce := &catalog1.GetContentByIDsResponse{
+		Contents: details,
+	}
+
+	return responce, nil
+
 }
 
 func (s *serverAPI) UpdateContent(ctx context.Context, req *catalog1.UpdateContentRequest) (*catalog1.UpdateContentResponse, error) {
@@ -311,4 +349,21 @@ func (s *serverAPI) GetAllGameDetails(ctx context.Context, req *catalog1.GetAllG
 	}
 
 	return responce, nil
+}
+
+func mapContentTypeToProto(t string) catalog1.ContentType {
+	switch t {
+	case "movie":
+		return catalog1.ContentType_MOVIE
+	case "series":
+		return catalog1.ContentType_SERIES
+	case "anime":
+		return catalog1.ContentType_ANIME
+	case "game":
+		return catalog1.ContentType_GAME
+	case "book":
+		return catalog1.ContentType_BOOK
+	default:
+		return catalog1.ContentType_CONTENT_TYPE_UNSPECIFIED
+	}
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"catalog-microservice/internal/importer/anilist"
 	"catalog-microservice/internal/importer/tmdb"
 	"catalog-microservice/internal/storage/postgresql"
 	"fmt"
@@ -23,11 +22,16 @@ func main() {
 		log.Fatalf("Could not open database %s", err)
 	}
 	TMDBApiKey := os.Getenv("TMDB_APIKEY")
-	log.Println(TMDBApiKey)
+	//log.Println(TMDBApiKey)
+	log.Println("HTTP_PROXY =", os.Getenv("HTTP_PROXY"))
+	log.Println("HTTPS_PROXY =", os.Getenv("HTTPS_PROXY"))
+	log.Println("http_proxy =", os.Getenv("http_proxy"))
+	log.Println("https_proxy =", os.Getenv("https_proxy"))
+
 	client := tmdb.NewClient(TMDBApiKey)
 	importer := tmdb.NewImporter(client, db, db, db)
-	animeClient := anilist.NewClient()
-	animeImporter := anilist.NewImporter(animeClient, db, db)
+	// animeClient := anilist.NewClient()
+	// animeImporter := anilist.NewImporter(animeClient, db, db)
 
 	wg := sync.WaitGroup{}
 	errCh := make(chan error, 3)
@@ -38,18 +42,18 @@ func main() {
 		}
 	}
 
-	wg.Add(3)
+	wg.Add(1)
 
 	go runImport("Movies import", func() error {
 		return importer.ImportPopularMovies()
 	})
-	go runImport("TMDB Series", func() error {
-		return importer.ImportPopularSeries()
-	})
+	// go runImport("TMDB Series", func() error {
+	// 	return importer.ImportPopularSeries()
+	// })
 
-	go runImport("AniList Anime", func() error {
-		return animeImporter.ImportPopularAnime()
-	})
+	// go runImport("AniList Anime", func() error {
+	// 	return animeImporter.ImportPopularAnime()
+	// })
 
 	wg.Wait()
 	close(errCh)

@@ -8,6 +8,7 @@ service CatalogService {
 
   rpc CreateContent(CreateContentRequest) returns (CreateContentResponse);
   rpc GetContent(GetContentRequest) returns (GetContentResponse);
+  rpc GetContentByIDs(GetContentByIDsRequest) returns (GetContentByIDsResponse);
   rpc UpdateContent(UpdateContentRequest) returns (UpdateContentResponse);
 
   rpc FindContentByExternal(FindContentByExternalRequest)
@@ -52,6 +53,12 @@ message Content {
 
   string created_at = 9;
   string updated_at = 10;
+}
+
+message ContentShort {
+  string id = 1;   
+  ContentType type = 2;             
+  string title = 3;
 }
 
 // ----------------------
@@ -199,6 +206,14 @@ message GetContentRequest {
 
 message GetContentResponse {
   Content content = 1;
+}
+
+message GetContentByIDsRequest {
+  repeated string ids = 1;
+}
+
+message GetContentByIDsResponse {
+  repeated ContentShort contents = 1;
 }
 
 message FindContentByExternalRequest {

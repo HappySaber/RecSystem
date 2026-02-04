@@ -195,6 +195,66 @@ func (x *Content) GetUpdatedAt() string {
 	return ""
 }
 
+type ContentShort struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Type          ContentType            `protobuf:"varint,2,opt,name=type,proto3,enum=catalog.ContentType" json:"type,omitempty"`
+	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ContentShort) Reset() {
+	*x = ContentShort{}
+	mi := &file_catalog_system_catalog_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ContentShort) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ContentShort) ProtoMessage() {}
+
+func (x *ContentShort) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_system_catalog_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ContentShort.ProtoReflect.Descriptor instead.
+func (*ContentShort) Descriptor() ([]byte, []int) {
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ContentShort) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ContentShort) GetType() ContentType {
+	if x != nil {
+		return x.Type
+	}
+	return ContentType_CONTENT_TYPE_UNSPECIFIED
+}
+
+func (x *ContentShort) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
 type MovieDetails struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ContentId     string                 `protobuf:"bytes,1,opt,name=content_id,json=contentId,proto3" json:"content_id,omitempty"`
@@ -218,7 +278,7 @@ type MovieDetails struct {
 
 func (x *MovieDetails) Reset() {
 	*x = MovieDetails{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[1]
+	mi := &file_catalog_system_catalog_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -230,7 +290,7 @@ func (x *MovieDetails) String() string {
 func (*MovieDetails) ProtoMessage() {}
 
 func (x *MovieDetails) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[1]
+	mi := &file_catalog_system_catalog_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -243,7 +303,7 @@ func (x *MovieDetails) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MovieDetails.ProtoReflect.Descriptor instead.
 func (*MovieDetails) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{1}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *MovieDetails) GetContentId() string {
@@ -374,7 +434,7 @@ type SeriesDetails struct {
 
 func (x *SeriesDetails) Reset() {
 	*x = SeriesDetails{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[2]
+	mi := &file_catalog_system_catalog_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -386,7 +446,7 @@ func (x *SeriesDetails) String() string {
 func (*SeriesDetails) ProtoMessage() {}
 
 func (x *SeriesDetails) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[2]
+	mi := &file_catalog_system_catalog_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -399,7 +459,7 @@ func (x *SeriesDetails) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SeriesDetails.ProtoReflect.Descriptor instead.
 func (*SeriesDetails) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{2}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *SeriesDetails) GetContentId() string {
@@ -538,7 +598,7 @@ type AnimeDetails struct {
 
 func (x *AnimeDetails) Reset() {
 	*x = AnimeDetails{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[3]
+	mi := &file_catalog_system_catalog_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -550,7 +610,7 @@ func (x *AnimeDetails) String() string {
 func (*AnimeDetails) ProtoMessage() {}
 
 func (x *AnimeDetails) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[3]
+	mi := &file_catalog_system_catalog_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -563,7 +623,7 @@ func (x *AnimeDetails) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AnimeDetails.ProtoReflect.Descriptor instead.
 func (*AnimeDetails) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{3}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *AnimeDetails) GetContentId() string {
@@ -744,7 +804,7 @@ type GameDetails struct {
 
 func (x *GameDetails) Reset() {
 	*x = GameDetails{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[4]
+	mi := &file_catalog_system_catalog_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -756,7 +816,7 @@ func (x *GameDetails) String() string {
 func (*GameDetails) ProtoMessage() {}
 
 func (x *GameDetails) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[4]
+	mi := &file_catalog_system_catalog_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -769,7 +829,7 @@ func (x *GameDetails) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GameDetails.ProtoReflect.Descriptor instead.
 func (*GameDetails) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{4}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GameDetails) GetContentId() string {
@@ -853,7 +913,7 @@ type BookDetails struct {
 
 func (x *BookDetails) Reset() {
 	*x = BookDetails{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[5]
+	mi := &file_catalog_system_catalog_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -865,7 +925,7 @@ func (x *BookDetails) String() string {
 func (*BookDetails) ProtoMessage() {}
 
 func (x *BookDetails) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[5]
+	mi := &file_catalog_system_catalog_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -878,7 +938,7 @@ func (x *BookDetails) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BookDetails.ProtoReflect.Descriptor instead.
 func (*BookDetails) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{5}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *BookDetails) GetContentId() string {
@@ -960,7 +1020,7 @@ type GetContentRequest struct {
 
 func (x *GetContentRequest) Reset() {
 	*x = GetContentRequest{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[6]
+	mi := &file_catalog_system_catalog_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -972,7 +1032,7 @@ func (x *GetContentRequest) String() string {
 func (*GetContentRequest) ProtoMessage() {}
 
 func (x *GetContentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[6]
+	mi := &file_catalog_system_catalog_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -985,7 +1045,7 @@ func (x *GetContentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetContentRequest.ProtoReflect.Descriptor instead.
 func (*GetContentRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{6}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetContentRequest) GetId() string {
@@ -1004,7 +1064,7 @@ type GetContentResponse struct {
 
 func (x *GetContentResponse) Reset() {
 	*x = GetContentResponse{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[7]
+	mi := &file_catalog_system_catalog_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1016,7 +1076,7 @@ func (x *GetContentResponse) String() string {
 func (*GetContentResponse) ProtoMessage() {}
 
 func (x *GetContentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[7]
+	mi := &file_catalog_system_catalog_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1029,12 +1089,100 @@ func (x *GetContentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetContentResponse.ProtoReflect.Descriptor instead.
 func (*GetContentResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{7}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetContentResponse) GetContent() *Content {
 	if x != nil {
 		return x.Content
+	}
+	return nil
+}
+
+type GetContentByIDsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Ids           []string               `protobuf:"bytes,1,rep,name=ids,proto3" json:"ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetContentByIDsRequest) Reset() {
+	*x = GetContentByIDsRequest{}
+	mi := &file_catalog_system_catalog_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetContentByIDsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetContentByIDsRequest) ProtoMessage() {}
+
+func (x *GetContentByIDsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_system_catalog_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetContentByIDsRequest.ProtoReflect.Descriptor instead.
+func (*GetContentByIDsRequest) Descriptor() ([]byte, []int) {
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetContentByIDsRequest) GetIds() []string {
+	if x != nil {
+		return x.Ids
+	}
+	return nil
+}
+
+type GetContentByIDsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Contents      []*ContentShort        `protobuf:"bytes,1,rep,name=contents,proto3" json:"contents,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetContentByIDsResponse) Reset() {
+	*x = GetContentByIDsResponse{}
+	mi := &file_catalog_system_catalog_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetContentByIDsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetContentByIDsResponse) ProtoMessage() {}
+
+func (x *GetContentByIDsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_system_catalog_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetContentByIDsResponse.ProtoReflect.Descriptor instead.
+func (*GetContentByIDsResponse) Descriptor() ([]byte, []int) {
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetContentByIDsResponse) GetContents() []*ContentShort {
+	if x != nil {
+		return x.Contents
 	}
 	return nil
 }
@@ -1049,7 +1197,7 @@ type FindContentByExternalRequest struct {
 
 func (x *FindContentByExternalRequest) Reset() {
 	*x = FindContentByExternalRequest{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[8]
+	mi := &file_catalog_system_catalog_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1061,7 +1209,7 @@ func (x *FindContentByExternalRequest) String() string {
 func (*FindContentByExternalRequest) ProtoMessage() {}
 
 func (x *FindContentByExternalRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[8]
+	mi := &file_catalog_system_catalog_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1074,7 +1222,7 @@ func (x *FindContentByExternalRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FindContentByExternalRequest.ProtoReflect.Descriptor instead.
 func (*FindContentByExternalRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{8}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *FindContentByExternalRequest) GetExternalSource() string {
@@ -1100,7 +1248,7 @@ type FindContentByExternalResponse struct {
 
 func (x *FindContentByExternalResponse) Reset() {
 	*x = FindContentByExternalResponse{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[9]
+	mi := &file_catalog_system_catalog_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1112,7 +1260,7 @@ func (x *FindContentByExternalResponse) String() string {
 func (*FindContentByExternalResponse) ProtoMessage() {}
 
 func (x *FindContentByExternalResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[9]
+	mi := &file_catalog_system_catalog_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1125,7 +1273,7 @@ func (x *FindContentByExternalResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FindContentByExternalResponse.ProtoReflect.Descriptor instead.
 func (*FindContentByExternalResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{9}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *FindContentByExternalResponse) GetContent() *Content {
@@ -1144,7 +1292,7 @@ type CreateContentRequest struct {
 
 func (x *CreateContentRequest) Reset() {
 	*x = CreateContentRequest{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[10]
+	mi := &file_catalog_system_catalog_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1156,7 +1304,7 @@ func (x *CreateContentRequest) String() string {
 func (*CreateContentRequest) ProtoMessage() {}
 
 func (x *CreateContentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[10]
+	mi := &file_catalog_system_catalog_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1169,7 +1317,7 @@ func (x *CreateContentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateContentRequest.ProtoReflect.Descriptor instead.
 func (*CreateContentRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{10}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *CreateContentRequest) GetContent() *Content {
@@ -1188,7 +1336,7 @@ type CreateContentResponse struct {
 
 func (x *CreateContentResponse) Reset() {
 	*x = CreateContentResponse{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[11]
+	mi := &file_catalog_system_catalog_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1200,7 +1348,7 @@ func (x *CreateContentResponse) String() string {
 func (*CreateContentResponse) ProtoMessage() {}
 
 func (x *CreateContentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[11]
+	mi := &file_catalog_system_catalog_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1213,7 +1361,7 @@ func (x *CreateContentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateContentResponse.ProtoReflect.Descriptor instead.
 func (*CreateContentResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{11}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *CreateContentResponse) GetContent() *Content {
@@ -1232,7 +1380,7 @@ type UpdateContentRequest struct {
 
 func (x *UpdateContentRequest) Reset() {
 	*x = UpdateContentRequest{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[12]
+	mi := &file_catalog_system_catalog_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1244,7 +1392,7 @@ func (x *UpdateContentRequest) String() string {
 func (*UpdateContentRequest) ProtoMessage() {}
 
 func (x *UpdateContentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[12]
+	mi := &file_catalog_system_catalog_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1257,7 +1405,7 @@ func (x *UpdateContentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateContentRequest.ProtoReflect.Descriptor instead.
 func (*UpdateContentRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{12}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *UpdateContentRequest) GetContent() *Content {
@@ -1276,7 +1424,7 @@ type UpdateContentResponse struct {
 
 func (x *UpdateContentResponse) Reset() {
 	*x = UpdateContentResponse{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[13]
+	mi := &file_catalog_system_catalog_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1288,7 +1436,7 @@ func (x *UpdateContentResponse) String() string {
 func (*UpdateContentResponse) ProtoMessage() {}
 
 func (x *UpdateContentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[13]
+	mi := &file_catalog_system_catalog_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1301,7 +1449,7 @@ func (x *UpdateContentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateContentResponse.ProtoReflect.Descriptor instead.
 func (*UpdateContentResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{13}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *UpdateContentResponse) GetContent() *Content {
@@ -1320,7 +1468,7 @@ type GetMovieDetailsRequest struct {
 
 func (x *GetMovieDetailsRequest) Reset() {
 	*x = GetMovieDetailsRequest{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[14]
+	mi := &file_catalog_system_catalog_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1332,7 +1480,7 @@ func (x *GetMovieDetailsRequest) String() string {
 func (*GetMovieDetailsRequest) ProtoMessage() {}
 
 func (x *GetMovieDetailsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[14]
+	mi := &file_catalog_system_catalog_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1345,7 +1493,7 @@ func (x *GetMovieDetailsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMovieDetailsRequest.ProtoReflect.Descriptor instead.
 func (*GetMovieDetailsRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{14}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GetMovieDetailsRequest) GetContentId() string {
@@ -1364,7 +1512,7 @@ type GetMovieDetailsResponse struct {
 
 func (x *GetMovieDetailsResponse) Reset() {
 	*x = GetMovieDetailsResponse{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[15]
+	mi := &file_catalog_system_catalog_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1376,7 +1524,7 @@ func (x *GetMovieDetailsResponse) String() string {
 func (*GetMovieDetailsResponse) ProtoMessage() {}
 
 func (x *GetMovieDetailsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[15]
+	mi := &file_catalog_system_catalog_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1389,7 +1537,7 @@ func (x *GetMovieDetailsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMovieDetailsResponse.ProtoReflect.Descriptor instead.
 func (*GetMovieDetailsResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{15}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *GetMovieDetailsResponse) GetDetails() *MovieDetails {
@@ -1408,7 +1556,7 @@ type GetAnimeDetailsRequest struct {
 
 func (x *GetAnimeDetailsRequest) Reset() {
 	*x = GetAnimeDetailsRequest{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[16]
+	mi := &file_catalog_system_catalog_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1420,7 +1568,7 @@ func (x *GetAnimeDetailsRequest) String() string {
 func (*GetAnimeDetailsRequest) ProtoMessage() {}
 
 func (x *GetAnimeDetailsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[16]
+	mi := &file_catalog_system_catalog_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1433,7 +1581,7 @@ func (x *GetAnimeDetailsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAnimeDetailsRequest.ProtoReflect.Descriptor instead.
 func (*GetAnimeDetailsRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{16}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GetAnimeDetailsRequest) GetContentId() string {
@@ -1452,7 +1600,7 @@ type GetAnimeDetailsResponse struct {
 
 func (x *GetAnimeDetailsResponse) Reset() {
 	*x = GetAnimeDetailsResponse{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[17]
+	mi := &file_catalog_system_catalog_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1464,7 +1612,7 @@ func (x *GetAnimeDetailsResponse) String() string {
 func (*GetAnimeDetailsResponse) ProtoMessage() {}
 
 func (x *GetAnimeDetailsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[17]
+	mi := &file_catalog_system_catalog_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1477,7 +1625,7 @@ func (x *GetAnimeDetailsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAnimeDetailsResponse.ProtoReflect.Descriptor instead.
 func (*GetAnimeDetailsResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{17}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *GetAnimeDetailsResponse) GetDetails() *AnimeDetails {
@@ -1496,7 +1644,7 @@ type GetGameDetailsRequest struct {
 
 func (x *GetGameDetailsRequest) Reset() {
 	*x = GetGameDetailsRequest{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[18]
+	mi := &file_catalog_system_catalog_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1508,7 +1656,7 @@ func (x *GetGameDetailsRequest) String() string {
 func (*GetGameDetailsRequest) ProtoMessage() {}
 
 func (x *GetGameDetailsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[18]
+	mi := &file_catalog_system_catalog_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1521,7 +1669,7 @@ func (x *GetGameDetailsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGameDetailsRequest.ProtoReflect.Descriptor instead.
 func (*GetGameDetailsRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{18}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *GetGameDetailsRequest) GetContentId() string {
@@ -1540,7 +1688,7 @@ type GetGameDetailsResponse struct {
 
 func (x *GetGameDetailsResponse) Reset() {
 	*x = GetGameDetailsResponse{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[19]
+	mi := &file_catalog_system_catalog_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1552,7 +1700,7 @@ func (x *GetGameDetailsResponse) String() string {
 func (*GetGameDetailsResponse) ProtoMessage() {}
 
 func (x *GetGameDetailsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[19]
+	mi := &file_catalog_system_catalog_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1565,7 +1713,7 @@ func (x *GetGameDetailsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGameDetailsResponse.ProtoReflect.Descriptor instead.
 func (*GetGameDetailsResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{19}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *GetGameDetailsResponse) GetDetails() *GameDetails {
@@ -1584,7 +1732,7 @@ type GetSeriesDetailsRequest struct {
 
 func (x *GetSeriesDetailsRequest) Reset() {
 	*x = GetSeriesDetailsRequest{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[20]
+	mi := &file_catalog_system_catalog_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1596,7 +1744,7 @@ func (x *GetSeriesDetailsRequest) String() string {
 func (*GetSeriesDetailsRequest) ProtoMessage() {}
 
 func (x *GetSeriesDetailsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[20]
+	mi := &file_catalog_system_catalog_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1609,7 +1757,7 @@ func (x *GetSeriesDetailsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSeriesDetailsRequest.ProtoReflect.Descriptor instead.
 func (*GetSeriesDetailsRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{20}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *GetSeriesDetailsRequest) GetContentId() string {
@@ -1628,7 +1776,7 @@ type GetSeriesDetailsResponse struct {
 
 func (x *GetSeriesDetailsResponse) Reset() {
 	*x = GetSeriesDetailsResponse{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[21]
+	mi := &file_catalog_system_catalog_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1640,7 +1788,7 @@ func (x *GetSeriesDetailsResponse) String() string {
 func (*GetSeriesDetailsResponse) ProtoMessage() {}
 
 func (x *GetSeriesDetailsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[21]
+	mi := &file_catalog_system_catalog_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1653,7 +1801,7 @@ func (x *GetSeriesDetailsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSeriesDetailsResponse.ProtoReflect.Descriptor instead.
 func (*GetSeriesDetailsResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{21}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *GetSeriesDetailsResponse) GetDetails() *SeriesDetails {
@@ -1672,7 +1820,7 @@ type GetBookDetailsRequest struct {
 
 func (x *GetBookDetailsRequest) Reset() {
 	*x = GetBookDetailsRequest{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[22]
+	mi := &file_catalog_system_catalog_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1684,7 +1832,7 @@ func (x *GetBookDetailsRequest) String() string {
 func (*GetBookDetailsRequest) ProtoMessage() {}
 
 func (x *GetBookDetailsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[22]
+	mi := &file_catalog_system_catalog_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1697,7 +1845,7 @@ func (x *GetBookDetailsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetBookDetailsRequest.ProtoReflect.Descriptor instead.
 func (*GetBookDetailsRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{22}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *GetBookDetailsRequest) GetContentId() string {
@@ -1716,7 +1864,7 @@ type GetBookDetailsResponse struct {
 
 func (x *GetBookDetailsResponse) Reset() {
 	*x = GetBookDetailsResponse{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[23]
+	mi := &file_catalog_system_catalog_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1728,7 +1876,7 @@ func (x *GetBookDetailsResponse) String() string {
 func (*GetBookDetailsResponse) ProtoMessage() {}
 
 func (x *GetBookDetailsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[23]
+	mi := &file_catalog_system_catalog_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1741,7 +1889,7 @@ func (x *GetBookDetailsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetBookDetailsResponse.ProtoReflect.Descriptor instead.
 func (*GetBookDetailsResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{23}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *GetBookDetailsResponse) GetDetails() *BookDetails {
@@ -1759,7 +1907,7 @@ type GetAllMovieDetailsRequest struct {
 
 func (x *GetAllMovieDetailsRequest) Reset() {
 	*x = GetAllMovieDetailsRequest{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[24]
+	mi := &file_catalog_system_catalog_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1771,7 +1919,7 @@ func (x *GetAllMovieDetailsRequest) String() string {
 func (*GetAllMovieDetailsRequest) ProtoMessage() {}
 
 func (x *GetAllMovieDetailsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[24]
+	mi := &file_catalog_system_catalog_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1784,7 +1932,7 @@ func (x *GetAllMovieDetailsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllMovieDetailsRequest.ProtoReflect.Descriptor instead.
 func (*GetAllMovieDetailsRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{24}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{27}
 }
 
 type GetAllMovieDetailsResponse struct {
@@ -1796,7 +1944,7 @@ type GetAllMovieDetailsResponse struct {
 
 func (x *GetAllMovieDetailsResponse) Reset() {
 	*x = GetAllMovieDetailsResponse{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[25]
+	mi := &file_catalog_system_catalog_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1808,7 +1956,7 @@ func (x *GetAllMovieDetailsResponse) String() string {
 func (*GetAllMovieDetailsResponse) ProtoMessage() {}
 
 func (x *GetAllMovieDetailsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[25]
+	mi := &file_catalog_system_catalog_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1821,7 +1969,7 @@ func (x *GetAllMovieDetailsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllMovieDetailsResponse.ProtoReflect.Descriptor instead.
 func (*GetAllMovieDetailsResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{25}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *GetAllMovieDetailsResponse) GetDetails() []*MovieDetails {
@@ -1839,7 +1987,7 @@ type GetAllAnimeDetailsRequest struct {
 
 func (x *GetAllAnimeDetailsRequest) Reset() {
 	*x = GetAllAnimeDetailsRequest{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[26]
+	mi := &file_catalog_system_catalog_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1851,7 +1999,7 @@ func (x *GetAllAnimeDetailsRequest) String() string {
 func (*GetAllAnimeDetailsRequest) ProtoMessage() {}
 
 func (x *GetAllAnimeDetailsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[26]
+	mi := &file_catalog_system_catalog_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1864,7 +2012,7 @@ func (x *GetAllAnimeDetailsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllAnimeDetailsRequest.ProtoReflect.Descriptor instead.
 func (*GetAllAnimeDetailsRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{26}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{29}
 }
 
 type GetAllAnimeDetailsResponse struct {
@@ -1876,7 +2024,7 @@ type GetAllAnimeDetailsResponse struct {
 
 func (x *GetAllAnimeDetailsResponse) Reset() {
 	*x = GetAllAnimeDetailsResponse{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[27]
+	mi := &file_catalog_system_catalog_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1888,7 +2036,7 @@ func (x *GetAllAnimeDetailsResponse) String() string {
 func (*GetAllAnimeDetailsResponse) ProtoMessage() {}
 
 func (x *GetAllAnimeDetailsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[27]
+	mi := &file_catalog_system_catalog_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1901,7 +2049,7 @@ func (x *GetAllAnimeDetailsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllAnimeDetailsResponse.ProtoReflect.Descriptor instead.
 func (*GetAllAnimeDetailsResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{27}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *GetAllAnimeDetailsResponse) GetDetails() []*AnimeDetails {
@@ -1919,7 +2067,7 @@ type GetAllGameDetailsRequest struct {
 
 func (x *GetAllGameDetailsRequest) Reset() {
 	*x = GetAllGameDetailsRequest{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[28]
+	mi := &file_catalog_system_catalog_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1931,7 +2079,7 @@ func (x *GetAllGameDetailsRequest) String() string {
 func (*GetAllGameDetailsRequest) ProtoMessage() {}
 
 func (x *GetAllGameDetailsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[28]
+	mi := &file_catalog_system_catalog_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1944,7 +2092,7 @@ func (x *GetAllGameDetailsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllGameDetailsRequest.ProtoReflect.Descriptor instead.
 func (*GetAllGameDetailsRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{28}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{31}
 }
 
 type GetAllGameDetailsResponse struct {
@@ -1956,7 +2104,7 @@ type GetAllGameDetailsResponse struct {
 
 func (x *GetAllGameDetailsResponse) Reset() {
 	*x = GetAllGameDetailsResponse{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[29]
+	mi := &file_catalog_system_catalog_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1968,7 +2116,7 @@ func (x *GetAllGameDetailsResponse) String() string {
 func (*GetAllGameDetailsResponse) ProtoMessage() {}
 
 func (x *GetAllGameDetailsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[29]
+	mi := &file_catalog_system_catalog_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1981,7 +2129,7 @@ func (x *GetAllGameDetailsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllGameDetailsResponse.ProtoReflect.Descriptor instead.
 func (*GetAllGameDetailsResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{29}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *GetAllGameDetailsResponse) GetDetails() []*GameDetails {
@@ -1999,7 +2147,7 @@ type GetAllSeriesDetailsRequest struct {
 
 func (x *GetAllSeriesDetailsRequest) Reset() {
 	*x = GetAllSeriesDetailsRequest{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[30]
+	mi := &file_catalog_system_catalog_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2011,7 +2159,7 @@ func (x *GetAllSeriesDetailsRequest) String() string {
 func (*GetAllSeriesDetailsRequest) ProtoMessage() {}
 
 func (x *GetAllSeriesDetailsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[30]
+	mi := &file_catalog_system_catalog_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2024,7 +2172,7 @@ func (x *GetAllSeriesDetailsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllSeriesDetailsRequest.ProtoReflect.Descriptor instead.
 func (*GetAllSeriesDetailsRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{30}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{33}
 }
 
 type GetAllSeriesDetailsResponse struct {
@@ -2036,7 +2184,7 @@ type GetAllSeriesDetailsResponse struct {
 
 func (x *GetAllSeriesDetailsResponse) Reset() {
 	*x = GetAllSeriesDetailsResponse{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[31]
+	mi := &file_catalog_system_catalog_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2048,7 +2196,7 @@ func (x *GetAllSeriesDetailsResponse) String() string {
 func (*GetAllSeriesDetailsResponse) ProtoMessage() {}
 
 func (x *GetAllSeriesDetailsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[31]
+	mi := &file_catalog_system_catalog_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2061,7 +2209,7 @@ func (x *GetAllSeriesDetailsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllSeriesDetailsResponse.ProtoReflect.Descriptor instead.
 func (*GetAllSeriesDetailsResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{31}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *GetAllSeriesDetailsResponse) GetDetails() []*SeriesDetails {
@@ -2079,7 +2227,7 @@ type GetAllBookDetailsRequest struct {
 
 func (x *GetAllBookDetailsRequest) Reset() {
 	*x = GetAllBookDetailsRequest{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[32]
+	mi := &file_catalog_system_catalog_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2091,7 +2239,7 @@ func (x *GetAllBookDetailsRequest) String() string {
 func (*GetAllBookDetailsRequest) ProtoMessage() {}
 
 func (x *GetAllBookDetailsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[32]
+	mi := &file_catalog_system_catalog_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2104,7 +2252,7 @@ func (x *GetAllBookDetailsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllBookDetailsRequest.ProtoReflect.Descriptor instead.
 func (*GetAllBookDetailsRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{32}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{35}
 }
 
 type GetAllBookDetailsResponse struct {
@@ -2116,7 +2264,7 @@ type GetAllBookDetailsResponse struct {
 
 func (x *GetAllBookDetailsResponse) Reset() {
 	*x = GetAllBookDetailsResponse{}
-	mi := &file_catalog_system_catalog_proto_msgTypes[33]
+	mi := &file_catalog_system_catalog_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2128,7 +2276,7 @@ func (x *GetAllBookDetailsResponse) String() string {
 func (*GetAllBookDetailsResponse) ProtoMessage() {}
 
 func (x *GetAllBookDetailsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_system_catalog_proto_msgTypes[33]
+	mi := &file_catalog_system_catalog_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2141,7 +2289,7 @@ func (x *GetAllBookDetailsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllBookDetailsResponse.ProtoReflect.Descriptor instead.
 func (*GetAllBookDetailsResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{33}
+	return file_catalog_system_catalog_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *GetAllBookDetailsResponse) GetDetails() []*BookDetails {
@@ -2171,7 +2319,11 @@ const file_catalog_system_catalog_proto_rawDesc = "" +
 	"created_at\x18\t \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
 	"updated_at\x18\n" +
-	" \x01(\tR\tupdatedAt\"\xbf\x03\n" +
+	" \x01(\tR\tupdatedAt\"^\n" +
+	"\fContentShort\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12(\n" +
+	"\x04type\x18\x02 \x01(\x0e2\x14.catalog.ContentTypeR\x04type\x12\x14\n" +
+	"\x05title\x18\x03 \x01(\tR\x05title\"\xbf\x03\n" +
 	"\fMovieDetails\x12\x1d\n" +
 	"\n" +
 	"content_id\x18\x01 \x01(\tR\tcontentId\x12\x17\n" +
@@ -2279,7 +2431,11 @@ const file_catalog_system_catalog_proto_rawDesc = "" +
 	"\x11GetContentRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"@\n" +
 	"\x12GetContentResponse\x12*\n" +
-	"\acontent\x18\x01 \x01(\v2\x10.catalog.ContentR\acontent\"h\n" +
+	"\acontent\x18\x01 \x01(\v2\x10.catalog.ContentR\acontent\"*\n" +
+	"\x16GetContentByIDsRequest\x12\x10\n" +
+	"\x03ids\x18\x01 \x03(\tR\x03ids\"L\n" +
+	"\x17GetContentByIDsResponse\x121\n" +
+	"\bcontents\x18\x01 \x03(\v2\x15.catalog.ContentShortR\bcontents\"h\n" +
 	"\x1cFindContentByExternalRequest\x12'\n" +
 	"\x0fexternal_source\x18\x01 \x01(\tR\x0eexternalSource\x12\x1f\n" +
 	"\vexternal_id\x18\x02 \x01(\tR\n" +
@@ -2341,11 +2497,13 @@ const file_catalog_system_catalog_proto_rawDesc = "" +
 	"\x06SERIES\x10\x02\x12\t\n" +
 	"\x05ANIME\x10\x03\x12\b\n" +
 	"\x04GAME\x10\x04\x12\b\n" +
-	"\x04BOOK\x10\x052\xe2\t\n" +
+	"\x04BOOK\x10\x052\xb8\n" +
+	"\n" +
 	"\x0eCatalogService\x12N\n" +
 	"\rCreateContent\x12\x1d.catalog.CreateContentRequest\x1a\x1e.catalog.CreateContentResponse\x12E\n" +
 	"\n" +
-	"GetContent\x12\x1a.catalog.GetContentRequest\x1a\x1b.catalog.GetContentResponse\x12N\n" +
+	"GetContent\x12\x1a.catalog.GetContentRequest\x1a\x1b.catalog.GetContentResponse\x12T\n" +
+	"\x0fGetContentByIDs\x12\x1f.catalog.GetContentByIDsRequest\x1a .catalog.GetContentByIDsResponse\x12N\n" +
 	"\rUpdateContent\x12\x1d.catalog.UpdateContentRequest\x1a\x1e.catalog.UpdateContentResponse\x12f\n" +
 	"\x15FindContentByExternal\x12%.catalog.FindContentByExternalRequest\x1a&.catalog.FindContentByExternalResponse\x12T\n" +
 	"\x0fGetMovieDetails\x12\x1f.catalog.GetMovieDetailsRequest\x1a .catalog.GetMovieDetailsResponse\x12T\n" +
@@ -2372,95 +2530,102 @@ func file_catalog_system_catalog_proto_rawDescGZIP() []byte {
 }
 
 var file_catalog_system_catalog_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_catalog_system_catalog_proto_msgTypes = make([]protoimpl.MessageInfo, 34)
+var file_catalog_system_catalog_proto_msgTypes = make([]protoimpl.MessageInfo, 37)
 var file_catalog_system_catalog_proto_goTypes = []any{
 	(ContentType)(0),                      // 0: catalog.ContentType
 	(*Content)(nil),                       // 1: catalog.Content
-	(*MovieDetails)(nil),                  // 2: catalog.MovieDetails
-	(*SeriesDetails)(nil),                 // 3: catalog.SeriesDetails
-	(*AnimeDetails)(nil),                  // 4: catalog.AnimeDetails
-	(*GameDetails)(nil),                   // 5: catalog.GameDetails
-	(*BookDetails)(nil),                   // 6: catalog.BookDetails
-	(*GetContentRequest)(nil),             // 7: catalog.GetContentRequest
-	(*GetContentResponse)(nil),            // 8: catalog.GetContentResponse
-	(*FindContentByExternalRequest)(nil),  // 9: catalog.FindContentByExternalRequest
-	(*FindContentByExternalResponse)(nil), // 10: catalog.FindContentByExternalResponse
-	(*CreateContentRequest)(nil),          // 11: catalog.CreateContentRequest
-	(*CreateContentResponse)(nil),         // 12: catalog.CreateContentResponse
-	(*UpdateContentRequest)(nil),          // 13: catalog.UpdateContentRequest
-	(*UpdateContentResponse)(nil),         // 14: catalog.UpdateContentResponse
-	(*GetMovieDetailsRequest)(nil),        // 15: catalog.GetMovieDetailsRequest
-	(*GetMovieDetailsResponse)(nil),       // 16: catalog.GetMovieDetailsResponse
-	(*GetAnimeDetailsRequest)(nil),        // 17: catalog.GetAnimeDetailsRequest
-	(*GetAnimeDetailsResponse)(nil),       // 18: catalog.GetAnimeDetailsResponse
-	(*GetGameDetailsRequest)(nil),         // 19: catalog.GetGameDetailsRequest
-	(*GetGameDetailsResponse)(nil),        // 20: catalog.GetGameDetailsResponse
-	(*GetSeriesDetailsRequest)(nil),       // 21: catalog.GetSeriesDetailsRequest
-	(*GetSeriesDetailsResponse)(nil),      // 22: catalog.GetSeriesDetailsResponse
-	(*GetBookDetailsRequest)(nil),         // 23: catalog.GetBookDetailsRequest
-	(*GetBookDetailsResponse)(nil),        // 24: catalog.GetBookDetailsResponse
-	(*GetAllMovieDetailsRequest)(nil),     // 25: catalog.GetAllMovieDetailsRequest
-	(*GetAllMovieDetailsResponse)(nil),    // 26: catalog.GetAllMovieDetailsResponse
-	(*GetAllAnimeDetailsRequest)(nil),     // 27: catalog.GetAllAnimeDetailsRequest
-	(*GetAllAnimeDetailsResponse)(nil),    // 28: catalog.GetAllAnimeDetailsResponse
-	(*GetAllGameDetailsRequest)(nil),      // 29: catalog.GetAllGameDetailsRequest
-	(*GetAllGameDetailsResponse)(nil),     // 30: catalog.GetAllGameDetailsResponse
-	(*GetAllSeriesDetailsRequest)(nil),    // 31: catalog.GetAllSeriesDetailsRequest
-	(*GetAllSeriesDetailsResponse)(nil),   // 32: catalog.GetAllSeriesDetailsResponse
-	(*GetAllBookDetailsRequest)(nil),      // 33: catalog.GetAllBookDetailsRequest
-	(*GetAllBookDetailsResponse)(nil),     // 34: catalog.GetAllBookDetailsResponse
+	(*ContentShort)(nil),                  // 2: catalog.ContentShort
+	(*MovieDetails)(nil),                  // 3: catalog.MovieDetails
+	(*SeriesDetails)(nil),                 // 4: catalog.SeriesDetails
+	(*AnimeDetails)(nil),                  // 5: catalog.AnimeDetails
+	(*GameDetails)(nil),                   // 6: catalog.GameDetails
+	(*BookDetails)(nil),                   // 7: catalog.BookDetails
+	(*GetContentRequest)(nil),             // 8: catalog.GetContentRequest
+	(*GetContentResponse)(nil),            // 9: catalog.GetContentResponse
+	(*GetContentByIDsRequest)(nil),        // 10: catalog.GetContentByIDsRequest
+	(*GetContentByIDsResponse)(nil),       // 11: catalog.GetContentByIDsResponse
+	(*FindContentByExternalRequest)(nil),  // 12: catalog.FindContentByExternalRequest
+	(*FindContentByExternalResponse)(nil), // 13: catalog.FindContentByExternalResponse
+	(*CreateContentRequest)(nil),          // 14: catalog.CreateContentRequest
+	(*CreateContentResponse)(nil),         // 15: catalog.CreateContentResponse
+	(*UpdateContentRequest)(nil),          // 16: catalog.UpdateContentRequest
+	(*UpdateContentResponse)(nil),         // 17: catalog.UpdateContentResponse
+	(*GetMovieDetailsRequest)(nil),        // 18: catalog.GetMovieDetailsRequest
+	(*GetMovieDetailsResponse)(nil),       // 19: catalog.GetMovieDetailsResponse
+	(*GetAnimeDetailsRequest)(nil),        // 20: catalog.GetAnimeDetailsRequest
+	(*GetAnimeDetailsResponse)(nil),       // 21: catalog.GetAnimeDetailsResponse
+	(*GetGameDetailsRequest)(nil),         // 22: catalog.GetGameDetailsRequest
+	(*GetGameDetailsResponse)(nil),        // 23: catalog.GetGameDetailsResponse
+	(*GetSeriesDetailsRequest)(nil),       // 24: catalog.GetSeriesDetailsRequest
+	(*GetSeriesDetailsResponse)(nil),      // 25: catalog.GetSeriesDetailsResponse
+	(*GetBookDetailsRequest)(nil),         // 26: catalog.GetBookDetailsRequest
+	(*GetBookDetailsResponse)(nil),        // 27: catalog.GetBookDetailsResponse
+	(*GetAllMovieDetailsRequest)(nil),     // 28: catalog.GetAllMovieDetailsRequest
+	(*GetAllMovieDetailsResponse)(nil),    // 29: catalog.GetAllMovieDetailsResponse
+	(*GetAllAnimeDetailsRequest)(nil),     // 30: catalog.GetAllAnimeDetailsRequest
+	(*GetAllAnimeDetailsResponse)(nil),    // 31: catalog.GetAllAnimeDetailsResponse
+	(*GetAllGameDetailsRequest)(nil),      // 32: catalog.GetAllGameDetailsRequest
+	(*GetAllGameDetailsResponse)(nil),     // 33: catalog.GetAllGameDetailsResponse
+	(*GetAllSeriesDetailsRequest)(nil),    // 34: catalog.GetAllSeriesDetailsRequest
+	(*GetAllSeriesDetailsResponse)(nil),   // 35: catalog.GetAllSeriesDetailsResponse
+	(*GetAllBookDetailsRequest)(nil),      // 36: catalog.GetAllBookDetailsRequest
+	(*GetAllBookDetailsResponse)(nil),     // 37: catalog.GetAllBookDetailsResponse
 }
 var file_catalog_system_catalog_proto_depIdxs = []int32{
 	0,  // 0: catalog.Content.type:type_name -> catalog.ContentType
-	1,  // 1: catalog.GetContentResponse.content:type_name -> catalog.Content
-	1,  // 2: catalog.FindContentByExternalResponse.content:type_name -> catalog.Content
-	1,  // 3: catalog.CreateContentRequest.content:type_name -> catalog.Content
-	1,  // 4: catalog.CreateContentResponse.content:type_name -> catalog.Content
-	1,  // 5: catalog.UpdateContentRequest.content:type_name -> catalog.Content
-	1,  // 6: catalog.UpdateContentResponse.content:type_name -> catalog.Content
-	2,  // 7: catalog.GetMovieDetailsResponse.details:type_name -> catalog.MovieDetails
-	4,  // 8: catalog.GetAnimeDetailsResponse.details:type_name -> catalog.AnimeDetails
-	5,  // 9: catalog.GetGameDetailsResponse.details:type_name -> catalog.GameDetails
-	3,  // 10: catalog.GetSeriesDetailsResponse.details:type_name -> catalog.SeriesDetails
-	6,  // 11: catalog.GetBookDetailsResponse.details:type_name -> catalog.BookDetails
-	2,  // 12: catalog.GetAllMovieDetailsResponse.details:type_name -> catalog.MovieDetails
-	4,  // 13: catalog.GetAllAnimeDetailsResponse.details:type_name -> catalog.AnimeDetails
-	5,  // 14: catalog.GetAllGameDetailsResponse.details:type_name -> catalog.GameDetails
-	3,  // 15: catalog.GetAllSeriesDetailsResponse.details:type_name -> catalog.SeriesDetails
-	6,  // 16: catalog.GetAllBookDetailsResponse.details:type_name -> catalog.BookDetails
-	11, // 17: catalog.CatalogService.CreateContent:input_type -> catalog.CreateContentRequest
-	7,  // 18: catalog.CatalogService.GetContent:input_type -> catalog.GetContentRequest
-	13, // 19: catalog.CatalogService.UpdateContent:input_type -> catalog.UpdateContentRequest
-	9,  // 20: catalog.CatalogService.FindContentByExternal:input_type -> catalog.FindContentByExternalRequest
-	15, // 21: catalog.CatalogService.GetMovieDetails:input_type -> catalog.GetMovieDetailsRequest
-	17, // 22: catalog.CatalogService.GetAnimeDetails:input_type -> catalog.GetAnimeDetailsRequest
-	19, // 23: catalog.CatalogService.GetGameDetails:input_type -> catalog.GetGameDetailsRequest
-	21, // 24: catalog.CatalogService.GetSeriesDetails:input_type -> catalog.GetSeriesDetailsRequest
-	23, // 25: catalog.CatalogService.GetBookDetails:input_type -> catalog.GetBookDetailsRequest
-	25, // 26: catalog.CatalogService.GetAllMovieDetails:input_type -> catalog.GetAllMovieDetailsRequest
-	27, // 27: catalog.CatalogService.GetAllAnimeDetails:input_type -> catalog.GetAllAnimeDetailsRequest
-	29, // 28: catalog.CatalogService.GetAllGameDetails:input_type -> catalog.GetAllGameDetailsRequest
-	31, // 29: catalog.CatalogService.GetAllSeriesDetails:input_type -> catalog.GetAllSeriesDetailsRequest
-	33, // 30: catalog.CatalogService.GetAllBookDetails:input_type -> catalog.GetAllBookDetailsRequest
-	12, // 31: catalog.CatalogService.CreateContent:output_type -> catalog.CreateContentResponse
-	8,  // 32: catalog.CatalogService.GetContent:output_type -> catalog.GetContentResponse
-	14, // 33: catalog.CatalogService.UpdateContent:output_type -> catalog.UpdateContentResponse
-	10, // 34: catalog.CatalogService.FindContentByExternal:output_type -> catalog.FindContentByExternalResponse
-	16, // 35: catalog.CatalogService.GetMovieDetails:output_type -> catalog.GetMovieDetailsResponse
-	18, // 36: catalog.CatalogService.GetAnimeDetails:output_type -> catalog.GetAnimeDetailsResponse
-	20, // 37: catalog.CatalogService.GetGameDetails:output_type -> catalog.GetGameDetailsResponse
-	22, // 38: catalog.CatalogService.GetSeriesDetails:output_type -> catalog.GetSeriesDetailsResponse
-	24, // 39: catalog.CatalogService.GetBookDetails:output_type -> catalog.GetBookDetailsResponse
-	26, // 40: catalog.CatalogService.GetAllMovieDetails:output_type -> catalog.GetAllMovieDetailsResponse
-	28, // 41: catalog.CatalogService.GetAllAnimeDetails:output_type -> catalog.GetAllAnimeDetailsResponse
-	30, // 42: catalog.CatalogService.GetAllGameDetails:output_type -> catalog.GetAllGameDetailsResponse
-	32, // 43: catalog.CatalogService.GetAllSeriesDetails:output_type -> catalog.GetAllSeriesDetailsResponse
-	34, // 44: catalog.CatalogService.GetAllBookDetails:output_type -> catalog.GetAllBookDetailsResponse
-	31, // [31:45] is the sub-list for method output_type
-	17, // [17:31] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	0,  // 1: catalog.ContentShort.type:type_name -> catalog.ContentType
+	1,  // 2: catalog.GetContentResponse.content:type_name -> catalog.Content
+	2,  // 3: catalog.GetContentByIDsResponse.contents:type_name -> catalog.ContentShort
+	1,  // 4: catalog.FindContentByExternalResponse.content:type_name -> catalog.Content
+	1,  // 5: catalog.CreateContentRequest.content:type_name -> catalog.Content
+	1,  // 6: catalog.CreateContentResponse.content:type_name -> catalog.Content
+	1,  // 7: catalog.UpdateContentRequest.content:type_name -> catalog.Content
+	1,  // 8: catalog.UpdateContentResponse.content:type_name -> catalog.Content
+	3,  // 9: catalog.GetMovieDetailsResponse.details:type_name -> catalog.MovieDetails
+	5,  // 10: catalog.GetAnimeDetailsResponse.details:type_name -> catalog.AnimeDetails
+	6,  // 11: catalog.GetGameDetailsResponse.details:type_name -> catalog.GameDetails
+	4,  // 12: catalog.GetSeriesDetailsResponse.details:type_name -> catalog.SeriesDetails
+	7,  // 13: catalog.GetBookDetailsResponse.details:type_name -> catalog.BookDetails
+	3,  // 14: catalog.GetAllMovieDetailsResponse.details:type_name -> catalog.MovieDetails
+	5,  // 15: catalog.GetAllAnimeDetailsResponse.details:type_name -> catalog.AnimeDetails
+	6,  // 16: catalog.GetAllGameDetailsResponse.details:type_name -> catalog.GameDetails
+	4,  // 17: catalog.GetAllSeriesDetailsResponse.details:type_name -> catalog.SeriesDetails
+	7,  // 18: catalog.GetAllBookDetailsResponse.details:type_name -> catalog.BookDetails
+	14, // 19: catalog.CatalogService.CreateContent:input_type -> catalog.CreateContentRequest
+	8,  // 20: catalog.CatalogService.GetContent:input_type -> catalog.GetContentRequest
+	10, // 21: catalog.CatalogService.GetContentByIDs:input_type -> catalog.GetContentByIDsRequest
+	16, // 22: catalog.CatalogService.UpdateContent:input_type -> catalog.UpdateContentRequest
+	12, // 23: catalog.CatalogService.FindContentByExternal:input_type -> catalog.FindContentByExternalRequest
+	18, // 24: catalog.CatalogService.GetMovieDetails:input_type -> catalog.GetMovieDetailsRequest
+	20, // 25: catalog.CatalogService.GetAnimeDetails:input_type -> catalog.GetAnimeDetailsRequest
+	22, // 26: catalog.CatalogService.GetGameDetails:input_type -> catalog.GetGameDetailsRequest
+	24, // 27: catalog.CatalogService.GetSeriesDetails:input_type -> catalog.GetSeriesDetailsRequest
+	26, // 28: catalog.CatalogService.GetBookDetails:input_type -> catalog.GetBookDetailsRequest
+	28, // 29: catalog.CatalogService.GetAllMovieDetails:input_type -> catalog.GetAllMovieDetailsRequest
+	30, // 30: catalog.CatalogService.GetAllAnimeDetails:input_type -> catalog.GetAllAnimeDetailsRequest
+	32, // 31: catalog.CatalogService.GetAllGameDetails:input_type -> catalog.GetAllGameDetailsRequest
+	34, // 32: catalog.CatalogService.GetAllSeriesDetails:input_type -> catalog.GetAllSeriesDetailsRequest
+	36, // 33: catalog.CatalogService.GetAllBookDetails:input_type -> catalog.GetAllBookDetailsRequest
+	15, // 34: catalog.CatalogService.CreateContent:output_type -> catalog.CreateContentResponse
+	9,  // 35: catalog.CatalogService.GetContent:output_type -> catalog.GetContentResponse
+	11, // 36: catalog.CatalogService.GetContentByIDs:output_type -> catalog.GetContentByIDsResponse
+	17, // 37: catalog.CatalogService.UpdateContent:output_type -> catalog.UpdateContentResponse
+	13, // 38: catalog.CatalogService.FindContentByExternal:output_type -> catalog.FindContentByExternalResponse
+	19, // 39: catalog.CatalogService.GetMovieDetails:output_type -> catalog.GetMovieDetailsResponse
+	21, // 40: catalog.CatalogService.GetAnimeDetails:output_type -> catalog.GetAnimeDetailsResponse
+	23, // 41: catalog.CatalogService.GetGameDetails:output_type -> catalog.GetGameDetailsResponse
+	25, // 42: catalog.CatalogService.GetSeriesDetails:output_type -> catalog.GetSeriesDetailsResponse
+	27, // 43: catalog.CatalogService.GetBookDetails:output_type -> catalog.GetBookDetailsResponse
+	29, // 44: catalog.CatalogService.GetAllMovieDetails:output_type -> catalog.GetAllMovieDetailsResponse
+	31, // 45: catalog.CatalogService.GetAllAnimeDetails:output_type -> catalog.GetAllAnimeDetailsResponse
+	33, // 46: catalog.CatalogService.GetAllGameDetails:output_type -> catalog.GetAllGameDetailsResponse
+	35, // 47: catalog.CatalogService.GetAllSeriesDetails:output_type -> catalog.GetAllSeriesDetailsResponse
+	37, // 48: catalog.CatalogService.GetAllBookDetails:output_type -> catalog.GetAllBookDetailsResponse
+	34, // [34:49] is the sub-list for method output_type
+	19, // [19:34] is the sub-list for method input_type
+	19, // [19:19] is the sub-list for extension type_name
+	19, // [19:19] is the sub-list for extension extendee
+	0,  // [0:19] is the sub-list for field type_name
 }
 
 func init() { file_catalog_system_catalog_proto_init() }
@@ -2474,7 +2639,7 @@ func file_catalog_system_catalog_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_system_catalog_proto_rawDesc), len(file_catalog_system_catalog_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   34,
+			NumMessages:   37,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

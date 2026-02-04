@@ -47,13 +47,6 @@ func (ms *MailSender) SendEmail(to, subject, body string) error {
 		ms.smtpHost,
 	)
 
-	log.Info("smtp config",
-		slog.String("host", os.Getenv("SMTP_HOST")),
-		slog.String("port", os.Getenv("SMTP_PORT")),
-		slog.String("user", os.Getenv("SMTP_USER")),
-		slog.String("from", os.Getenv("SMTP_FROM")),
-	)
-
 	msg := ms.buildMessage(to, subject, body)
 
 	log.Info("msg is:", slog.String("msg", string(msg)))

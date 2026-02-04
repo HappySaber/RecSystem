@@ -15,6 +15,8 @@ type Catalog struct {
 
 type CatalogProvider interface {
 	GetContent(ctx context.Context, id string) (models.Content, error)
+	GetContentByIDs(ctx context.Context, ids []string) ([]models.ContentShort, error)
+
 	FindContentByExternal(ctx context.Context, externalID string) (models.Content, error)
 	//AllAnimeDetails(ctx context.Context) ([]models.AnimeDetails, error)
 	AnimeDetails(ctx context.Context, id string) (models.AnimeDetails, error)
@@ -70,6 +72,26 @@ func (c *Catalog) GetContent(ctx context.Context, id string) (models.Content, er
 	c.log.Info("Content founded")
 
 	return content, nil
+}
+
+func (c *Catalog) GetContentByIDs(ctx context.Context, ids []string) ([]models.ContentShort, error) {
+	const op = "catalog.GetContentByIDs"
+	log := c.log.With(
+		slog.String("op", op),
+	)
+	log.Info("trying to get contents by IDs")
+
+	contents, err := c.catalogProvider.GetContentByIDs(ctx, ids)
+	if err != nil {
+		if errors.Is(err, ErrIDDoesNotExists) {
+			c.log.Warn("contents not found", "error", err.Error())
+			return []models.ContentShort{}, fmt.Errorf("%s: %w", op, ErrIDDoesNotExists)
+		}
+		c.log.Error("failed to get contents", "error", err.Error())
+		return []models.ContentShort{}, fmt.Errorf("%s: %w", op, err)
+	}
+	c.log.Info("Contents founded")
+	return contents, nil
 }
 
 func (c *Catalog) FindContentByExternal(ctx context.Context, externalID string) (models.Content, error) {

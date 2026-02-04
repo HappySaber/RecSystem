@@ -153,6 +153,111 @@ var _ interface {
 	ErrorName() string
 } = ContentValidationError{}
 
+// Validate checks the field values on ContentShort with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *ContentShort) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ContentShort with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in ContentShortMultiError, or
+// nil if none found.
+func (m *ContentShort) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ContentShort) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	// no validation rules for Type
+
+	// no validation rules for Title
+
+	if len(errors) > 0 {
+		return ContentShortMultiError(errors)
+	}
+
+	return nil
+}
+
+// ContentShortMultiError is an error wrapping multiple validation errors
+// returned by ContentShort.ValidateAll() if the designated constraints aren't met.
+type ContentShortMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ContentShortMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ContentShortMultiError) AllErrors() []error { return m }
+
+// ContentShortValidationError is the validation error returned by
+// ContentShort.Validate if the designated constraints aren't met.
+type ContentShortValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ContentShortValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ContentShortValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ContentShortValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ContentShortValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ContentShortValidationError) ErrorName() string { return "ContentShortValidationError" }
+
+// Error satisfies the builtin error interface
+func (e ContentShortValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sContentShort.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ContentShortValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ContentShortValidationError{}
+
 // Validate checks the field values on MovieDetails with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
@@ -1027,6 +1132,244 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GetContentResponseValidationError{}
+
+// Validate checks the field values on GetContentByIDsRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetContentByIDsRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetContentByIDsRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetContentByIDsRequestMultiError, or nil if none found.
+func (m *GetContentByIDsRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetContentByIDsRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if len(errors) > 0 {
+		return GetContentByIDsRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetContentByIDsRequestMultiError is an error wrapping multiple validation
+// errors returned by GetContentByIDsRequest.ValidateAll() if the designated
+// constraints aren't met.
+type GetContentByIDsRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetContentByIDsRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetContentByIDsRequestMultiError) AllErrors() []error { return m }
+
+// GetContentByIDsRequestValidationError is the validation error returned by
+// GetContentByIDsRequest.Validate if the designated constraints aren't met.
+type GetContentByIDsRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetContentByIDsRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetContentByIDsRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetContentByIDsRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetContentByIDsRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetContentByIDsRequestValidationError) ErrorName() string {
+	return "GetContentByIDsRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetContentByIDsRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetContentByIDsRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetContentByIDsRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetContentByIDsRequestValidationError{}
+
+// Validate checks the field values on GetContentByIDsResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetContentByIDsResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetContentByIDsResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetContentByIDsResponseMultiError, or nil if none found.
+func (m *GetContentByIDsResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetContentByIDsResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetContents() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, GetContentByIDsResponseValidationError{
+						field:  fmt.Sprintf("Contents[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, GetContentByIDsResponseValidationError{
+						field:  fmt.Sprintf("Contents[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return GetContentByIDsResponseValidationError{
+					field:  fmt.Sprintf("Contents[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return GetContentByIDsResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetContentByIDsResponseMultiError is an error wrapping multiple validation
+// errors returned by GetContentByIDsResponse.ValidateAll() if the designated
+// constraints aren't met.
+type GetContentByIDsResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetContentByIDsResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetContentByIDsResponseMultiError) AllErrors() []error { return m }
+
+// GetContentByIDsResponseValidationError is the validation error returned by
+// GetContentByIDsResponse.Validate if the designated constraints aren't met.
+type GetContentByIDsResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetContentByIDsResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetContentByIDsResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetContentByIDsResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetContentByIDsResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetContentByIDsResponseValidationError) ErrorName() string {
+	return "GetContentByIDsResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetContentByIDsResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetContentByIDsResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetContentByIDsResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetContentByIDsResponseValidationError{}
 
 // Validate checks the field values on FindContentByExternalRequest with the
 // rules defined in the proto definition for this message. If any rules are

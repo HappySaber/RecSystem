@@ -10,6 +10,8 @@ import (
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/lib/pq"
 )
 
 type Storage struct {
@@ -59,6 +61,65 @@ func (config *DBConfig) dsn() string {
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		config.Host, config.Port, config.User, config.Password, config.DBName,
 	)
+}
+
+func (s *Storage) GetContent(ctx context.Context, id string) (models.Content, error) {
+	const op = "storage.posgresql.GetContent"
+
+	query := `SELECT * FROM content WHERE id = $1`
+
+	var animeDetails models.Content
+	err := s.DB.QueryRowContext(ctx, query, id).Scan(&animeDetails)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return models.Content{}, fmt.Errorf("%s: %w", op, storage.ErrShowNotFound)
+		}
+
+		return models.Content{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return animeDetails, nil
+}
+
+func (s *Storage) GetContentByIDs(ctx context.Context, ids []string) ([]models.ContentShort, error) {
+	const op = "storage.posgresql.GetContentByIDs"
+
+	if len(ids) == 0 {
+		return []models.ContentShort{}, nil
+	}
+
+	query := `
+		SELECT id, type, title
+		FROM anime_details
+		WHERE id = ANY($1)
+	`
+
+	rows, err := s.DB.QueryContext(ctx, query, pq.Array(ids))
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	defer rows.Close()
+
+	contents := make([]models.ContentShort, 0, len(ids))
+
+	for rows.Next() {
+		var content models.ContentShort
+		if err := rows.Scan(
+			&content.ID,
+			&content.Type,
+			&content.Title,
+		); err != nil {
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+
+		contents = append(contents, content)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return contents, nil
 }
 
 func (s *Storage) AnimeDetails(ctx context.Context, id string) (models.AnimeDetails, error) {
