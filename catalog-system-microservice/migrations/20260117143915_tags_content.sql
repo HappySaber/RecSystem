@@ -3,6 +3,7 @@
 CREATE TABLE IF NOT EXISTS content_tags (
     content_id UUID NOT NULL,
     tag_id INT NOT NULL,
+    weighted_score FLOAT NOT NULL DEFAULT 0,
     PRIMARY KEY (content_id, tag_id),
     CONSTRAINT fk_content FOREIGN KEY (content_id) REFERENCES content(id) ON DELETE CASCADE,
     CONSTRAINT fk_tag FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
