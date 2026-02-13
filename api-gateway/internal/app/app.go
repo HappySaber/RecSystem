@@ -1,10 +1,11 @@
 package app
 
 import (
-	router "api-gateway/internal"
 	"api-gateway/internal/client"
 	"api-gateway/internal/events/producer"
 	"api-gateway/internal/http/handlers"
+	"api-gateway/internal/middleware"
+	"api-gateway/internal/router"
 	"context"
 )
 
@@ -26,6 +27,13 @@ func New(addr string) (*App, error) {
 		return nil, err
 	}
 
+	ssoClient, err := client.NewSSOClient(
+		"localhost:50052",
+	)
+	if err != nil {
+		return nil, err
+	}
+
 	// Handlers
 	recommendationHandler := &handlers.RecommendationHandler{
 		Producer:             kafkaProducer,
@@ -36,12 +44,22 @@ func New(addr string) (*App, error) {
 		Producer: kafkaProducer,
 	}
 
+	ssoHandler := &handlers.SSOHandler{
+		//Producer: kafkaProducer,
+		SSOClient: ssoClient,
+	}
+
+	// Middleware
+	mw := middleware.NewManager(ssoClient)
+
 	// Router
 	httpRouter := router.NewRouter(
 		router.Handlers{
 			Recommendation: recommendationHandler,
 			UserAction:     userActionHandler,
+			SSO:            ssoHandler,
 		},
+		mw,
 	)
 
 	// HTTP server

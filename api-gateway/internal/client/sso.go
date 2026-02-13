@@ -56,3 +56,18 @@ func (c *SSOClient) Login(ctx context.Context, email, password string) (string, 
 
 	return resp.AccessToken, nil
 }
+
+func (c *SSOClient) IsAdmin(ctx context.Context, userID string) (bool, error) {
+	resp, err := c.client.IsAdmin(
+		ctx,
+		&pbSSO.IsAdminRequest{
+			UserId: userID,
+		},
+	)
+	if err != nil {
+		return false, err
+	}
+
+	return resp.IsAdmin, nil
+
+}

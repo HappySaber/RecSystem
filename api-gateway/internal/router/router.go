@@ -11,16 +11,19 @@ import (
 type Handlers struct {
 	Recommendation *handlers.RecommendationHandler
 	UserAction     *handlers.UserActionHandler
+	SSO            *handlers.SSOHandler
 }
 
-func NewRouter(h Handlers) http.Handler {
+func NewRouter(h Handlers, mw *middleware.Manager) http.Handler {
 	r := mux.NewRouter()
 
-	// global middleware
 	r.Use(middleware.Recover)
 	r.Use(middleware.RequestID)
 
+	r.HandleFunc("/auth/register", h.SSO.Register).Methods(http.MethodPost)
+
 	api := r.PathPrefix("/api").Subrouter()
+	api.Use(mw.Auth)
 
 	api.HandleFunc(
 		"/recommendations/explicit",
@@ -32,7 +35,6 @@ func NewRouter(h Handlers) http.Handler {
 		h.UserAction.Track,
 	).Methods(http.MethodPost)
 
-	// healthcheck
 	r.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
