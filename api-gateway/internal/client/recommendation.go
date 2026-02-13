@@ -1,7 +1,7 @@
 package client
 
 import (
-	pb "api-gateway/internal/pbs/rec-system/recommendation"
+	pbRecs "api-gateway/internal/pbs/rec-system/recommendation"
 	"context"
 	"fmt"
 
@@ -9,7 +9,7 @@ import (
 )
 
 type RecommendationClient struct {
-	client pb.RecommendationServiceClient
+	client pbRecs.RecommendationServiceClient
 }
 
 func NewRecommendationClient(addr string) (*RecommendationClient, error) {
@@ -18,7 +18,7 @@ func NewRecommendationClient(addr string) (*RecommendationClient, error) {
 		return nil, fmt.Errorf("failed to connect to recommendation service: %w", err)
 	}
 
-	c := pb.NewRecommendationServiceClient(conn)
+	c := pbRecs.NewRecommendationServiceClient(conn)
 	return &RecommendationClient{
 		client: c,
 	}, nil
@@ -27,9 +27,9 @@ func NewRecommendationClient(addr string) (*RecommendationClient, error) {
 func (c *RecommendationClient) GetExplicit(ctx context.Context, query string, limit int) ([]string, error) {
 	resp, err := c.client.GetAIRecommendations(
 		ctx,
-		&pb.GetAIRecommendationsRequest{
+		&pbRecs.GetAIRecommendationsRequest{
 			UserId: "",
-			Mode:   pb.RecommendationMode_EXPLICIT,
+			Mode:   pbRecs.RecommendationMode_EXPLICIT,
 			Query:  &query,
 			Limit:  int32(limit),
 		},
