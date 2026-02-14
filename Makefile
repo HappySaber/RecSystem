@@ -36,3 +36,6 @@ recommendation-migrator:
 
 notifications:
 	cd notification-microservice && go run cmd/app/main.go --config=./config/local.yaml
+
+apigateway:
+	cd api-gateway && go run cmd/gateway/main.go

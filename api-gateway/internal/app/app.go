@@ -28,7 +28,7 @@ func New(addr string) (*App, error) {
 	}
 
 	ssoClient, err := client.NewSSOClient(
-		"localhost:50052",
+		"localhost:44044",
 	)
 	if err != nil {
 		return nil, err

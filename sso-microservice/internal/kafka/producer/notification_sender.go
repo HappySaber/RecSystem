@@ -18,7 +18,7 @@ func (p *KafkaProducer) SendUserRegistered(
 	}
 
 	return p.writer.WriteMessages(ctx, kafka.Message{
-		Key:   []byte(event.UserID),
+		Key:   []byte(event.Email),
 		Value: data,
 	})
 }

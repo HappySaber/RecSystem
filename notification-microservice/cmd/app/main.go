@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"notifications/internal/config"
 	"notifications/internal/consumer"
+	"notifications/internal/events"
 	"notifications/internal/services"
 	"os"
 	"os/signal"
@@ -51,7 +53,14 @@ func main() {
 		)
 
 		to := string(msg.Key)
-		body := string(msg.Value)
+
+		var event events.UserRegisteredEvent
+		if err := json.Unmarshal(msg.Value, &event); err != nil {
+			log.Error("failed to parse event", slog.Any("error", err))
+			return err
+		}
+
+		body := fmt.Sprintf("Welcome, %s %s, to my recommendation app, hope you enjoy it!!", event.Name, event.Surname)
 
 		sendCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
 		defer cancel()
