@@ -2515,7 +2515,7 @@ const file_catalog_system_catalog_proto_rawDesc = "" +
 	"\x12GetAllAnimeDetails\x12\".catalog.GetAllAnimeDetailsRequest\x1a#.catalog.GetAllAnimeDetailsResponse\x12Z\n" +
 	"\x11GetAllGameDetails\x12!.catalog.GetAllGameDetailsRequest\x1a\".catalog.GetAllGameDetailsResponse\x12`\n" +
 	"\x13GetAllSeriesDetails\x12#.catalog.GetAllSeriesDetailsRequest\x1a$.catalog.GetAllSeriesDetailsResponse\x12Z\n" +
-	"\x11GetAllBookDetails\x12!.catalog.GetAllBookDetailsRequest\x1a\".catalog.GetAllBookDetailsResponseB;Z9catalog-system-microservice/internal/pb/catalog;catalogpbb\x06proto3"
+	"\x11GetAllBookDetails\x12!.catalog.GetAllBookDetailsRequest\x1a\".catalog.GetAllBookDetailsResponseB4Z2catalog-microservice/internal/pb/catalog;catalogpbb\x06proto3"
 
 var (
 	file_catalog_system_catalog_proto_rawDescOnce sync.Once

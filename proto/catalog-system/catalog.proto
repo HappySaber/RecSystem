@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package catalog;
 
-option go_package = "catalog-system-microservice/internal/pb/catalog;catalogpb";
+option go_package = "catalog-microservice/internal/pb/catalog;catalogpb";
 
 service CatalogService {
 

@@ -1,0 +1,50 @@
+package handlers
+
+import (
+	"api-gateway/internal/dto"
+	"context"
+	"encoding/json"
+	"net/http"
+)
+
+type CatalogHandler struct {
+	Producer      EventProducer
+	CatalogClient CatalogClient
+}
+
+type CatalogClient interface {
+	GetContent(ctx context.Context, contentID string) (*dto.Content, error)
+	GetContentByIDs(ctx context.Context, ids []string) ([]dto.ContentShort, error)
+}
+
+func (h *CatalogHandler) GetContent(w http.ResponseWriter, r *http.Request) {
+	var req dto.GetContentRequest
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	resp, err := h.CatalogClient.GetContent(r.Context(), req.ContentID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(resp)
+}
+
+func (h *CatalogHandler) GetContentByIDs(w http.ResponseWriter, r *http.Request) {
+	var req dto.GetContentRequest
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	resp, err := h.CatalogClient.GetContent(r.Context(), req.ContentID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(resp)
+}

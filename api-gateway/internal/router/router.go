@@ -12,6 +12,7 @@ type Handlers struct {
 	Recommendation *handlers.RecommendationHandler
 	UserAction     *handlers.UserActionHandler
 	SSO            *handlers.SSOHandler
+	Catalog        *handlers.CatalogHandler
 }
 
 func NewRouter(h Handlers, mw *middleware.Manager) http.Handler {
@@ -29,6 +30,11 @@ func NewRouter(h Handlers, mw *middleware.Manager) http.Handler {
 		"/recommendations/explicit",
 		h.Recommendation.GetExplicit,
 	).Methods(http.MethodPost)
+
+	api.HandleFunc(
+		"/catalog/get_content",
+		h.Catalog.GetContent,
+	).Methods(http.MethodGet)
 
 	api.HandleFunc(
 		"/events/user-action",

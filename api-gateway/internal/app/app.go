@@ -21,19 +21,26 @@ func New(addr string) (*App, error) {
 
 	// gRPC clients
 	recommendationClient, err := client.NewRecommendationClient(
-		"localhost:50051",
+		"localhost:44045",
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	ssoClient, err := client.NewSSOClient(
+	catalogClient, err := client.NewCatalogClient(
 		"localhost:44044",
 	)
+
 	if err != nil {
 		return nil, err
 	}
+	ssoClient, err := client.NewSSOClient(
+		"localhost:44043",
+	)
 
+	if err != nil {
+		return nil, err
+	}
 	// Handlers
 	recommendationHandler := &handlers.RecommendationHandler{
 		Producer:             kafkaProducer,
@@ -49,6 +56,10 @@ func New(addr string) (*App, error) {
 		SSOClient: ssoClient,
 	}
 
+	catalogHandler := &handlers.CatalogHandler{
+		Producer:      kafkaProducer,
+		CatalogClient: catalogClient,
+	}
 	// Middleware
 	mw := middleware.NewManager(ssoClient)
 
@@ -58,6 +69,7 @@ func New(addr string) (*App, error) {
 			Recommendation: recommendationHandler,
 			UserAction:     userActionHandler,
 			SSO:            ssoHandler,
+			Catalog:        catalogHandler,
 		},
 		mw,
 	)

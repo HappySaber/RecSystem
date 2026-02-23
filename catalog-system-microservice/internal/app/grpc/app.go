@@ -1,6 +1,7 @@
 package grpcApp
 
 import (
+	cataloggrpc "catalog-microservice/internal/grpc"
 	"fmt"
 	"log/slog"
 	"net"
@@ -12,19 +13,22 @@ type App struct {
 	log        *slog.Logger
 	gRPCServer *grpc.Server
 	port       int
+	catalog    cataloggrpc.Catalog
 }
 
 func New(
 	log *slog.Logger,
 	port int,
+	catalog cataloggrpc.Catalog,
 ) *App {
 	gRPCServer := grpc.NewServer()
 
-	//authgrpc.Register(gRPCServer)
+	cataloggrpc.Register(gRPCServer, catalog)
 	return &App{
 		log:        log,
 		gRPCServer: gRPCServer,
 		port:       port,
+		catalog:    catalog,
 	}
 }
 

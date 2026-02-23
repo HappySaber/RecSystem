@@ -66,10 +66,17 @@ func (config *DBConfig) dsn() string {
 func (s *Storage) GetContent(ctx context.Context, id string) (models.Content, error) {
 	const op = "storage.posgresql.GetContent"
 
-	query := `SELECT * FROM content WHERE id = $1`
+	query := `SELECT id, type, title, external_id, description, release_date FROM content WHERE id = $1`
 
-	var animeDetails models.Content
-	err := s.DB.QueryRowContext(ctx, query, id).Scan(&animeDetails)
+	var details models.Content
+	err := s.DB.QueryRowContext(ctx, query, id).Scan(
+		&details.ID,
+		&details.Type,
+		&details.Title,
+		&details.ExternalID,
+		&details.Description,
+		&details.ReleaseDate,
+	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return models.Content{}, fmt.Errorf("%s: %w", op, storage.ErrShowNotFound)
@@ -78,7 +85,7 @@ func (s *Storage) GetContent(ctx context.Context, id string) (models.Content, er
 		return models.Content{}, fmt.Errorf("%s: %w", op, err)
 	}
 
-	return animeDetails, nil
+	return details, nil
 }
 
 func (s *Storage) GetContentByIDs(ctx context.Context, ids []string) ([]models.ContentShort, error) {
@@ -305,4 +312,14 @@ func (s *Storage) AllGameDetails(ctx context.Context) ([]models.GameDetails, err
 		gameDetails = append(gameDetails, game)
 	}
 	return gameDetails, nil
+}
+
+// func (s *storage) CreateContent() {
+// 	const op = "storage.posgresql.CreateContent"
+// 	return fmt.Errorf("%s: not implemented", op)
+// }
+
+func (s *Storage) FindContentByExternal(ctx context.Context, externalID string) (models.Content, error) {
+	const op = "storage.posgresql.FindContentByExternal"
+	return models.Content{}, fmt.Errorf("%s: not implemented", op)
 }
