@@ -55,3 +55,8 @@ type SeriesDetails struct {
 type GetContentRequest struct {
 	ContentID string `json:"content_id"`
 }
+
+type FindContentByExternalRequest struct {
+	ContentID      string `json:"content_id"`
+	ExternalSource string `json:"external_source"`
+}

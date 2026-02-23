@@ -15,7 +15,7 @@ type Catalog interface {
 	GetContent(ctx context.Context, id string) (models.Content, error)
 	GetContentByIDs(ctx context.Context, ids []string) ([]models.ContentShort, error)
 	//UpdateContent(ctx context.Context, id string, content models.Content) (models.Content, error)
-	FindContentByExternal(ctx context.Context, externalID string) (models.Content, error)
+	FindContentByExternal(ctx context.Context, externalID, externalSource string) (models.Content, error)
 	GetMovieDetails(ctx context.Context, id string) (models.MovieDetails, error)
 	GetAnimeDetails(ctx context.Context, id string) (models.AnimeDetails, error)
 	GetGameDetails(ctx context.Context, id string) (models.GameDetails, error)
@@ -150,7 +150,7 @@ func (s *serverAPI) FindContentByExternal(ctx context.Context, req *catalog1.Fin
 		return nil, status.Error(codes.InvalidArgument, "wrong argument")
 	}
 
-	content, err := s.catalog.FindContentByExternal(ctx, req.GetExternalId())
+	content, err := s.catalog.FindContentByExternal(ctx, req.GetExternalId(), req.GetExternalSource())
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -158,6 +158,15 @@ func (s *serverAPI) FindContentByExternal(ctx context.Context, req *catalog1.Fin
 	return &catalog1.FindContentByExternalResponse{
 		Content: &catalog1.Content{
 			Id: content.ID,
+			//Type:           content.Type,
+			ExternalSource: content.ExternalSource,
+			ExternalId:     content.ExternalID,
+			Title:          content.Title,
+			Description:    content.Description,
+			PosterUrl:      content.PosterURL,
+			ReleaseDate:    content.ReleaseDate,
+			CreatedAt:      content.CreatedAt,
+			UpdatedAt:      content.UpdatedAt,
 		},
 	}, nil
 }

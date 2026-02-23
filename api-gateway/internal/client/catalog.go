@@ -80,12 +80,14 @@ func (cc *CatalogClient) GetContentByIDs(
 func (cc *CatalogClient) FindContentByExternal(
 	ctx context.Context,
 	externalID string,
+	externalSource string,
 ) (*dto.Content, error) {
 
 	resp, err := cc.client.FindContentByExternal(
 		ctx,
 		&pbCatalog.FindContentByExternalRequest{
-			ExternalId: externalID,
+			ExternalId:     externalID,
+			ExternalSource: externalSource,
 		},
 	)
 	if err != nil {

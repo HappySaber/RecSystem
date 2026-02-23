@@ -319,7 +319,27 @@ func (s *Storage) AllGameDetails(ctx context.Context) ([]models.GameDetails, err
 // 	return fmt.Errorf("%s: not implemented", op)
 // }
 
-func (s *Storage) FindContentByExternal(ctx context.Context, externalID string) (models.Content, error) {
+func (s *Storage) FindContentByExternal(ctx context.Context, externalID, externalSource string) (models.Content, error) {
 	const op = "storage.posgresql.FindContentByExternal"
-	return models.Content{}, fmt.Errorf("%s: not implemented", op)
+
+	query := `SELECT id, type, title, external_id, description, release_date FROM content WHERE external_id = $1 AND external_source = $2`
+
+	var details models.Content
+	err := s.DB.QueryRowContext(ctx, query, externalID, externalSource).Scan(
+		&details.ID,
+		&details.Type,
+		&details.Title,
+		&details.ExternalID,
+		&details.Description,
+		&details.ReleaseDate,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return models.Content{}, fmt.Errorf("%s: %w", op, storage.ErrShowNotFound)
+		}
+
+		return models.Content{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return details, nil
 }

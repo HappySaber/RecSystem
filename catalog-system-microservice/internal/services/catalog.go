@@ -17,7 +17,7 @@ type CatalogProvider interface {
 	GetContent(ctx context.Context, id string) (models.Content, error)
 	GetContentByIDs(ctx context.Context, ids []string) ([]models.ContentShort, error)
 
-	FindContentByExternal(ctx context.Context, externalID string) (models.Content, error)
+	FindContentByExternal(ctx context.Context, externalID, externalSource string) (models.Content, error)
 	//AllAnimeDetails(ctx context.Context) ([]models.AnimeDetails, error)
 	AnimeDetails(ctx context.Context, id string) (models.AnimeDetails, error)
 	AllAnimeDetails(ctx context.Context) ([]models.AnimeDetails, error)
@@ -94,7 +94,7 @@ func (c *Catalog) GetContentByIDs(ctx context.Context, ids []string) ([]models.C
 	return contents, nil
 }
 
-func (c *Catalog) FindContentByExternal(ctx context.Context, externalID string) (models.Content, error) {
+func (c *Catalog) FindContentByExternal(ctx context.Context, externalID, externalSource string) (models.Content, error) {
 	const op = "catalog.FindContentByExternal"
 
 	log := c.log.With(
@@ -103,7 +103,7 @@ func (c *Catalog) FindContentByExternal(ctx context.Context, externalID string) 
 
 	log.Info("trying to get content by external ID")
 
-	content, err := c.catalogProvider.FindContentByExternal(ctx, externalID)
+	content, err := c.catalogProvider.FindContentByExternal(ctx, externalID, externalSource)
 	if err != nil {
 		if errors.Is(err, ErrIDDoesNotExists) {
 			c.log.Warn("content not found", "error", err.Error())

@@ -1,50 +1,38 @@
 package handlers
 
 import (
-	"api-gateway/internal/events"
-	"api-gateway/internal/events/schemas"
+	"api-gateway/internal/dto"
 	"context"
+	"encoding/json"
 	"net/http"
-	"time"
-
-	"github.com/google/uuid"
 )
 
 type UserActionHandler struct {
-	Producer EventProducer
+	Producer         EventProducer
+	UserActionClient UserActionClient
 }
 
 type EventProducer interface {
 	Publish(ctx context.Context, topic, key string, event any) error
 }
 
-func (uah *UserActionHandler) Track(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+type UserActionClient interface {
+	TrackUserAction(ctx context.Context, userID, contentID, action string, rating, duration *int32) error
+}
 
-	var req struct {
-		UserID    string `json:"user_id"`
-		ContentID string `json:"content_id"`
-		Action    string `json:"action"`
-		Rating    *int32 `json:"rating"`
-		Duration  *int32 `json:"duration_sec"`
-	}
-	event := schemas.UserActionEvent{
-		EventID:   uuid.NewString(),
-		UserID:    req.UserID,
-		ContentID: req.ContentID,
-		Action:    req.Action,
-		Rating:    req.Rating,
-		Duration:  req.Duration,
-		Timestamp: time.Now().UTC(),
-		Source:    "api-gateway",
+func (uah *UserActionHandler) TrackUserAction(w http.ResponseWriter, r *http.Request) {
+	var req dto.TrackUserActionRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
 	}
 
-	_ = uah.Producer.Publish(
-		ctx,
-		events.TopicUserActions,
-		req.UserID,
-		event,
-	)
+	err := uah.UserActionClient.TrackUserAction(r.Context(), req.UserID, req.ContentID, req.Action, req.Rating, req.Duration)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	w.WriteHeader(http.StatusAccepted)
+	json.NewEncoder(w).Encode(err)
+
 }

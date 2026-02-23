@@ -37,8 +37,13 @@ func NewRouter(h Handlers, mw *middleware.Manager) http.Handler {
 	).Methods(http.MethodGet)
 
 	api.HandleFunc(
+		"/catalog/get-content-by-external",
+		h.Catalog.FindContentByExternal,
+	).Methods(http.MethodGet)
+
+	api.HandleFunc(
 		"/events/user-action",
-		h.UserAction.Track,
+		h.UserAction.TrackUserAction,
 	).Methods(http.MethodPost)
 
 	r.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
