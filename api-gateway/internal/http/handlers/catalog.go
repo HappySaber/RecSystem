@@ -2,14 +2,20 @@ package handlers
 
 import (
 	"api-gateway/internal/dto"
+	"api-gateway/internal/events/schemas"
 	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 )
 
 type CatalogHandler struct {
 	Producer      EventProducer
 	CatalogClient CatalogClient
+}
+
+type EventProducer interface {
+	Publish(ctx context.Context, topic, key string, event schemas.UserActionEvent) error
 }
 
 type CatalogClient interface {
@@ -32,6 +38,16 @@ func (h *CatalogHandler) GetContent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json.NewEncoder(w).Encode(resp)
+
+	ctx := r.Context()
+	go func() {
+		_ = h.Producer.Publish(ctx, "user-action", req.ContentID, schemas.UserActionEvent{
+			//UserID:    req.UserID,
+			ContentID: req.ContentID,
+			Action:    "VIEW",
+			Timestamp: time.Now(),
+		})
+	}()
 }
 
 func (h *CatalogHandler) GetContentByIDs(w http.ResponseWriter, r *http.Request) {

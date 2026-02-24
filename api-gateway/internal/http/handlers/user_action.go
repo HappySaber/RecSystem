@@ -12,10 +12,6 @@ type UserActionHandler struct {
 	UserActionClient UserActionClient
 }
 
-type EventProducer interface {
-	Publish(ctx context.Context, topic, key string, event any) error
-}
-
 type UserActionClient interface {
 	TrackUserAction(ctx context.Context, userID, contentID, action string, rating, duration *int32) error
 }

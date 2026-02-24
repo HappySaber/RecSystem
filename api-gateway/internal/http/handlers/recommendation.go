@@ -2,15 +2,9 @@ package handlers
 
 import (
 	"api-gateway/internal/dto"
-	"api-gateway/internal/events"
-	"api-gateway/internal/events/schemas"
-	"api-gateway/internal/middleware"
 	"context"
 	"encoding/json"
 	"net/http"
-	"time"
-
-	"github.com/google/uuid"
 )
 
 type RecommendationHandler struct {
@@ -43,24 +37,24 @@ func (h *RecommendationHandler) GetExplicit(
 		return
 	}
 
-	reqID, _ := ctx.Value(middleware.RequestIDKey).(string)
+	// reqID, _ := ctx.Value(middleware.RequestIDKey).(string)
 
-	searchEvent := schemas.UserSearchEvent{
-		EventID:   uuid.NewString(),
-		RequestID: reqID,
-		UserID:    req.UserID,
-		Query:     req.Query,
-		Timestamp: time.Now().UTC(),
-		Source:    "api-gateway",
-	}
+	// searchEvent := schemas.UserSearchEvent{
+	// 	EventID:   uuid.NewString(),
+	// 	RequestID: reqID,
+	// 	UserID:    req.UserID,
+	// 	Query:     req.Query,
+	// 	Timestamp: time.Now().UTC(),
+	// 	Source:    "api-gateway",
+	// }
 
-	if err := h.Producer.Publish(
-		ctx,
-		events.TopicUserSearch,
-		req.UserID,
-		searchEvent,
-	); err != nil {
-	}
+	// if err := h.Producer.Publish(
+	// 	ctx,
+	// 	events.TopicUserSearch,
+	// 	req.UserID,
+	// 	searchEvent,
+	// ); err != nil {
+	// }
 
 	contentIDs, err := h.RecommendationClient.GetExplicit(
 		ctx,

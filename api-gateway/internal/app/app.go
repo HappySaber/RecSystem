@@ -2,6 +2,7 @@ package app
 
 import (
 	"api-gateway/internal/client"
+	"api-gateway/internal/events/adapter"
 	"api-gateway/internal/events/producer"
 	"api-gateway/internal/http/handlers"
 	"api-gateway/internal/middleware"
@@ -18,6 +19,7 @@ func New(addr string) (*App, error) {
 	kafkaProducer := producer.NewProducer([]string{
 		"localhost:9092",
 	})
+	userActionProd := adapter.NewUserActionProducer(kafkaProducer, "user-action")
 
 	// gRPC clients
 	recommendationClient, err := client.NewRecommendationClient(
@@ -43,12 +45,12 @@ func New(addr string) (*App, error) {
 	}
 	// Handlers
 	recommendationHandler := &handlers.RecommendationHandler{
-		Producer:             kafkaProducer,
+		Producer:             userActionProd,
 		RecommendationClient: recommendationClient,
 	}
 
 	userActionHandler := &handlers.UserActionHandler{
-		Producer: kafkaProducer,
+		Producer: userActionProd,
 	}
 
 	ssoHandler := &handlers.SSOHandler{
@@ -57,7 +59,7 @@ func New(addr string) (*App, error) {
 	}
 
 	catalogHandler := &handlers.CatalogHandler{
-		Producer:      kafkaProducer,
+		Producer:      userActionProd,
 		CatalogClient: catalogClient,
 	}
 	// Middleware
