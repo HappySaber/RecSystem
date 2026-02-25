@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"os"
@@ -34,6 +35,8 @@ func main() {
 	application := app.New(log, cfg.GRPC.Port)
 
 	go application.GRPCSrv.MustRun()
+
+	go application.Consumer.Start(context.Background())
 
 	//Gracefull shutdown
 	stop := make(chan os.Signal, 1)
