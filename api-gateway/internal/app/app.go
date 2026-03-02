@@ -8,6 +8,7 @@ import (
 	"api-gateway/internal/middleware"
 	"api-gateway/internal/router"
 	"context"
+	"os"
 )
 
 type App struct {
@@ -63,7 +64,8 @@ func New(addr string) (*App, error) {
 		CatalogClient: catalogClient,
 	}
 	// Middleware
-	mw := middleware.NewManager(ssoClient)
+
+	mw := middleware.NewManager(os.Getenv("JWT_SECRET_KEY"))
 
 	// Router
 	httpRouter := router.NewRouter(

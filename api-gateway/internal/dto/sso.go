@@ -18,7 +18,7 @@ type LoginRequest struct {
 }
 
 type LoginResponce struct {
-	Token string `json:"token"`
+	AccessToken string `json:"access_token"`
 }
 
 type IsAdminRequest struct {

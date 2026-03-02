@@ -1,34 +1,41 @@
 package middleware
 
 import (
-	"api-gateway/internal/client"
 	"context"
 	"net/http"
 )
 
+type contextKey string
+
+const userIDKey contextKey = "userID"
+
 type Manager struct {
-	ssoClient *client.SSOClient
+	jwtVerifier *JWTVerifier
 }
 
-func NewManager(sso *client.SSOClient) *Manager {
+func NewManager(jwtSecret string) *Manager {
+
 	return &Manager{
-		ssoClient: sso,
+		jwtVerifier: NewJWTVerifier(jwtSecret),
 	}
 }
 
-func (m *Manager) Auth(next http.Handler) http.Handler {
+func (mw *Manager) Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		token := extractToken(r)
+		tokenStr := extractToken(r)
+		if tokenStr == "" {
+			http.Error(w, "missing token", http.StatusUnauthorized)
+			return
+		}
 
-		// resp, err := m.ssoClient.Validate(r.Context(), token)
-		// if err != nil {
-		// 	http.Error(w, "unauthorized", http.StatusUnauthorized)
-		// 	return
-		// }
+		claims, err := mw.jwtVerifier.Verify(tokenStr)
+		if err != nil {
+			http.Error(w, "invalid token", http.StatusUnauthorized)
+			return
+		}
 
-		//ctx := context.WithValue(r.Context(), "userID", resp.UserId)
-		ctx := context.WithValue(r.Context(), "userID", token)
+		ctx := context.WithValue(r.Context(), userIDKey, claims.UID)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -40,9 +47,14 @@ func extractToken(r *http.Request) string {
 	}
 
 	const prefix = "Bearer "
-	if len(authHeader) < len(prefix) {
+	if len(authHeader) <= len(prefix) {
 		return ""
 	}
 
 	return authHeader[len(prefix):]
+}
+
+func GetUserID(ctx context.Context) (string, bool) {
+	id, ok := ctx.Value(userIDKey).(string)
+	return id, ok
 }

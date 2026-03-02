@@ -36,7 +36,9 @@ func main() {
 
 	go application.GRPCSrv.MustRun()
 
-	go application.Consumer.Start(context.Background())
+	ctx, cancel := context.WithCancel(context.Background())
+	//defer cancel()
+	go application.Consumer.Start(ctx)
 
 	//Gracefull shutdown
 	stop := make(chan os.Signal, 1)
@@ -46,6 +48,7 @@ func main() {
 
 	log.Info("stopping application", slog.Any("signal", sign))
 
+	cancel()
 	application.GRPCSrv.Stop()
 
 	log.Info("Application stopped")

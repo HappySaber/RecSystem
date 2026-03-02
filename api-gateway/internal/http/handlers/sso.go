@@ -39,13 +39,15 @@ func (h *SSOHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var req dto.LoginRequest
 	json.NewDecoder(r.Body).Decode(&req)
 
-	resp, err := h.SSOClient.Login(r.Context(), req.Email, req.Password)
+	token, err := h.SSOClient.Login(r.Context(), req.Email, req.Password)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	json.NewEncoder(w).Encode(resp)
+	json.NewEncoder(w).Encode(dto.LoginResponce{
+		AccessToken: token,
+	})
 }
 
 func (h *SSOHandler) IsAdmin(w http.ResponseWriter, r *http.Request) {

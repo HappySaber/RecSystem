@@ -187,3 +187,30 @@ func (cc *CatalogClient) GetSeriesDetails(
 		Language:         s.GetLanguage(),
 	}, nil
 }
+
+func (cc *CatalogClient) GetAllSeriesDetails(
+	ctx context.Context,
+	id string,
+) ([]dto.SeriesDetails, error) {
+
+	resp, err := cc.client.GetAllSeriesDetails(
+		ctx,
+		&pbCatalog.GetAllSeriesDetailsRequest{},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	out := make([]dto.SeriesDetails, 0, len(resp.GetDetails()))
+
+	for _, m := range resp.GetDetails() {
+		out = append(out, dto.SeriesDetails{
+			ContentID:    m.GetContentId(),
+			TmdbID:       m.GetTmdbId(),
+			OriginalName: m.GetOriginalName(),
+			Language:     m.GetLanguage(),
+		})
+	}
+
+	return out, nil
+}

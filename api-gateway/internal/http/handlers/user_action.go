@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"api-gateway/internal/dto"
+	"api-gateway/internal/middleware"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -23,7 +24,8 @@ func (uah *UserActionHandler) TrackUserAction(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	err := uah.UserActionClient.TrackUserAction(r.Context(), req.UserID, req.ContentID, req.Action, req.Rating, req.Duration)
+	userID, _ := middleware.GetUserID(r.Context())
+	err := uah.UserActionClient.TrackUserAction(r.Context(), userID, req.ContentID, req.Action, req.Rating, req.Duration)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
