@@ -1,12 +1,14 @@
 package app
 
 import (
+	"context"
 	"log/slog"
 	grpcapp "sso-microservice/internal/app/grpc"
 	"sso-microservice/internal/config"
 	"sso-microservice/internal/kafka/producer"
 	"sso-microservice/internal/services/auth"
 	"sso-microservice/internal/storage/postgresql"
+	redisStorage "sso-microservice/internal/storage/redis"
 	"time"
 )
 
@@ -26,9 +28,17 @@ func New(
 		panic(err)
 	}
 
+	redisClient, err := redisStorage.NewClient(context.Background())
+	if err != nil {
+		panic(err)
+	}
+	redisStorage := &redisStorage.RedisStorage{
+		RedisDB: redisClient,
+	}
+
 	producer := producer.NewKafkaProducer(kafkaConfig)
 
-	authService := auth.New(log, storage, storage, storage, tokenTTL, producer)
+	authService := auth.New(log, storage, storage, storage, tokenTTL, producer, redisStorage)
 
 	grpcApp := grpcapp.New(log, grpcPort, authService)
 	return &App{

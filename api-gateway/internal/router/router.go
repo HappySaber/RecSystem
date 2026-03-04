@@ -22,6 +22,7 @@ func NewRouter(h Handlers, mw *middleware.Manager) http.Handler {
 	r.Use(middleware.RequestID)
 
 	r.HandleFunc("/auth/register", h.SSO.Register).Methods(http.MethodPost)
+	r.HandleFunc("/auth/login", h.SSO.Login).Methods(http.MethodPost)
 
 	api := r.PathPrefix("/api").Subrouter()
 	api.Use(mw.Auth)

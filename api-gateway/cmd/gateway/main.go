@@ -3,14 +3,20 @@ package main
 import (
 	"api-gateway/internal/app"
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	if err := godotenv.Load(".env"); err != nil {
+		panic(fmt.Sprintf("failed to load .env: %v", err))
+	}
 	application, err := app.New(":8080")
 	if err != nil {
 		log.Fatal(err)

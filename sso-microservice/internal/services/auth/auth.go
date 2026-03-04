@@ -22,6 +22,7 @@ type Auth struct {
 	appProvider   AppProvider
 	tokenTTL      time.Duration
 	kafkaProducer NotificationProducer
+	tokenSaver    TokenSaveDelete
 }
 
 type UserSaver interface {
@@ -48,6 +49,11 @@ type NotificationProducer interface {
 	SendUserRegistered(ctx context.Context, event events.UserRegisteredEvent) error
 }
 
+type TokenSaveDelete interface {
+	SaveToken(ctx context.Context, token, userID string, ttl time.Duration) error
+	Logout(ctx context.Context, token string) (bool, error)
+}
+
 var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
 	ErrInvalidAppID       = errors.New("invalid app id")
@@ -63,6 +69,7 @@ func New(
 	appProvider AppProvider,
 	tokenTTL time.Duration,
 	kafkaProducer NotificationProducer,
+	tokenSaver TokenSaveDelete,
 ) *Auth {
 	return &Auth{
 		log:           log,
@@ -71,6 +78,7 @@ func New(
 		appProvider:   appProvider,
 		tokenTTL:      tokenTTL,
 		kafkaProducer: kafkaProducer,
+		tokenSaver:    tokenSaver,
 	}
 }
 
@@ -108,18 +116,24 @@ func (a *Auth) Login(
 		return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
 	}
 
-	app, err := a.appProvider.App(ctx, appID)
-	if err != nil {
-		a.log.Error("failed to get app", "error", err.Error())
-		return "", fmt.Errorf("%s: %w", op, err)
-	}
+	// app, err := a.appProvider.App(ctx, appID)
+	// if err != nil {
+	// 	a.log.Error("failed to get app", "error", err.Error())
+	// 	return "", fmt.Errorf("%s: %w", op, err)
+	// }
 
 	log.Info("user logged in successfully")
 
-	token, err := jwt.NewToken(user, app, a.tokenTTL)
+	token, err := jwt.NewToken(user, a.tokenTTL)
 	if err != nil {
 		a.log.Error("failed to generate token", "error", err.Error())
 
+		return "", fmt.Errorf("%s: %w", op, err)
+	}
+
+	err = a.tokenSaver.SaveToken(ctx, token, user.ID, a.tokenTTL)
+	if err != nil {
+		a.log.Error("failed to save token in redis", "error", err.Error())
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
 
@@ -206,5 +220,20 @@ func (a *Auth) UserRole(
 }
 
 func (a *Auth) Logout(ctx context.Context, refToken string) (bool, error) {
-	return true, nil
+	const op = "auth.Logout"
+
+	log := a.log.With(
+		slog.String("op", op),
+	)
+
+	log.Info("attempting to logout user")
+
+	res, err := a.tokenSaver.Logout(ctx, refToken)
+	if err != nil {
+		log.Error("failed to logout user", "error", err.Error())
+		return res, fmt.Errorf("%s: %w", op, err)
+	}
+
+	log.Info("user logged out successfully")
+	return res, nil
 }

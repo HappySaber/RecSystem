@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 )
 
@@ -29,17 +30,20 @@ func (mw *Manager) Auth(next http.Handler) http.Handler {
 			return
 		}
 
+		fmt.Println("token:" + tokenStr)
 		claims, err := mw.jwtVerifier.Verify(tokenStr)
 		if err != nil {
-			http.Error(w, "invalid token", http.StatusUnauthorized)
+			fmt.Println("JWT ERROR:", err)
+			http.Error(w, "unauthorized", http.StatusUnauthorized)
 			return
 		}
+
+		fmt.Println("USER ID:", claims.UID)
 
 		ctx := context.WithValue(r.Context(), userIDKey, claims.UID)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
-
 func extractToken(r *http.Request) string {
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
