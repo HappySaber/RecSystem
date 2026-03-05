@@ -3,6 +3,7 @@ package producer
 import (
 	"catalog-microservice/internal/config"
 	"context"
+	"encoding/json"
 
 	"github.com/segmentio/kafka-go"
 )
@@ -21,10 +22,15 @@ func NewKafkaProducer(cfg config.KafkaProducerConfig) *KafkaProducer {
 	}
 }
 
-func (kp *KafkaProducer) SendMessage(ctx context.Context, key, value []byte) error {
-	return kp.writer.WriteMessages(ctx, kafka.Message{
-		Key:   key,
-		Value: value,
+func (p *KafkaProducer) Send(ctx context.Context, key string, value interface{}) error {
+	data, err := json.Marshal(value)
+	if err != nil {
+		return err
+	}
+
+	return p.writer.WriteMessages(ctx, kafka.Message{
+		Key:   []byte(key),
+		Value: data,
 	})
 }
 

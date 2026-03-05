@@ -8,12 +8,6 @@ import (
 	"time"
 )
 
-/*
-	=====================
-	DTO для TMDB
-	=====================
-*/
-
 type Movie struct {
 	ID          int     `json:"id"`
 	Title       string  `json:"title"`
@@ -28,12 +22,6 @@ type PopularMoviesResponse struct {
 	Results    []Movie `json:"results"`
 	TotalPages int     `json:"total_pages"`
 }
-
-/*
-	=====================
-	Клиент
-	=====================
-*/
 
 type Client struct {
 	apiKey     string
@@ -118,11 +106,7 @@ func (c *Client) GetFirst1000PopularMovies() ([]Movie, error) {
 	return result, nil
 }
 
-/*
-	=====================
-	Детали фильма
-	=====================
-*/
+//Детали фильма
 
 func (c *Client) GetMovieDetails(id int) (map[string]interface{}, error) {
 	url := fmt.Sprintf(

@@ -3,7 +3,9 @@ package tmdb
 import (
 	"catalog-microservice/internal/domain/models"
 	producer "catalog-microservice/internal/kafka"
+	"catalog-microservice/internal/schemas"
 	"catalog-microservice/internal/storage/postgresql"
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -16,6 +18,10 @@ type Importer struct {
 	movies   *postgresql.Storage
 	series   *postgresql.Storage
 	producer *producer.KafkaProducer
+}
+
+type EventProducer interface {
+	Send(ctx context.Context, key string, value interface{}) error
 }
 
 func NewImporter(
@@ -104,7 +110,6 @@ func (i *Importer) ImportPopularMovies() error {
 				Status:        getString(details, "status"),
 				Budget:        getInt64(details, "budget"),
 				Revenue:       getInt64(details, "revenue"),
-				Language:      getString(details, "original_language"),
 
 				Genres:      toJSON(genres),
 				CastMembers: toJSON(cast),
@@ -117,9 +122,21 @@ func (i *Importer) ImportPopularMovies() error {
 
 			log.Println(movie.Tagline)
 
-			// if err := i.movies.SaveMovie(movie); err != nil {
-			// 	return fmt.Errorf("failed to save movie details: %w", err)
-			// }
+			if err := i.movies.SaveMovie(movie); err != nil {
+				return fmt.Errorf("failed to save movie details: %w", err)
+			}
+
+			ctx := context.Background()
+
+			event := schemas.ContentGenre{
+				ContentID: contentID,
+				Genres:    genres,
+			}
+
+			err = i.producer.Send(ctx, contentID, event)
+			if err != nil {
+				log.Println("failed to publish event:", err)
+			}
 
 			//timeout to avoid hitting rate limits
 			time.Sleep(100 * time.Millisecond)
