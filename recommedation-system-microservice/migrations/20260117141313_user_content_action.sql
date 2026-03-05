@@ -1,35 +1,40 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS user_content_action (
+    id BIGSERIAL PRIMARY KEY,
+
     user_id UUID NOT NULL,
     content_id UUID NOT NULL,
 
     action_id SMALLINT NOT NULL,
-    CONSTRAINT fk_action
-        FOREIGN KEY (action_id)
-        REFERENCES actions(id)
-        ON DELETE RESTRICT,
-
     rating INT,
     duration_sec INT,
 
     created_at TIMESTAMP NOT NULL DEFAULT now(),
 
-    PRIMARY KEY (user_id, content_id, action_id, created_at)
+    CONSTRAINT fk_user_content_action_action
+        FOREIGN KEY (action_id)
+        REFERENCES actions(id)
+        ON DELETE RESTRICT,
+
+    CONSTRAINT rating_check
+        CHECK (rating IS NULL OR rating BETWEEN 1 AND 10),
+
+    CONSTRAINT duration_check
+        CHECK (duration_sec IS NULL OR duration_sec >= 0)
 );
 
-CREATE INDEX idx_uca_user
-    ON user_content_action (user_id);
+CCREATE INDEX idx_user_content_action_user
+ON user_content_action(user_id);
 
-CREATE INDEX idx_uca_content
-    ON user_content_action (content_id);
+CREATE INDEX idx_user_content_action_content
+ON user_content_action(content_id);
 
-CREATE INDEX idx_uca_action
-    ON user_content_action (action_id);
+CREATE INDEX idx_user_content_action_created
+ON user_content_action(created_at);
 
-CREATE INDEX idx_uca_created
-    ON user_content_action (created_at);
-
+CREATE INDEX idx_user_content_action_action
+ON user_content_action(action_id);
 -- +goose StatementEnd
 
 -- +goose Down

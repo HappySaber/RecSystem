@@ -1,7 +1,9 @@
 package main
 
 import (
+	"catalog-microservice/internal/config"
 	"catalog-microservice/internal/importer/tmdb"
+	producer "catalog-microservice/internal/kafka"
 	"catalog-microservice/internal/storage/postgresql"
 	"fmt"
 	"log"
@@ -12,7 +14,7 @@ import (
 )
 
 func main() {
-	//cfg := config.MustLoad()
+	cfg := config.MustLoad()
 
 	if err := godotenv.Load(".env"); err != nil {
 		panic(fmt.Sprintf("failed to load .env: %v", err))
@@ -21,6 +23,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not open database %s", err)
 	}
+	producer := producer.NewKafkaProducer(
+		cfg.KafkaConfig,
+	)
+
 	TMDBApiKey := os.Getenv("TMDB_APIKEY")
 	//log.Println(TMDBApiKey)
 	log.Println("HTTP_PROXY =", os.Getenv("HTTP_PROXY"))
@@ -29,7 +35,7 @@ func main() {
 	log.Println("https_proxy =", os.Getenv("https_proxy"))
 
 	client := tmdb.NewClient(TMDBApiKey)
-	importer := tmdb.NewImporter(client, db, db, db)
+	importer := tmdb.NewImporter(client, db, db, db, producer)
 	// animeClient := anilist.NewClient()
 	// animeImporter := anilist.NewImporter(animeClient, db, db)
 

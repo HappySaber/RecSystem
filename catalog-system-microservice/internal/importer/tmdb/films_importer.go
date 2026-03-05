@@ -2,6 +2,7 @@ package tmdb
 
 import (
 	"catalog-microservice/internal/domain/models"
+	producer "catalog-microservice/internal/kafka"
 	"catalog-microservice/internal/storage/postgresql"
 	"encoding/json"
 	"fmt"
@@ -10,10 +11,11 @@ import (
 )
 
 type Importer struct {
-	client  *Client
-	content *postgresql.Storage
-	movies  *postgresql.Storage
-	series  *postgresql.Storage
+	client   *Client
+	content  *postgresql.Storage
+	movies   *postgresql.Storage
+	series   *postgresql.Storage
+	producer *producer.KafkaProducer
 }
 
 func NewImporter(
@@ -21,8 +23,9 @@ func NewImporter(
 	content *postgresql.Storage,
 	movies *postgresql.Storage,
 	series *postgresql.Storage,
+	producer *producer.KafkaProducer,
 ) *Importer {
-	return &Importer{client, content, movies, series}
+	return &Importer{client, content, movies, series, producer}
 }
 
 func extractStringsFromArray(arr interface{}, key string) []string {

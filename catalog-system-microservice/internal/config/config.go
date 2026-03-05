@@ -9,13 +9,19 @@ import (
 )
 
 type Config struct {
-	Env  string     `yaml:"env"`
-	GRPC GRPCConfig `yaml:"grpc"`
+	Env         string              `yaml:"env"`
+	GRPC        GRPCConfig          `yaml:"grpc"`
+	KafkaConfig KafkaProducerConfig `yaml:"kafka"`
 }
 
 type GRPCConfig struct {
 	Port    int           `yaml:"port"`
 	Timeout time.Duration `yaml:"timeout"`
+}
+
+type KafkaProducerConfig struct {
+	Brokers []string `yaml:"brokers"`
+	Topic   string   `yaml:"topic"`
 }
 
 func MustLoad() *Config {
