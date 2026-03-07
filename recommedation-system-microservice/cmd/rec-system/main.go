@@ -38,7 +38,7 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	//defer cancel()
-	go application.Consumer.Start(ctx)
+	go application.StartConsumers(ctx)
 
 	//Gracefull shutdown
 	stop := make(chan os.Signal, 1)

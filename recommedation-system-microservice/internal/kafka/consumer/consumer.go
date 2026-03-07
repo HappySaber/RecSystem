@@ -2,39 +2,34 @@ package consumer
 
 import (
 	"context"
-	"encoding/json"
-	"rec-system-microservice/internal/domain/models"
-	useractions "rec-system-microservice/internal/services/user_actions"
+	"log"
 
 	"github.com/segmentio/kafka-go"
 )
 
-type UserActionConsumer struct {
+type MessageHandler func(ctx context.Context, msg []byte) error
+
+type Consumer struct {
 	reader  *kafka.Reader
-	service *useractions.UserActionTracker
+	handler MessageHandler
 }
 
-func NewUserActionConsumer(r *kafka.Reader, s *useractions.UserActionTracker) *UserActionConsumer {
-	return &UserActionConsumer{
+func NewConsumer(r *kafka.Reader, h MessageHandler) Consumer {
+	return Consumer{
 		reader:  r,
-		service: s,
+		handler: h,
 	}
 }
 
-func (c *UserActionConsumer) Start(ctx context.Context) error {
+func (c *Consumer) Start(ctx context.Context) error {
 	for {
 		msg, err := c.reader.ReadMessage(ctx)
 		if err != nil {
 			return err
 		}
 
-		var event models.UserActionEvent
-		if err := json.Unmarshal(msg.Value, &event); err != nil {
-			continue
-		}
-
-		if err := c.service.TrackUserAction(ctx, event); err != nil {
-			// логируем, но не падаем
+		if err := c.handler(ctx, msg.Value); err != nil {
+			log.Printf("error: %v", err.Error())
 			continue
 		}
 	}

@@ -1,9 +1,11 @@
 package app
 
 import (
+	"context"
 	"log/slog"
 	grpcapp "rec-system-microservice/internal/app/grpc"
 	"rec-system-microservice/internal/kafka/consumer"
+	contentgenre "rec-system-microservice/internal/services/content_genre"
 	recommendation "rec-system-microservice/internal/services/recommendation"
 	"rec-system-microservice/internal/services/recommendation/airecommendation"
 	useractions "rec-system-microservice/internal/services/user_actions"
@@ -15,7 +17,7 @@ import (
 
 type App struct {
 	GRPCSrv  *grpcapp.App
-	Consumer *consumer.UserActionConsumer
+	Consumer []consumer.Consumer
 }
 
 func New(
@@ -33,18 +35,41 @@ func New(
 	prefs := &userpreferences.UserPreferences{}
 	actions := useractions.New(log, storage)
 
+	contentGenre := contentgenre.New(log, storage)
+
 	grpcApp := grpcapp.New(log, grpcPort, engine, prefs, actions, aiRecService)
 
-	reader := kafka.NewReader(kafka.ReaderConfig{
+	userActionReader := kafka.NewReader(kafka.ReaderConfig{
 		Brokers: []string{"localhost:9092"},
 		Topic:   "user-action",
 		GroupID: "recommendation",
 	})
 
-	uaConsumer := consumer.NewUserActionConsumer(reader, actions)
+	genreReader := kafka.NewReader(kafka.ReaderConfig{
+		Brokers: []string{"localhost:9092"},
+		Topic:   "content-genre",
+		GroupID: "recommendation",
+	})
+
+	userConsumer := consumer.NewConsumer(
+		userActionReader,
+		consumer.UserActionHandler(actions),
+	)
+
+	genreConsumer := consumer.NewConsumer(
+		genreReader,
+		consumer.ContentGenreHandler(contentGenre),
+	)
+
+	consumers := []consumer.Consumer{
+		userConsumer,
+		genreConsumer,
+	}
+
+	//uaConsumer := consumer.NewUserActionConsumer(reader, actions)
 	return &App{
 		GRPCSrv:  grpcApp,
-		Consumer: uaConsumer,
+		Consumer: consumers,
 	}
 }
 
@@ -62,4 +87,14 @@ func initAIRecommendationService(log *slog.Logger) *airecommendation.AIRecommend
 		panic(err)
 	}
 	return airecommendation.NewAIRecommendation(log, aiClient, promptBuilder, aiParser)
+}
+
+func (a *App) StartConsumers(ctx context.Context) {
+	for _, c := range a.Consumer {
+		go func(cons consumer.Consumer) {
+			if err := cons.Start(ctx); err != nil {
+				panic(err)
+			}
+		}(c)
+	}
 }
