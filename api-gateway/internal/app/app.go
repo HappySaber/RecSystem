@@ -51,7 +51,8 @@ func New(addr string) (*App, error) {
 	}
 
 	userActionHandler := &handlers.UserActionHandler{
-		Producer: userActionProd,
+		Producer:         userActionProd,
+		UserActionClient: recommendationClient,
 	}
 
 	ssoHandler := &handlers.SSOHandler{

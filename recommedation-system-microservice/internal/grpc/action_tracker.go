@@ -15,17 +15,8 @@ type UserActionTracker interface {
 	TrackUserAction(
 		ctx context.Context,
 		event models.UserActionEvent,
-		// userID string,
-		// contentID string,
-		// action recs.UserAction,
-		// rating *int32,
-		// duration *int32,
 	) error
 }
-
-//
-// user actions
-//
 
 func (s serverAPI) TrackUserAction(
 	ctx context.Context,
@@ -36,22 +27,17 @@ func (s serverAPI) TrackUserAction(
 		return nil, status.Error(codes.InvalidArgument, "wrong arguments")
 	}
 
-	//TODO realize meta parsing
-	Meta := models.ActionMeta{
-		Rating:      nil,
-		DurationSec: nil,
-	}
-
 	action, err := mapUserAction(req.GetAction())
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "wrong action type")
 	}
 
 	event := models.UserActionEvent{
-		UserID:    req.GetUserId(),
-		ContentID: req.GetContentId(),
-		Action:    action,
-		Meta:      Meta,
+		UserID:      req.GetUserId(),
+		ContentID:   req.GetContentId(),
+		Action:      action,
+		Rating:      nil,
+		DurationSec: nil,
 	}
 
 	err = s.actions.TrackUserAction(

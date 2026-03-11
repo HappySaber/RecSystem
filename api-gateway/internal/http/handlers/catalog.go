@@ -3,8 +3,10 @@ package handlers
 import (
 	"api-gateway/internal/dto"
 	"api-gateway/internal/events/schemas"
+	"api-gateway/internal/middleware"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 )
@@ -39,15 +41,28 @@ func (h *CatalogHandler) GetContent(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(resp)
 
-	ctx := r.Context()
-	go func() {
-		_ = h.Producer.Publish(ctx, "user-action", req.ContentID, schemas.UserActionEvent{
-			//UserID:    req.UserID,
-			ContentID: req.ContentID,
-			Action:    "VIEW",
-			Timestamp: time.Now(),
-		})
-	}()
+	userID, ok := middleware.GetUserID(r.Context())
+	if !ok {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	ctx := context.Background()
+
+	fmt.Println(schemas.UserActionEvent{
+		UserID:    userID,
+		ContentID: req.ContentID,
+		Action:    "VIEW",
+		Timestamp: time.Now()})
+	err = h.Producer.Publish(ctx, "user-action", req.ContentID, schemas.UserActionEvent{
+		UserID:    userID,
+		ContentID: req.ContentID,
+		Action:    "VIEW",
+		Timestamp: time.Now(),
+	})
+	if err != nil {
+		fmt.Println("failed to publish user action event:", err)
+	}
 }
 
 func (h *CatalogHandler) GetContentByIDs(w http.ResponseWriter, r *http.Request) {

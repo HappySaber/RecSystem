@@ -12,15 +12,12 @@ const (
 	ActionFavorite ActionType = "FAVORITE"
 )
 
-type ActionMeta struct {
-	Rating      *int32
-	DurationSec *int32
-	Timestamp   time.Time
-}
-
 type UserActionEvent struct {
-	UserID    string
-	ContentID string
-	Action    ActionType
-	Meta      ActionMeta
+	UserID    string     `json:"user_id"`
+	ContentID string     `json:"content_id"`
+	Action    ActionType `json:"action"`
+	Timestamp time.Time  `json:"timestamp"`
+
+	Rating      *int32 `json:"rating,omitempty"`
+	DurationSec *int32 `json:"duration_sec,omitempty"`
 }

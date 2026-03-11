@@ -15,6 +15,6 @@ func ContentGenreHandler(service *contentgenre.ContentGenre) MessageHandler {
 			return err
 		}
 
-		return service.SaveContentGenre(ctx, event.ContentID, event.Genres)
+		return service.SaveContentGenres(ctx, event.ContentID, event.Genres)
 	}
 }

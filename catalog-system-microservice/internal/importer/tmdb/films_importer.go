@@ -2,7 +2,6 @@ package tmdb
 
 import (
 	"catalog-microservice/internal/domain/models"
-	producer "catalog-microservice/internal/kafka"
 	"catalog-microservice/internal/schemas"
 	"catalog-microservice/internal/storage/postgresql"
 	"context"
@@ -17,7 +16,7 @@ type Importer struct {
 	content  *postgresql.Storage
 	movies   *postgresql.Storage
 	series   *postgresql.Storage
-	producer *producer.KafkaProducer
+	producer EventProducer
 }
 
 type EventProducer interface {
@@ -29,7 +28,7 @@ func NewImporter(
 	content *postgresql.Storage,
 	movies *postgresql.Storage,
 	series *postgresql.Storage,
-	producer *producer.KafkaProducer,
+	producer EventProducer,
 ) *Importer {
 	return &Importer{client, content, movies, series, producer}
 }

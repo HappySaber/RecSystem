@@ -11,7 +11,7 @@ type ContentGenre struct {
 }
 
 type ContentGenreSaver interface {
-	SaveContentGenre(contentID string, genres []string) error
+	SaveContentGenres(contentID string, genres []string) error
 }
 
 func New(
@@ -24,7 +24,7 @@ func New(
 	}
 }
 
-func (cg *ContentGenre) SaveContentGenre(
+func (cg *ContentGenre) SaveContentGenres(
 	ctx context.Context,
 	contentID string,
 	genres []string,
@@ -36,7 +36,7 @@ func (cg *ContentGenre) SaveContentGenre(
 	)
 	log.Info("saving content genres", slog.String("content_id", contentID))
 
-	err := cg.contentGenreSaver.SaveContentGenre(contentID, genres)
+	err := cg.contentGenreSaver.SaveContentGenres(contentID, genres)
 	if err != nil {
 		log.Error("failed to save content genres", slog.String("error", err.Error()))
 		return err

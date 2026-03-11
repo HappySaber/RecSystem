@@ -12,24 +12,33 @@ func (s *Storage) SaveTrackAction(
 ) error {
 	const op = "postgresql.SaveTrackAction"
 
-	// TODO: too hard for now
-	//	query := `INSERT INTO user_actions (user_id, content_id, action_type, rating, duration_sec, created_at) VALUES ($1, $2, $3, $4, $5, NOW())`
+	query := `
+	INSERT INTO user_content_action
+	    (user_id, content_id, action_id, rating, duration_sec)
+	SELECT
+	    $1,
+	    $2,
+	    a.id,
+	    $4,
+	    $5
+	FROM actions a
+	WHERE a.code = $3
+	`
 
-	query := `INSERT INTO user_actions
-	(user_id, content_id, action_type, rating, duration_sec, created_at)
-	VALUES ($1, $2, $3, $4, $5, NOW())`
 	_, err := s.DB.ExecContext(
 		ctx,
 		query,
 		event.UserID,
 		event.ContentID,
-		0,
-		0,
-		event.Meta.DurationSec,
+		event.Action,
+		event.Rating,
+		event.DurationSec,
 	)
+
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
+
 	return nil
 }
 

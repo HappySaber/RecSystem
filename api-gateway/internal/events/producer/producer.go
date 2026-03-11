@@ -3,6 +3,7 @@ package producer
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/segmentio/kafka-go"
 )
@@ -24,7 +25,7 @@ func (p *Producer) Publish(ctx context.Context, topic, key string, event any) er
 	if err != nil {
 		return err
 	}
-
+	fmt.Println("KAFKA SEND:", topic, string(payload))
 	return p.writer.WriteMessages(ctx, kafka.Message{
 		Topic: topic,
 		Key:   []byte(key),

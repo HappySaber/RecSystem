@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"log"
 	"log/slog"
 	grpcapp "rec-system-microservice/internal/app/grpc"
 	"rec-system-microservice/internal/kafka/consumer"
@@ -11,6 +12,7 @@ import (
 	useractions "rec-system-microservice/internal/services/user_actions"
 	userpreferences "rec-system-microservice/internal/services/user_preferences"
 	"rec-system-microservice/internal/storage/postgresql"
+	"time"
 
 	"github.com/segmentio/kafka-go"
 )
@@ -31,7 +33,7 @@ func New(
 	_ = storage // Placeholder to avoid unused variable error
 	aiRecService := initAIRecommendationService(log)
 
-	engine := recommendation.New(log, nil, 0)
+	engine := recommendation.New(log, storage, 0)
 	prefs := &userpreferences.UserPreferences{}
 	actions := useractions.New(log, storage)
 
@@ -92,8 +94,12 @@ func initAIRecommendationService(log *slog.Logger) *airecommendation.AIRecommend
 func (a *App) StartConsumers(ctx context.Context) {
 	for _, c := range a.Consumer {
 		go func(cons consumer.Consumer) {
-			if err := cons.Start(ctx); err != nil {
-				panic(err)
+			for {
+				if err := cons.Start(ctx); err != nil {
+					log.Println("consumer stopped:", err)
+					time.Sleep(3 * time.Second)
+					continue
+				}
 			}
 		}(c)
 	}

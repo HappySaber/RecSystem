@@ -23,7 +23,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not open database %s", err)
 	}
-	producer := producer.NewKafkaProducer(
+	kafkaProducer := producer.NewKafkaProducer(
 		cfg.KafkaConfig,
 	)
 
@@ -35,7 +35,7 @@ func main() {
 	log.Println("https_proxy =", os.Getenv("https_proxy"))
 
 	client := tmdb.NewClient(TMDBApiKey)
-	importer := tmdb.NewImporter(client, db, db, db, producer)
+	importer := tmdb.NewImporter(client, db, db, db, kafkaProducer)
 	// animeClient := anilist.NewClient()
 	// animeImporter := anilist.NewImporter(animeClient, db, db)
 

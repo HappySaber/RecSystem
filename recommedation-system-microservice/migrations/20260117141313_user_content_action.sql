@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS user_content_action (
         CHECK (duration_sec IS NULL OR duration_sec >= 0)
 );
 
-CCREATE INDEX idx_user_content_action_user
+CREATE INDEX idx_user_content_action_user
 ON user_content_action(user_id);
 
 CREATE INDEX idx_user_content_action_content

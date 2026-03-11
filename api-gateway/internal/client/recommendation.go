@@ -40,3 +40,99 @@ func (c *RecommendationClient) GetExplicit(ctx context.Context, query string, li
 
 	return resp.ContentIds, nil
 }
+
+func (c *RecommendationClient) GetRecommendations(
+	ctx context.Context,
+	userID string,
+	limit int,
+) ([]string, error) {
+
+	resp, err := c.client.GetRecommendations(
+		ctx,
+		&pbRecs.GetRecommendationsRequest{
+			UserId: userID,
+			Limit:  int32(limit),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.ContentIds, nil
+}
+
+func (c *RecommendationClient) GetRecommendationsByGenres(
+	ctx context.Context,
+	genres []string,
+	limit int,
+) ([]string, error) {
+
+	resp, err := c.client.GetRecommendationsByGenres(
+		ctx,
+		&pbRecs.GetRecommendationsByGenresRequest{
+			Genres: genres,
+			Limit:  int32(limit),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.ContentIds, nil
+}
+
+func (c *RecommendationClient) GetSimilarContent(
+	ctx context.Context,
+	contentID string,
+	limit int,
+) ([]string, error) {
+
+	resp, err := c.client.GetSimilarContent(
+		ctx,
+		&pbRecs.GetSimilarContentRequest{
+			ContentId: contentID,
+			Limit:     int32(limit),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.ContentIds, nil
+}
+
+func (c *RecommendationClient) GetTrendingContent(
+	ctx context.Context,
+	limit int,
+) ([]string, error) {
+
+	resp, err := c.client.GetTrendingContent(
+		ctx,
+		&pbRecs.GetTrendingContentRequest{
+			Limit: int32(limit),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.ContentIds, nil
+}
+
+func (c *RecommendationClient) GetPopularContent(
+	ctx context.Context,
+	limit int,
+) ([]string, error) {
+
+	resp, err := c.client.GetPopularContent(
+		ctx,
+		&pbRecs.GetPopularContentRequest{
+			Limit: int32(limit),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.ContentIds, nil
+}
