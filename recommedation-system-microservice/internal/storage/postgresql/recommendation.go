@@ -181,3 +181,45 @@ func (s *Storage) GetPopularContent(ctx context.Context, limit int) ([]string, e
 
 	return result, nil
 }
+
+func (s *Storage) GetUserGenreWeights(
+	ctx context.Context,
+	userID string,
+	limit int,
+) (map[string]float64, error) {
+
+	query := `
+	SELECT
+	    g.name,
+	    SUM(a.weight) AS score
+	FROM user_content_action uca
+	JOIN actions a ON uca.action_id = a.id
+	JOIN content_genres cg ON uca.content_id = cg.content_id
+	JOIN genres g ON cg.genre_id = g.id
+	WHERE uca.user_id = $1
+	GROUP BY g.name
+	ORDER BY score DESC
+	LIMIT $2;
+	`
+
+	rows, err := s.DB.QueryContext(ctx, query, userID, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	result := make(map[string]float64)
+
+	for rows.Next() {
+		var genre string
+		var score float64
+
+		if err := rows.Scan(&genre, &score); err != nil {
+			return nil, err
+		}
+
+		result[genre] = score
+	}
+
+	return result, nil
+}

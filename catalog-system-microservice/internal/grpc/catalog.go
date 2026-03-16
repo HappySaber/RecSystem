@@ -3,7 +3,9 @@ package catalog
 import (
 	"catalog-microservice/internal/domain/models"
 	catalog1 "catalog-microservice/internal/pb/catalog"
+	"catalog-microservice/internal/storage"
 	"context"
+	"errors"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -75,10 +77,14 @@ func Register(gRPC *grpc.Server, catalog Catalog) {
 // }
 
 func (s *serverAPI) GetContent(ctx context.Context, req *catalog1.GetContentRequest) (*catalog1.GetContentResponse, error) {
+	if req.GetId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "wrong argument")
+	}
+
 	content, err := s.catalog.GetContent(ctx, req.GetId())
 	if err != nil {
-		if req.GetId() == "" {
-			return nil, status.Error(codes.InvalidArgument, "wrong argument")
+		if errors.Is(err, storage.ErrNotFound) {
+			return nil, status.Error(codes.NotFound, "content not found")
 		}
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -100,10 +106,14 @@ func (s *serverAPI) GetContent(ctx context.Context, req *catalog1.GetContentRequ
 }
 
 func (s *serverAPI) GetContentByIDs(ctx context.Context, req *catalog1.GetContentByIDsRequest) (*catalog1.GetContentByIDsResponse, error) {
+	if len(req.GetIds()) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "wrong argument")
+	}
+
 	content, err := s.catalog.GetContentByIDs(ctx, req.GetIds())
 	if err != nil {
-		if len(req.GetIds()) == 0 {
-			return nil, status.Error(codes.InvalidArgument, "wrong argument")
+		if errors.Is(err, storage.ErrNotFound) {
+			return nil, status.Error(codes.NotFound, "content not found")
 		}
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -152,6 +162,9 @@ func (s *serverAPI) FindContentByExternal(ctx context.Context, req *catalog1.Fin
 
 	content, err := s.catalog.FindContentByExternal(ctx, req.GetExternalId(), req.GetExternalSource())
 	if err != nil {
+		if errors.Is(err, storage.ErrNotFound) {
+			return nil, status.Error(codes.NotFound, "content not found")
+		}
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
@@ -179,6 +192,9 @@ func (s *serverAPI) GetMovieDetails(ctx context.Context, req *catalog1.GetMovieD
 
 	movieDetails, err := s.catalog.GetMovieDetails(ctx, req.GetContentId())
 	if err != nil {
+		if errors.Is(err, storage.ErrNotFound) {
+			return nil, status.Error(codes.NotFound, "content not found")
+		}
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
@@ -197,6 +213,9 @@ func (s *serverAPI) GetAnimeDetails(ctx context.Context, req *catalog1.GetAnimeD
 
 	animeDetails, err := s.catalog.GetAnimeDetails(ctx, req.GetContentId())
 	if err != nil {
+		if errors.Is(err, storage.ErrNotFound) {
+			return nil, status.Error(codes.NotFound, "content not found")
+		}
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
@@ -215,6 +234,9 @@ func (s *serverAPI) GetGameDetails(ctx context.Context, req *catalog1.GetGameDet
 
 	gameDetails, err := s.catalog.GetGameDetails(ctx, req.GetContentId())
 	if err != nil {
+		if errors.Is(err, storage.ErrNotFound) {
+			return nil, status.Error(codes.NotFound, "content not found")
+		}
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
@@ -233,6 +255,9 @@ func (s *serverAPI) GetBookDetails(ctx context.Context, req *catalog1.GetBookDet
 
 	bookDetails, err := s.catalog.GetBookDetails(ctx, req.GetContentId())
 	if err != nil {
+		if errors.Is(err, storage.ErrNotFound) {
+			return nil, status.Error(codes.NotFound, "content not found")
+		}
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
@@ -251,6 +276,9 @@ func (s *serverAPI) GetSeriesDetails(ctx context.Context, req *catalog1.GetSerie
 
 	seriesDetails, err := s.catalog.GetSeriesDetails(ctx, req.GetContentId())
 	if err != nil {
+		if errors.Is(err, storage.ErrNotFound) {
+			return nil, status.Error(codes.NotFound, "content not found")
+		}
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
@@ -322,7 +350,7 @@ func (s *serverAPI) GetAllMovieDetails(ctx context.Context, req *catalog1.GetAll
 }
 
 func (s *serverAPI) GetAllSeriesDetails(ctx context.Context, req *catalog1.GetAllSeriesDetailsRequest) (*catalog1.GetAllSeriesDetailsResponse, error) {
-	seriesDetails, err := s.catalog.GetAllMovieDetails(ctx)
+	seriesDetails, err := s.catalog.GetAllSeriesDetails(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}

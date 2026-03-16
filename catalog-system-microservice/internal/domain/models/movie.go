@@ -1,11 +1,5 @@
 package models
 
-// type MovieDetails struct {
-// 	ContentID string
-// 	TmdbID    int
-// 	RawJSON   string
-// }
-
 type MovieDetails struct {
 	ContentID string
 

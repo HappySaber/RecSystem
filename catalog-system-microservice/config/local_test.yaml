@@ -1,0 +1,9 @@
+env: "test"
+grpc:
+  port: 44055
+  timeout: 10s  
+kafka:
+  brokers:
+    - "localhost:9092"
+  topic: "content-genre"
+  group_id: "recommendation"

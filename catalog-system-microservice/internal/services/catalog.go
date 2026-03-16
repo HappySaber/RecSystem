@@ -2,6 +2,7 @@ package catalog
 
 import (
 	"catalog-microservice/internal/domain/models"
+	"catalog-microservice/internal/storage"
 	"context"
 	"errors"
 	"fmt"
@@ -31,14 +32,6 @@ type CatalogProvider interface {
 	AllGameDetails(ctx context.Context) ([]models.GameDetails, error)
 }
 
-type AppProvider interface {
-}
-
-var (
-	ErrInvalidID       = errors.New("invalid ID")
-	ErrIDDoesNotExists = errors.New("ID does not exists")
-)
-
 func New(
 	log *slog.Logger,
 	catalogProvider CatalogProvider,
@@ -60,9 +53,9 @@ func (c *Catalog) GetContent(ctx context.Context, id string) (models.Content, er
 
 	content, err := c.catalogProvider.GetContent(ctx, id)
 	if err != nil {
-		if errors.Is(err, ErrIDDoesNotExists) {
+		if errors.Is(err, storage.ErrNotFound) {
 			c.log.Warn("content not found", "error", err.Error())
-			return models.Content{}, fmt.Errorf("%s: %w", op, ErrIDDoesNotExists)
+			return models.Content{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		c.log.Error("failed to get content", "error", err.Error())
 
@@ -83,9 +76,9 @@ func (c *Catalog) GetContentByIDs(ctx context.Context, ids []string) ([]models.C
 
 	contents, err := c.catalogProvider.GetContentByIDs(ctx, ids)
 	if err != nil {
-		if errors.Is(err, ErrIDDoesNotExists) {
+		if errors.Is(err, storage.ErrNotFound) {
 			c.log.Warn("contents not found", "error", err.Error())
-			return []models.ContentShort{}, fmt.Errorf("%s: %w", op, ErrIDDoesNotExists)
+			return []models.ContentShort{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		c.log.Error("failed to get contents", "error", err.Error())
 		return []models.ContentShort{}, fmt.Errorf("%s: %w", op, err)
@@ -105,9 +98,9 @@ func (c *Catalog) FindContentByExternal(ctx context.Context, externalID, externa
 
 	content, err := c.catalogProvider.FindContentByExternal(ctx, externalID, externalSource)
 	if err != nil {
-		if errors.Is(err, ErrIDDoesNotExists) {
+		if errors.Is(err, storage.ErrNotFound) {
 			c.log.Warn("content not found", "error", err.Error())
-			return models.Content{}, fmt.Errorf("%s: %w", op, ErrIDDoesNotExists)
+			return models.Content{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		c.log.Error("failed to get content", "error", err.Error())
 
@@ -128,9 +121,9 @@ func (c *Catalog) GetMovieDetails(ctx context.Context, id string) (models.MovieD
 
 	movie, err := c.catalogProvider.MovieDetails(ctx, id)
 	if err != nil {
-		if errors.Is(err, ErrIDDoesNotExists) {
+		if errors.Is(err, storage.ErrNotFound) {
 			c.log.Warn("content not found", "error", err.Error())
-			return models.MovieDetails{}, fmt.Errorf("%s: %w", op, ErrIDDoesNotExists)
+			return models.MovieDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		c.log.Error("failed to get content", "error", err.Error())
 
@@ -151,9 +144,9 @@ func (c *Catalog) GetAnimeDetails(ctx context.Context, id string) (models.AnimeD
 
 	anime, err := c.catalogProvider.AnimeDetails(ctx, id)
 	if err != nil {
-		if errors.Is(err, ErrIDDoesNotExists) {
+		if errors.Is(err, storage.ErrNotFound) {
 			c.log.Warn("content not found", "error", err.Error())
-			return models.AnimeDetails{}, fmt.Errorf("%s: %w", op, ErrIDDoesNotExists)
+			return models.AnimeDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		c.log.Error("failed to get content", "error", err.Error())
 
@@ -174,9 +167,9 @@ func (c *Catalog) GetGameDetails(ctx context.Context, id string) (models.GameDet
 
 	game, err := c.catalogProvider.GameDetails(ctx, id)
 	if err != nil {
-		if errors.Is(err, ErrIDDoesNotExists) {
+		if errors.Is(err, storage.ErrNotFound) {
 			c.log.Warn("content not found", "error", err.Error())
-			return models.GameDetails{}, fmt.Errorf("%s: %w", op, ErrIDDoesNotExists)
+			return models.GameDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		c.log.Error("failed to get content", "error", err.Error())
 
@@ -197,9 +190,9 @@ func (c *Catalog) GetSeriesDetails(ctx context.Context, id string) (models.Serie
 
 	series, err := c.catalogProvider.SeriesDetails(ctx, id)
 	if err != nil {
-		if errors.Is(err, ErrIDDoesNotExists) {
+		if errors.Is(err, storage.ErrNotFound) {
 			c.log.Warn("content not found", "error", err.Error())
-			return models.SeriesDetails{}, fmt.Errorf("%s: %w", op, ErrIDDoesNotExists)
+			return models.SeriesDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		c.log.Error("failed to get content", "error", err.Error())
 
@@ -220,9 +213,9 @@ func (c *Catalog) GetBookDetails(ctx context.Context, id string) (models.BookDet
 
 	book, err := c.catalogProvider.BookDetails(ctx, id)
 	if err != nil {
-		if errors.Is(err, ErrIDDoesNotExists) {
+		if errors.Is(err, storage.ErrNotFound) {
 			c.log.Warn("content not found", "error", err.Error())
-			return models.BookDetails{}, fmt.Errorf("%s: %w", op, ErrIDDoesNotExists)
+			return models.BookDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		c.log.Error("failed to get content", "error", err.Error())
 
@@ -243,9 +236,9 @@ func (c *Catalog) GetAllMovieDetails(ctx context.Context) ([]models.MovieDetails
 
 	movies, err := c.catalogProvider.AllMovieDetails(ctx)
 	if err != nil {
-		if errors.Is(err, ErrIDDoesNotExists) {
+		if errors.Is(err, storage.ErrNotFound) {
 			c.log.Warn("content not found", "error", err.Error())
-			return []models.MovieDetails{}, fmt.Errorf("%s: %w", op, ErrIDDoesNotExists)
+			return []models.MovieDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		c.log.Error("failed to get content", "error", err.Error())
 
@@ -266,9 +259,9 @@ func (c *Catalog) GetAllAnimeDetails(ctx context.Context) ([]models.AnimeDetails
 
 	animes, err := c.catalogProvider.AllAnimeDetails(ctx)
 	if err != nil {
-		if errors.Is(err, ErrIDDoesNotExists) {
+		if errors.Is(err, storage.ErrNotFound) {
 			c.log.Warn("content not found", "error", err.Error())
-			return []models.AnimeDetails{}, fmt.Errorf("%s: %w", op, ErrIDDoesNotExists)
+			return []models.AnimeDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		c.log.Error("failed to get content", "error", err.Error())
 
@@ -289,9 +282,9 @@ func (c *Catalog) GetAllGameDetails(ctx context.Context) ([]models.GameDetails, 
 
 	games, err := c.catalogProvider.AllGameDetails(ctx)
 	if err != nil {
-		if errors.Is(err, ErrIDDoesNotExists) {
+		if errors.Is(err, storage.ErrNotFound) {
 			c.log.Warn("content not found", "error", err.Error())
-			return []models.GameDetails{}, fmt.Errorf("%s: %w", op, ErrIDDoesNotExists)
+			return []models.GameDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		c.log.Error("failed to get content", "error", err.Error())
 
@@ -312,9 +305,9 @@ func (c *Catalog) GetAllSeriesDetails(ctx context.Context) ([]models.SeriesDetai
 
 	serieses, err := c.catalogProvider.AllSeriesDetails(ctx)
 	if err != nil {
-		if errors.Is(err, ErrIDDoesNotExists) {
+		if errors.Is(err, storage.ErrNotFound) {
 			c.log.Warn("content not found", "error", err.Error())
-			return []models.SeriesDetails{}, fmt.Errorf("%s: %w", op, ErrIDDoesNotExists)
+			return []models.SeriesDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		c.log.Error("failed to get content", "error", err.Error())
 
@@ -335,9 +328,9 @@ func (c *Catalog) GetAllBookDetails(ctx context.Context) ([]models.BookDetails, 
 
 	books, err := c.catalogProvider.AllBookDetails(ctx)
 	if err != nil {
-		if errors.Is(err, ErrIDDoesNotExists) {
+		if errors.Is(err, storage.ErrNotFound) {
 			c.log.Warn("content not found", "error", err.Error())
-			return []models.BookDetails{}, fmt.Errorf("%s: %w", op, ErrIDDoesNotExists)
+			return []models.BookDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		c.log.Error("failed to get content", "error", err.Error())
 

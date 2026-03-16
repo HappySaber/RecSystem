@@ -19,19 +19,7 @@ type Storage struct {
 }
 
 func New() (*Storage, error) {
-	const op = "storage.postgresql.New"
-	dbConfig := buildDBConfig()
-	db, err := sql.Open("postgres", dbConfig.dsn())
-	if err != nil {
-		log.Fatalf("Error checking database connection: %v", err)
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-
-	log.Println("Successfully connected to the database!")
-
-	return &Storage{
-		DB: db,
-	}, nil
+	return NewWithDSN(buildDSNFromEnv())
 }
 
 type DBConfig struct {
@@ -42,50 +30,73 @@ type DBConfig struct {
 	Password string
 }
 
-func buildDBConfig() *DBConfig {
-	port, err := strconv.Atoi(os.Getenv("DB_PORT"))
+func NewWithDSN(dsn string) (*Storage, error) {
+	const op = "storage.postgresql.NewWithDSN"
+
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		log.Fatalf("Invalid DB_PORT: %v", err)
+		return nil, fmt.Errorf("%s: %w", op, err)
 	}
-	return &DBConfig{
-		Host:     os.Getenv("DB_HOST"),
-		Port:     port,
-		User:     os.Getenv("DB_USER"),
-		DBName:   os.Getenv("DB_NAME"),
-		Password: os.Getenv("DB_PASSWORD"),
+
+	// sql.Open не проверяет соединение, Ping проверяет
+	if err := db.Ping(); err != nil {
+		return nil, fmt.Errorf("%s: ping failed: %w", op, err)
 	}
+
+	log.Println("successfully connected to the database")
+	return &Storage{DB: db}, nil
 }
 
-func (config *DBConfig) dsn() string {
+func buildDSNFromEnv() string {
+	port, err := strconv.Atoi(os.Getenv("DB_PORT"))
+	if err != nil {
+		log.Fatalf("invalid DB_PORT: %v", err)
+	}
 	return fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		config.Host, config.Port, config.User, config.Password, config.DBName,
+		os.Getenv("DB_HOST"),
+		port,
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"),
 	)
 }
 
 func (s *Storage) GetContent(ctx context.Context, id string) (models.Content, error) {
 	const op = "storage.posgresql.GetContent"
 
-	query := `SELECT id, type, title, external_id, description, release_date FROM content WHERE id = $1`
+	query := `
+        SELECT id, type, external_source, external_id,
+               title,
+               COALESCE(description, ''),
+               COALESCE(poster_url, ''),
+               COALESCE(release_date::text, ''),
+               created_at::text,
+               updated_at::text
+        FROM content WHERE id = $1`
 
-	var details models.Content
+	var c models.Content
 	err := s.DB.QueryRowContext(ctx, query, id).Scan(
-		&details.ID,
-		&details.Type,
-		&details.Title,
-		&details.ExternalID,
-		&details.Description,
-		&details.ReleaseDate,
+		&c.ID,
+		&c.Type,
+		&c.ExternalSource,
+		&c.ExternalID,
+		&c.Title,
+		&c.Description,
+		&c.PosterURL,
+		&c.ReleaseDate,
+		&c.CreatedAt,
+		&c.UpdatedAt,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return models.Content{}, fmt.Errorf("%s: %w", op, storage.ErrShowNotFound)
+			return models.Content{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 
 		return models.Content{}, fmt.Errorf("%s: %w", op, err)
 	}
 
-	return details, nil
+	return c, nil
 }
 
 func (s *Storage) GetContentByIDs(ctx context.Context, ids []string) ([]models.ContentShort, error) {
@@ -97,7 +108,7 @@ func (s *Storage) GetContentByIDs(ctx context.Context, ids []string) ([]models.C
 
 	query := `
 		SELECT id, type, title
-		FROM anime_details
+		FROM content
 		WHERE id = ANY($1)
 	`
 
@@ -130,55 +141,131 @@ func (s *Storage) GetContentByIDs(ctx context.Context, ids []string) ([]models.C
 }
 
 func (s *Storage) AnimeDetails(ctx context.Context, id string) (models.AnimeDetails, error) {
-	const op = "storage.posgresql.AnimeDetails"
+	const op = "storage.postgresql.AnimeDetails"
 
-	query := `SELECT * FROM anime_details WHERE id = $1`
+	query := `
+        SELECT content_id, anilist_id,
+               mal_id,
+               COALESCE(original_title, ''),
+               COALESCE(format, ''),
+               COALESCE(status, ''),
+               COALESCE(season, ''),
+               season_year,
+               episodes_count,
+               episode_duration,
+               start_date::text,
+               end_date::text,
+               COALESCE(language, ''),
+               genres, tags, studios, characters, voice_actors,
+               mean_score,
+               COALESCE(popularity, 0),
+               COALESCE(favourites, 0),
+               trailer_url,
+               raw_data
+        FROM anime_details WHERE content_id = $1`
 
-	var animeDetails models.AnimeDetails
-	err := s.DB.QueryRowContext(ctx, query, id).Scan(&animeDetails)
+	var a models.AnimeDetails
+	err := s.DB.QueryRowContext(ctx, query, id).Scan(
+		&a.ContentID,
+		&a.AniListID,
+		&a.MALID, // *int — принимает NULL
+		&a.OriginalTitle,
+		&a.Format,
+		&a.Status,
+		&a.Season,
+		&a.SeasonYear,      // *int — принимает NULL
+		&a.EpisodesCount,   // *int — принимает NULL
+		&a.EpisodeDuration, // *int — принимает NULL
+		&a.StartDate,       // *string — принимает NULL
+		&a.EndDate,         // *string — принимает NULL
+		&a.Language,
+		&a.Genres,
+		&a.Tags,
+		&a.Studios,
+		&a.Characters,
+		&a.VoiceActors,
+		&a.MeanScore,  // *int — принимает NULL
+		&a.Popularity, // int — COALESCE нужен
+		&a.Favourites, // int — COALESCE нужен
+		&a.TrailerURL, // *string — принимает NULL
+		&a.RawData,
+	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return models.AnimeDetails{}, fmt.Errorf("%s: %w", op, storage.ErrShowNotFound)
+			return models.AnimeDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
-
 		return models.AnimeDetails{}, fmt.Errorf("%s: %w", op, err)
 	}
-
-	return animeDetails, nil
+	return a, nil
 }
 
 func (s *Storage) MovieDetails(ctx context.Context, id string) (models.MovieDetails, error) {
 	const op = "storage.posgresql.MovieDetails"
 
-	query := `SELECT * FROM movies_details WHERE id = $1`
-	var movieDetails models.MovieDetails
-	err := s.DB.QueryRowContext(ctx, query, id).Scan(&movieDetails)
+	query := `
+        SELECT content_id, tmdb_id,
+               COALESCE(original_title, ''), runtime, COALESCE(tagline, ''),
+               COALESCE(status, ''), COALESCE(budget, 0), COALESCE(revenue, 0),
+               COALESCE(language, ''),
+               genres, cast_members, crew, images, videos, raw_data
+        FROM movies_details WHERE content_id = $1`
+
+	var m models.MovieDetails
+	err := s.DB.QueryRowContext(ctx, query, id).Scan(
+		&m.ContentID, &m.TmdbID,
+		&m.OriginalTitle, &m.Runtime, &m.Tagline,
+		&m.Status, &m.Budget, &m.Revenue, &m.Language,
+		&m.Genres, &m.CastMembers, &m.Crew, &m.Images, &m.Videos, &m.RawData,
+	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return models.MovieDetails{}, fmt.Errorf("%s: %w", op, storage.ErrShowNotFound)
+			return models.MovieDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
-
 		return models.MovieDetails{}, fmt.Errorf("%s: %w", op, err)
 	}
-
-	return movieDetails, nil
+	return m, nil
 }
-
 func (s *Storage) SeriesDetails(ctx context.Context, id string) (models.SeriesDetails, error) {
-	const op = "storage.posgresql.SeriesDetails"
+	const op = "storage.postgresql.SeriesDetails"
 
-	query := `SELECT * FROM series_details WHERE id = $1`
-	var seriesDetails models.SeriesDetails
-	err := s.DB.QueryRowContext(ctx, query, id).Scan(&seriesDetails)
+	query := `
+        SELECT content_id, tmdb_id,
+               COALESCE(original_name, ''),
+               COALESCE(status, ''),
+               first_air_date::text,
+               last_air_date::text,
+               COALESCE(number_of_seasons, 0),
+               COALESCE(number_of_episodes, 0),
+               COALESCE(language, ''),
+               genres, networks, cast_members, images, videos,
+               raw_data
+        FROM series_details WHERE content_id = $1`
+
+	var sd models.SeriesDetails
+	err := s.DB.QueryRowContext(ctx, query, id).Scan(
+		&sd.ContentID,
+		&sd.TmdbID,
+		&sd.OriginalName,
+		&sd.Status,
+		&sd.FirstAirDate,
+		&sd.LastAirDate,
+		&sd.NumberOfSeasons,
+		&sd.NumberOfEpisodes,
+		&sd.Language,
+		&sd.Genres,
+		&sd.Networks,
+		&sd.CastMembers,
+		&sd.Images,
+		&sd.Videos,
+		&sd.RawData,
+	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return models.SeriesDetails{}, fmt.Errorf("%s: %w", op, storage.ErrShowNotFound)
+			return models.SeriesDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
-
 		return models.SeriesDetails{}, fmt.Errorf("%s: %w", op, err)
 	}
-
-	return seriesDetails, nil
+	return sd, nil
 }
 
 func (s *Storage) BookDetails(ctx context.Context, id string) (models.BookDetails, error) {
@@ -188,7 +275,7 @@ func (s *Storage) BookDetails(ctx context.Context, id string) (models.BookDetail
 	err := s.DB.QueryRowContext(ctx, query, id).Scan(&bookDetails)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return models.BookDetails{}, fmt.Errorf("%s: %w", op, storage.ErrShowNotFound)
+			return models.BookDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		return models.BookDetails{}, fmt.Errorf("%s: %w", op, err)
 	}
@@ -197,12 +284,12 @@ func (s *Storage) BookDetails(ctx context.Context, id string) (models.BookDetail
 
 func (s *Storage) GameDetails(ctx context.Context, id string) (models.GameDetails, error) {
 	const op = "storage.posgresql.GameDetails"
-	query := `SELECT * FROM games_details WHERE id = $1`
+	query := `SELECT * FROM games_details WHERE content_id = $1`
 	var gameDetails models.GameDetails
 	err := s.DB.QueryRowContext(ctx, query, id).Scan(&gameDetails)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return models.GameDetails{}, fmt.Errorf("%s: %w", op, storage.ErrShowNotFound)
+			return models.GameDetails{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 		return models.GameDetails{}, fmt.Errorf("%s: %w", op, err)
 	}
@@ -210,66 +297,174 @@ func (s *Storage) GameDetails(ctx context.Context, id string) (models.GameDetail
 }
 
 func (s *Storage) AllAnimeDetails(ctx context.Context) ([]models.AnimeDetails, error) {
-	const op = "storage.posgresql.AllAnimeDetails"
+	const op = "storage.postgresql.AllAnimeDetails"
 
-	query := `SELECT * FROM anime_details`
+	query := `
+        SELECT content_id, anilist_id,
+               mal_id,
+               COALESCE(original_title, ''),
+               COALESCE(format, ''),
+               COALESCE(status, ''),
+               COALESCE(season, ''),
+               season_year,
+               episodes_count,
+               episode_duration,
+               start_date::text,
+               end_date::text,
+               COALESCE(language, ''),
+               genres, tags, studios, characters, voice_actors,
+               mean_score,
+               COALESCE(popularity, 0),
+               COALESCE(favourites, 0),
+               trailer_url,
+               raw_data
+        FROM anime_details`
+
 	rows, err := s.DB.QueryContext(ctx, query)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	defer rows.Close()
 
-	var animeDetails []models.AnimeDetails
+	var result []models.AnimeDetails
 	for rows.Next() {
-		var anime models.AnimeDetails
-		if err := rows.Scan(&anime); err != nil {
+		var a models.AnimeDetails
+		if err := rows.Scan(
+			&a.ContentID,
+			&a.AniListID,
+			&a.MALID,
+			&a.OriginalTitle,
+			&a.Format,
+			&a.Status,
+			&a.Season,
+			&a.SeasonYear,
+			&a.EpisodesCount,
+			&a.EpisodeDuration,
+			&a.StartDate,
+			&a.EndDate,
+			&a.Language,
+			&a.Genres,
+			&a.Tags,
+			&a.Studios,
+			&a.Characters,
+			&a.VoiceActors,
+			&a.MeanScore,
+			&a.Popularity,
+			&a.Favourites,
+			&a.TrailerURL,
+			&a.RawData,
+		); err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}
-		animeDetails = append(animeDetails, anime)
+		result = append(result, a)
 	}
-	return animeDetails, nil
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	return result, nil
 }
-
 func (s *Storage) AllMovieDetails(ctx context.Context) ([]models.MovieDetails, error) {
-	const op = "storage.posgresql.AllMovieDetails"
+	const op = "storage.postgresql.AllMovieDetails"
 
-	query := `SELECT * FROM movies_details`
+	query := `
+        SELECT content_id, tmdb_id,
+               COALESCE(original_title, ''),
+               runtime,
+               COALESCE(tagline, ''),
+               COALESCE(status, ''),
+               COALESCE(budget, 0),
+               COALESCE(revenue, 0),
+               COALESCE(language, ''),
+               genres, cast_members, crew, images, videos,
+               raw_data
+        FROM movies_details`
+
 	rows, err := s.DB.QueryContext(ctx, query)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	defer rows.Close()
 
-	var movieDetails []models.MovieDetails
+	var result []models.MovieDetails
 	for rows.Next() {
-		var movie models.MovieDetails
-		if err := rows.Scan(&movie); err != nil {
+		var m models.MovieDetails
+		if err := rows.Scan(
+			&m.ContentID,
+			&m.TmdbID,
+			&m.OriginalTitle,
+			&m.Runtime,
+			&m.Tagline,
+			&m.Status,
+			&m.Budget,
+			&m.Revenue,
+			&m.Language,
+			&m.Genres,
+			&m.CastMembers,
+			&m.Crew,
+			&m.Images,
+			&m.Videos,
+			&m.RawData,
+		); err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}
-		movieDetails = append(movieDetails, movie)
+		result = append(result, m)
 	}
-	return movieDetails, nil
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	return result, nil
 }
 
 func (s *Storage) AllSeriesDetails(ctx context.Context) ([]models.SeriesDetails, error) {
-	const op = "storage.posgresql.AllSeriesDetails"
+	const op = "storage.postgresql.AllSeriesDetails"
 
-	query := `SELECT * FROM series_details`
+	query := `
+        SELECT content_id, tmdb_id,
+               COALESCE(original_name, ''),
+               COALESCE(status, ''),
+               first_air_date::text,
+               last_air_date::text,
+               COALESCE(number_of_seasons, 0),
+               COALESCE(number_of_episodes, 0),
+               COALESCE(language, ''),
+               genres, networks, cast_members, images, videos,
+               raw_data
+        FROM series_details`
+
 	rows, err := s.DB.QueryContext(ctx, query)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	defer rows.Close()
 
-	var seriesDetails []models.SeriesDetails
+	var result []models.SeriesDetails
 	for rows.Next() {
-		var series models.SeriesDetails
-		if err := rows.Scan(&series); err != nil {
+		var s models.SeriesDetails
+		if err := rows.Scan(
+			&s.ContentID,
+			&s.TmdbID,
+			&s.OriginalName,
+			&s.Status,
+			&s.FirstAirDate,
+			&s.LastAirDate,
+			&s.NumberOfSeasons,
+			&s.NumberOfEpisodes,
+			&s.Language,
+			&s.Genres,
+			&s.Networks,
+			&s.CastMembers,
+			&s.Images,
+			&s.Videos,
+			&s.RawData,
+		); err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}
-		seriesDetails = append(seriesDetails, series)
+		result = append(result, s)
 	}
-	return seriesDetails, nil
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	return result, nil
 }
 
 func (s *Storage) AllBookDetails(ctx context.Context) ([]models.BookDetails, error) {
@@ -314,11 +509,6 @@ func (s *Storage) AllGameDetails(ctx context.Context) ([]models.GameDetails, err
 	return gameDetails, nil
 }
 
-// func (s *storage) CreateContent() {
-// 	const op = "storage.posgresql.CreateContent"
-// 	return fmt.Errorf("%s: not implemented", op)
-// }
-
 func (s *Storage) FindContentByExternal(ctx context.Context, externalID, externalSource string) (models.Content, error) {
 	const op = "storage.posgresql.FindContentByExternal"
 
@@ -335,7 +525,7 @@ func (s *Storage) FindContentByExternal(ctx context.Context, externalID, externa
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return models.Content{}, fmt.Errorf("%s: %w", op, storage.ErrShowNotFound)
+			return models.Content{}, fmt.Errorf("%s: %w", op, storage.ErrNotFound)
 		}
 
 		return models.Content{}, fmt.Errorf("%s: %w", op, err)

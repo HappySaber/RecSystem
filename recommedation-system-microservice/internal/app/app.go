@@ -31,7 +31,7 @@ func New(
 		panic(err)
 	}
 	_ = storage // Placeholder to avoid unused variable error
-	aiRecService := initAIRecommendationService(log)
+	aiRecService := initAIRecommendationService(log, storage)
 
 	engine := recommendation.New(log, storage, 0)
 	prefs := &userpreferences.UserPreferences{}
@@ -75,7 +75,7 @@ func New(
 	}
 }
 
-func initAIRecommendationService(log *slog.Logger) *airecommendation.AIRecommendation {
+func initAIRecommendationService(log *slog.Logger, storage *postgresql.Storage) *airecommendation.AIRecommendation {
 	aiClient, err := airecommendation.NewOpenAIClient()
 	if err != nil {
 		panic(err)
@@ -88,7 +88,7 @@ func initAIRecommendationService(log *slog.Logger) *airecommendation.AIRecommend
 	if err != nil {
 		panic(err)
 	}
-	return airecommendation.NewAIRecommendation(log, aiClient, promptBuilder, aiParser)
+	return airecommendation.NewAIRecommendation(log, aiClient, promptBuilder, aiParser, storage)
 }
 
 func (a *App) StartConsumers(ctx context.Context) {

@@ -1,55 +1,169 @@
 package suite
 
 import (
-	"catalog-microservice/internal/config"
-	catalogv1 "catalog-microservice/internal/pb/catalog"
 	"context"
+	"database/sql"
+	"log/slog"
 	"net"
+	"os"
+	"path/filepath"
+	"runtime"
 	"strconv"
 	"testing"
+	"time"
 
+	"catalog-microservice/internal/app"
+	"catalog-microservice/internal/config"
+	catalogpb "catalog-microservice/internal/pb/catalog"
+
+	_ "github.com/lib/pq"
+	"github.com/pressly/goose/v3"
+	"github.com/stretchr/testify/require"
+	"github.com/testcontainers/testcontainers-go"
+	tcpostgres "github.com/testcontainers/testcontainers-go/modules/postgres"
+	"github.com/testcontainers/testcontainers-go/wait"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+const grpcHost = "localhost"
+
 type Suite struct {
 	*testing.T
 	Cfg           *config.Config
-	CatalogClient catalogv1.CatalogServiceClient
+	CatalogClient catalogpb.CatalogServiceClient
+	DB            *sql.DB
 }
-
-const (
-	grpcHost = "localhost"
-)
 
 func New(t *testing.T) (context.Context, *Suite) {
 	t.Helper()
 	t.Parallel()
 
-	cfg := config.MustLoadByPath("../config/local.yaml")
+	cfg := config.MustLoadByPath("../config/local_test.yaml")
 
-	ctx, cancelCtx := context.WithTimeout(context.Background(), cfg.GRPC.Timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	t.Cleanup(cancel)
 
-	t.Cleanup(func() {
-		t.Helper()
-		cancelCtx()
-	})
+	connStr := mustStartPostgres(ctx, t)
+	mustRunMigrations(t, connStr)
 
-	cc, err := grpc.DialContext(context.Background(),
-		grpcAddress(cfg),
-		grpc.WithTransportCredentials(insecure.NewCredentials()))
+	// находим свободный порт чтобы параллельные тесты не конфликтовали
+	port := mustGetFreePort(t)
+	cfg.GRPC.Port = port
 
-	if err != nil {
-		t.Fatalf("grpc server connection failed: %v", err)
-	}
+	mustStartServer(t, cfg, connStr)
+
+	// открываем отдельное соединение для хелперов вставки данных
+	db, err := sql.Open("postgres", connStr)
+	require.NoError(t, err, "failed to open db for helpers")
+	t.Cleanup(func() { db.Close() })
+
+	cc, err := grpc.NewClient(
+		net.JoinHostPort(grpcHost, strconv.Itoa(port)),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	require.NoError(t, err, "grpc connection failed")
+	t.Cleanup(func() { cc.Close() })
 
 	return ctx, &Suite{
 		T:             t,
 		Cfg:           cfg,
-		CatalogClient: catalogv1.NewCatalogServiceClient(cc),
+		CatalogClient: catalogpb.NewCatalogServiceClient(cc),
+		DB:            db, // теперь передаём DB
 	}
 }
 
-func grpcAddress(cfg *config.Config) string {
-	return net.JoinHostPort(grpcHost, strconv.Itoa(cfg.GRPC.Port))
+// mustGetFreePort просит ОС выдать свободный порт
+func mustGetFreePort(t *testing.T) int {
+	t.Helper()
+
+	// слушаем на порту 0 — ОС сама выберет свободный
+	ln, err := net.Listen("tcp", "localhost:0")
+	require.NoError(t, err, "failed to get free port")
+	defer ln.Close()
+
+	return ln.Addr().(*net.TCPAddr).Port
+}
+
+func mustStartPostgres(ctx context.Context, t *testing.T) string {
+	t.Helper()
+
+	container, err := tcpostgres.RunContainer(ctx,
+		testcontainers.WithImage("postgres:16-alpine"),
+		tcpostgres.WithDatabase("catalog_test"),
+		tcpostgres.WithUsername("test"),
+		tcpostgres.WithPassword("test"),
+		testcontainers.WithWaitStrategy(
+			wait.ForLog("database system is ready to accept connections").
+				WithOccurrence(2).
+				WithStartupTimeout(30*time.Second),
+		),
+	)
+	require.NoError(t, err, "failed to start postgres container")
+
+	t.Cleanup(func() {
+		if err := container.Terminate(context.Background()); err != nil {
+			t.Logf("failed to terminate container: %v", err)
+		}
+	})
+
+	connStr, err := container.ConnectionString(ctx, "sslmode=disable")
+	require.NoError(t, err)
+
+	return connStr
+}
+
+func mustRunMigrations(t *testing.T, connStr string) {
+	t.Helper()
+
+	db, err := sql.Open("postgres", connStr)
+	require.NoError(t, err)
+	defer db.Close()
+
+	_, currentFile, _, _ := runtime.Caller(0)
+	projectRoot := filepath.Join(filepath.Dir(currentFile), "..", "..")
+	migrationsPath := filepath.Join(projectRoot, "migrations")
+
+	err = goose.Up(db, migrationsPath)
+	require.NoError(t, err, "migrations failed")
+}
+
+func mustStartServer(t *testing.T, cfg *config.Config, connStr string) {
+	t.Helper()
+
+	log := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelDebug,
+	}))
+
+	application := app.NewWithDSN(log, cfg.GRPC.Port, connStr)
+
+	go func() {
+		application.GRPCSrv.MustRun()
+	}()
+
+	waitForPort(t, cfg.GRPC.Port)
+
+	t.Cleanup(func() {
+		application.GRPCSrv.Stop()
+	})
+}
+
+func waitForPort(t *testing.T, port int) {
+	t.Helper()
+
+	addr := net.JoinHostPort(grpcHost, strconv.Itoa(port))
+
+	require.Eventually(t,
+		func() bool {
+			conn, err := net.DialTimeout("tcp", addr, time.Second)
+			if err != nil {
+				return false
+			}
+			conn.Close()
+			return true
+		},
+		10*time.Second,
+		100*time.Millisecond,
+		"grpc server did not start on port %d", port,
+	)
 }

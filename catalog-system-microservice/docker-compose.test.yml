@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  postgres-test:
+    image: postgres:15
+    container_name: catalog-postgres-test
+    restart: always
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 2062
+      POSTGRES_DB: catalog_rec_system_test
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_test_data:
