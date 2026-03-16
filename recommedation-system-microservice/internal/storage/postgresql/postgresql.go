@@ -15,20 +15,7 @@ type Storage struct {
 }
 
 func New() (*Storage, error) {
-	const op = "storage.postgresql.New"
-
-	dbConfig := buildDBConfig()
-	db, err := sql.Open("postgres", dbConfig.dsn())
-	if err != nil {
-		log.Fatalf("Error checking database connection: %v", err)
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-
-	log.Println("Successfully connected to the database!")
-
-	return &Storage{
-		DB: db,
-	}, nil
+	return NewWithDSN(buildDSNFromEnv())
 }
 
 type DBConfig struct {
@@ -39,23 +26,34 @@ type DBConfig struct {
 	Password string
 }
 
-func buildDBConfig() *DBConfig {
-	port, err := strconv.Atoi(os.Getenv("DB_PORT"))
+func NewWithDSN(dsn string) (*Storage, error) {
+	const op = "storage.postgresql.NewWithDSN"
+
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		log.Fatalf("Invalid DB_PORT: %v", err)
+		return nil, fmt.Errorf("%s: %w", op, err)
 	}
-	return &DBConfig{
-		Host:     os.Getenv("DB_HOST_LOCAL"),
-		Port:     port,
-		User:     os.Getenv("DB_USER"),
-		DBName:   os.Getenv("DB_NAME"),
-		Password: os.Getenv("DB_PASSWORD"),
+
+	// sql.Open не проверяет соединение, Ping проверяет
+	if err := db.Ping(); err != nil {
+		return nil, fmt.Errorf("%s: ping failed: %w", op, err)
 	}
+
+	log.Println("successfully connected to the database")
+	return &Storage{DB: db}, nil
 }
 
-func (config *DBConfig) dsn() string {
+func buildDSNFromEnv() string {
+	port, err := strconv.Atoi(os.Getenv("DB_PORT"))
+	if err != nil {
+		log.Fatalf("invalid DB_PORT: %v", err)
+	}
 	return fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		config.Host, config.Port, config.User, config.Password, config.DBName,
+		os.Getenv("DB_HOST"),
+		port,
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"),
 	)
 }
