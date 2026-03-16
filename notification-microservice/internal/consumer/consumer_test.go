@@ -57,7 +57,7 @@ func TestConsumer_HandlerError(t *testing.T) {
 func TestConsumer_ContextCancellation(t *testing.T) {
 	// проверяем что consumer останавливается при отмене контекста
 	log := newTestLogger()
-	cfg := consumer.TestConfig() // хелпер для тестового конфига
+	cfg := consumer.TestConfig()
 
 	kc := consumer.NewForTest(cfg, log)
 

@@ -30,7 +30,7 @@ func New(
 	if err != nil {
 		panic(err)
 	}
-	_ = storage // Placeholder to avoid unused variable error
+
 	aiRecService := initAIRecommendationService(log, storage)
 
 	engine := recommendation.New(log, storage, 0)
