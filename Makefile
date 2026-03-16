@@ -26,6 +26,14 @@ catalog-migrator:
 catalog-importer:
 	cd catalog-system-microservice && go run cmd/importer/main.go --config=./config/local.yaml
 
+catalog-test-integration:
+	cd catalog-system-microservice && go test ./tests/... -v -timeout 120s
+
+catalog-test-unit:
+	cd catalog-system-microservice && go test ./internal/services/... -v
+
+catalog-test-all:
+	cd catalog-system-microservice && go test ./... -v -timeout 120s
 
 
 recommendation:
@@ -36,6 +44,12 @@ recommendation-migrator:
 
 notifications:
 	cd notification-microservice && go run cmd/app/main.go --config=./config/local.yaml
+
+notifications-test-unit-mail:
+	cd notification-microservice && go test ./internal/services/... -v
+
+notifications-test-unit-consumer:
+	cd notification-microservice && go test ./internal/consumer/... -v
 
 apigateway:
 	cd api-gateway && go run cmd/gateway/main.go
