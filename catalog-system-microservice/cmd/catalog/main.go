@@ -3,7 +3,6 @@ package main
 import (
 	"catalog-microservice/internal/app"
 	"catalog-microservice/internal/config"
-	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -23,7 +22,7 @@ func main() {
 	cfg := config.MustLoad()
 	log := setupLogger(cfg.Env)
 	if err := godotenv.Load(".env"); err != nil {
-		panic(fmt.Sprintf("failed to load .env: %v", err))
+		log.Info("no .env file, using system environment variables")
 	}
 	log.Info(
 		"starting application",

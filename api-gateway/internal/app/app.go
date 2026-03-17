@@ -16,34 +16,46 @@ type App struct {
 }
 
 func New(addr string) (*App, error) {
-	// Kafka producer
-	kafkaProducer := producer.NewProducer([]string{
-		"localhost:9092",
-	})
+	// читаем адреса из env — в Docker это имена сервисов из compose
+	// локально — localhost с портами
+	kafkaBroker := os.Getenv("KAFKA_BROKERS")
+	if kafkaBroker == "" {
+		kafkaBroker = "localhost:9092"
+	}
+
+	recAddr := os.Getenv("REC_GRPC_ADDR")
+	if recAddr == "" {
+		recAddr = "localhost:44045"
+	}
+
+	catalogAddr := os.Getenv("CATALOG_GRPC_ADDR")
+	if catalogAddr == "" {
+		catalogAddr = "localhost:44044"
+	}
+
+	ssoAddr := os.Getenv("SSO_GRPC_ADDR")
+	if ssoAddr == "" {
+		ssoAddr = "localhost:44043"
+	}
+
+	kafkaProducer := producer.NewProducer([]string{kafkaBroker})
 	userActionProd := adapter.NewUserActionProducer(kafkaProducer, "user-action")
 
-	// gRPC clients
-	recommendationClient, err := client.NewRecommendationClient(
-		"localhost:44045",
-	)
+	recommendationClient, err := client.NewRecommendationClient(recAddr)
 	if err != nil {
 		return nil, err
 	}
 
-	catalogClient, err := client.NewCatalogClient(
-		"localhost:44044",
-	)
-
+	catalogClient, err := client.NewCatalogClient(catalogAddr)
 	if err != nil {
 		return nil, err
 	}
-	ssoClient, err := client.NewSSOClient(
-		"localhost:44043",
-	)
 
+	ssoClient, err := client.NewSSOClient(ssoAddr)
 	if err != nil {
 		return nil, err
 	}
+
 	// Handlers
 	recommendationHandler := &handlers.RecommendationHandler{
 		Producer:             userActionProd,

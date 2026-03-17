@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"log/slog"
 	"notifications/internal/config"
 	"notifications/internal/consumer"
@@ -26,7 +27,7 @@ const (
 
 func main() {
 	if err := godotenv.Load(".env"); err != nil {
-		panic(fmt.Sprintf("failed to load .env: %v", err))
+		log.Println("no .env file, using system environment variables")
 	}
 	cfg := config.MustLoad()
 	log := setupLogger(cfg.Env)

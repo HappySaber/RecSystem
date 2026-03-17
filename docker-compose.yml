@@ -1,36 +1,41 @@
-version: "3.9"
-
 services:
-  # Kafka
+
+  # ── Kafka ──────────────────────────────────────────────
   kafka:
-    image: bitnami/kafka:3.6
+    image: apache/kafka:3.8.0
     container_name: kafka
     environment:
-      KAFKA_ENABLE_KRAFT: "yes"
-      KAFKA_CFG_PROCESS_ROLES: broker,controller
-      KAFKA_CFG_NODE_ID: 1
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
-      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
-      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
-    ports:
-      - "9092:9092"
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
     networks:
       - backend
 
-
-  # SSO 
+  # ── SSO ────────────────────────────────────────────────
   sso-db:
-    image: postgres:16
+    image: postgres:16-alpine
     container_name: sso-db
     environment:
-      POSTGRES_USER: sso
-      POSTGRES_PASSWORD: sso
-      POSTGRES_DB: sso
+      POSTGRES_USER: ${SSO_DB_USER}
+      POSTGRES_PASSWORD: ${SSO_DB_PASSWORD}
+      POSTGRES_DB: ${SSO_DB_NAME}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sso -d sso"]
+      test: ["CMD-SHELL", "pg_isready -U ${SSO_DB_USER} -d ${SSO_DB_NAME}"]
       interval: 5s
+      timeout: 3s
       retries: 5
     volumes:
       - sso_pg:/var/lib/postgresql/data
@@ -38,73 +43,199 @@ services:
       - backend
 
   sso:
-    build: ./sso-microservice
-    container_name: sso-microservice
+    build:
+      context: ./sso-microservice
+      dockerfile: Dockerfile
+    container_name: sso
     depends_on:
       sso-db:
         condition: service_healthy
+      kafka:
+        condition: service_healthy
     environment:
-      DB_DSN: postgres://sso:sso@sso-db:5432/sso?sslmode=disable
-      GRPC_PORT: 50051
-      KAFKA_BROKERS: kafka:9092
+      DB_HOST_LOCAL: sso-db
+      DB_PORT: ${SSO_DB_PORT}
+      DB_USER: ${SSO_DB_USER}
+      DB_PASSWORD: ${SSO_DB_PASSWORD}
+      DB_NAME: ${SSO_DB_NAME}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      REDIS_ADDR: redis:6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_USER: ${REDIS_USER}
+      REDIS_DB: ${REDIS_DB}
+      REDIS_MAX_RETRIES: ${REDIS_MAX_RETRIES}
+      REDIS_DIAL_TIMEOUT: ${REDIS_DIAL_TIMEOUT}
+      REDIS_TIMEOUT: ${REDIS_TIMEOUT}
+      CONFIG_PATH: /app/config/prod.yaml
     expose:
       - "50051"
     networks:
       - backend
 
-
-  # CATALOG SERVICE
+  # ── Catalog ────────────────────────────────────────────
   catalog-db:
-    image: postgres:16
+    image: postgres:16-alpine
     container_name: catalog-db
     environment:
-      POSTGRES_USER: catalog
-      POSTGRES_PASSWORD: catalog
-      POSTGRES_DB: catalog
+      POSTGRES_USER: ${CATALOG_DB_USER}
+      POSTGRES_PASSWORD: ${CATALOG_DB_PASSWORD}
+      POSTGRES_DB: ${CATALOG_DB_NAME}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U catalog -d catalog"]
+      test: ["CMD-SHELL", "pg_isready -U ${CATALOG_DB_USER} -d ${CATALOG_DB_NAME}"]
       interval: 5s
+      timeout: 3s
       retries: 5
     volumes:
       - catalog_pg:/var/lib/postgresql/data
     networks:
       - backend
 
-  catalog-system-service:
-    build: ./catalog-system-service
-    container_name: catalog-system-service
+  catalog:
+    build:
+      context: ./catalog-system-microservice
+      dockerfile: Dockerfile
+    container_name: catalog
     depends_on:
       catalog-db:
         condition: service_healthy
+      kafka:
+        condition: service_healthy
     environment:
-      DB_DSN: postgres://catalog:catalog@catalog-db:5432/catalog?sslmode=disable
-      GRPC_PORT: 50051
-      KAFKA_BROKERS: kafka:9092
+      DB_HOST: catalog-db
+      DB_PORT: ${CATALOG_DB_PORT}
+      DB_USER: ${CATALOG_DB_USER}
+      DB_PASSWORD: ${CATALOG_DB_PASSWORD}
+      DB_NAME: ${CATALOG_DB_NAME}
+      TMDB_APIKEY: ${TMDB_APIKEY}
+      CONFIG_PATH: /app/config/prod.yaml
     expose:
       - "50051"
     networks:
       - backend
 
-
-  # API GATEWAY
-
-  gateway:
-    build: ./api-gateway
-    container_name: api-gateway
-    depends_on:
-      - sso
-      - order
-    ports:
-      - "8080:8080"
+  # ── Recommendation ─────────────────────────────────────
+  rec-db:
+    image: postgres:16-alpine
+    container_name: rec-db
     environment:
-      AUTH_GRPC_ADDR: sso:50051
-      ORDER_GRPC_ADDR: order:50051
+      POSTGRES_USER: ${REC_DB_USER}
+      POSTGRES_PASSWORD: ${REC_DB_PASSWORD}
+      POSTGRES_DB: ${REC_DB_NAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${REC_DB_USER} -d ${REC_DB_NAME}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - rec_pg:/var/lib/postgresql/data
     networks:
       - backend
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - backend
+
+  recommendation:
+    build:
+      context: ./recommedation-system-microservice
+      dockerfile: Dockerfile
+    container_name: recommendation
+    depends_on:
+      rec-db:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DB_HOST_LOCAL: rec-db
+      DB_PORT: ${REC_DB_PORT}
+      DB_USER: ${REC_DB_USER}
+      DB_PASSWORD: ${REC_DB_PASSWORD}
+      DB_NAME: ${REC_DB_NAME}
+      HF_API_KEY: ${HF_API_KEY}
+      REDIS_ADDR: redis:6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_DB: ${REDIS_DB}
+      CONFIG_PATH: /app/config/prod.yaml
+    expose:
+      - "50051"
+    networks:
+      - backend
+
+  # ── Notification ───────────────────────────────────────
+  notification:
+    build:
+      context: ./notification-microservice
+      dockerfile: Dockerfile
+    container_name: notification
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM: ${SMTP_FROM}
+      CONFIG_PATH: /app/config/prod.yaml
+    networks:
+      - backend
+
+  # ── API Gateway ────────────────────────────────────────
+  gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    depends_on:
+      - sso
+      - catalog
+      - recommendation
+    ports:
+      - "8080:8080"
+    environment:
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      SSO_GRPC_ADDR: sso:50051
+      CATALOG_GRPC_ADDR: catalog:50051
+      REC_GRPC_ADDR: recommendation:50051
+      CONFIG_PATH: /app/config/prod.yaml
+    networks:
+      - backend
+
+  # ── Importer ───────────────────────────────────────────
+  catalog-importer:
+    build:
+      context: ./catalog-system-microservice
+      dockerfile: Dockerfile.importer
+    container_name: catalog-importer
+    depends_on:
+      catalog-db:
+        condition: service_healthy
+    environment:
+      DB_HOST: catalog-db
+      DB_PORT: ${CATALOG_DB_PORT}
+      DB_USER: ${CATALOG_DB_USER}
+      DB_PASSWORD: ${CATALOG_DB_PASSWORD}
+      DB_NAME: ${CATALOG_DB_NAME}
+      TMDB_APIKEY: ${TMDB_APIKEY}
+    networks:
+      - backend
+    profiles:
+      - import
+
 networks:
   backend:
+    driver: bridge
 
 volumes:
   sso_pg:
-  order_pg:
+  catalog_pg:
+  rec_pg:

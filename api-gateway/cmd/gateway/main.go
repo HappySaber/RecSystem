@@ -3,7 +3,6 @@ package main
 import (
 	"api-gateway/internal/app"
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -15,7 +14,7 @@ import (
 
 func main() {
 	if err := godotenv.Load(".env"); err != nil {
-		panic(fmt.Sprintf("failed to load .env: %v", err))
+		log.Printf("no .env file, using system environment variables")
 	}
 	application, err := app.New(":8080")
 	if err != nil {

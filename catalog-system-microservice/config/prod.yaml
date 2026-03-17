@@ -1,0 +1,10 @@
+env: "prod"
+grpc:
+  port: 50051
+  timeout: 1h
+limit: 10000
+kafka:
+  brokers:
+    - "kafka:9092"
+  topic: "content-genre"
+  group_id: "recommendation"

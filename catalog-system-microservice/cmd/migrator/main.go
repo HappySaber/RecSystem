@@ -17,7 +17,7 @@ func main() {
 	flag.Parse()
 
 	if err := godotenv.Load(".env"); err != nil {
-		panic(fmt.Sprintf("failed to load .env: %v", err))
+		log.Println("no .env file, using system environment variables")
 	}
 	db, err := postgresql.New()
 	if err != nil {

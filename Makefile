@@ -53,3 +53,43 @@ notifications-test-unit-consumer:
 
 apigateway:
 	cd api-gateway && go run cmd/gateway/main.go
+
+
+
+
+.PHONY: vendor
+
+vendor:
+	cd api-gateway && go mod vendor
+	cd sso-microservice && go mod vendor
+	cd catalog-system-microservice && go mod vendor
+	cd recommedation-system-microservice && go mod vendor
+	cd notification-microservice && go mod vendor
+
+# пересобрать все образы
+build:
+	docker-compose build --no-cache
+
+# запустить всё
+up:
+	docker-compose up
+
+# запустить с пересборкой
+up-build:
+	docker-compose up --build
+
+# остановить
+down:
+	docker-compose down
+
+# остановить и удалить volumes
+down-v:
+	docker-compose down -v
+
+# запустить импортер
+import:
+	docker-compose --profile import run --rm catalog-importer
+
+# посмотреть логи сервиса, пример: make logs s=catalog
+logs:
+	docker-compose logs -f $(s)
