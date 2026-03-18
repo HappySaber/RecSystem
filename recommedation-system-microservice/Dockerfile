@@ -1,4 +1,3 @@
-# catalog-system-microservice/Dockerfile
 FROM golang:1.25.3-alpine AS builder
 
 WORKDIR /app
@@ -14,7 +13,7 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux \
     go build -o /app/bin/app ./cmd/rec-system/main.go
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+RUN CGO_ENABLED=0 GOOS=linux \
     go build -o /app/bin/migrator ./cmd/migrator/main.go
 
 FROM alpine:3.19
@@ -26,6 +25,7 @@ WORKDIR /app
 COPY --from=builder /app/bin/app /app/app
 COPY --from=builder /app/bin/migrator /app/migrator
 COPY --from=builder /app/config /app/config
+COPY --from=builder /app/migrations /app/migrations
 
 COPY Docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

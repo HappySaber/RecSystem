@@ -25,6 +25,7 @@ WORKDIR /app
 COPY --from=builder /app/bin/app /app/app
 COPY --from=builder /app/bin/migrator /app/migrator
 COPY --from=builder /app/config /app/config
+COPY --from=builder /app/migrations /app/migrations
 
 COPY Docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

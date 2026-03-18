@@ -48,7 +48,7 @@ func buildDBConfig() *DBConfig {
 		log.Fatalf("Invalid DB_PORT: %v", err)
 	}
 	return &DBConfig{
-		Host:     os.Getenv("DB_HOST_LOCAL"),
+		Host:     os.Getenv("DB_HOST"),
 		Port:     port,
 		User:     os.Getenv("DB_USER"),
 		DBName:   os.Getenv("DB_NAME"),

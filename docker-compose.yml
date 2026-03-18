@@ -33,7 +33,7 @@ services:
       POSTGRES_PASSWORD: ${SSO_DB_PASSWORD}
       POSTGRES_DB: ${SSO_DB_NAME}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${SSO_DB_USER} -d ${SSO_DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -53,7 +53,7 @@ services:
       kafka:
         condition: service_healthy
     environment:
-      DB_HOST_LOCAL: sso-db
+      DB_HOST: sso-db
       DB_PORT: ${SSO_DB_PORT}
       DB_USER: ${SSO_DB_USER}
       DB_PASSWORD: ${SSO_DB_PASSWORD}
@@ -81,7 +81,7 @@ services:
       POSTGRES_PASSWORD: ${CATALOG_DB_PASSWORD}
       POSTGRES_DB: ${CATALOG_DB_NAME}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${CATALOG_DB_USER} -d ${CATALOG_DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -122,7 +122,7 @@ services:
       POSTGRES_PASSWORD: ${REC_DB_PASSWORD}
       POSTGRES_DB: ${REC_DB_NAME}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${REC_DB_USER} -d ${REC_DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -155,7 +155,7 @@ services:
       redis:
         condition: service_healthy
     environment:
-      DB_HOST_LOCAL: rec-db
+      DB_HOST: rec-db
       DB_PORT: ${REC_DB_PORT}
       DB_USER: ${REC_DB_USER}
       DB_PASSWORD: ${REC_DB_PASSWORD}
@@ -164,6 +164,7 @@ services:
       REDIS_ADDR: redis:6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_DB: ${REDIS_DB}
+      KAFKA_BROKERS: kafka:9092
       CONFIG_PATH: /app/config/prod.yaml
     expose:
       - "50051"
@@ -219,12 +220,20 @@ services:
     depends_on:
       catalog-db:
         condition: service_healthy
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
+      HTTP_PROXY: http://host.docker.internal:10809
+      HTTPS_PROXY: http://host.docker.internal:10809
       DB_HOST: catalog-db
       DB_PORT: ${CATALOG_DB_PORT}
       DB_USER: ${CATALOG_DB_USER}
       DB_PASSWORD: ${CATALOG_DB_PASSWORD}
       DB_NAME: ${CATALOG_DB_NAME}
+      CONFIG_PATH: /app/config/prod.yaml
       TMDB_APIKEY: ${TMDB_APIKEY}
     networks:
       - backend

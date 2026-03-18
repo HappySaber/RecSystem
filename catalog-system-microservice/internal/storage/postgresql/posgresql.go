@@ -52,9 +52,15 @@ func buildDSNFromEnv() string {
 	if err != nil {
 		log.Fatalf("invalid DB_PORT: %v", err)
 	}
+
+	host := os.Getenv("DB_HOST")
+	if host == "" {
+		host = os.Getenv("DB_HOST_LOCAL")
+	}
+
 	return fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		os.Getenv("DB_HOST"),
+		host,
 		port,
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),

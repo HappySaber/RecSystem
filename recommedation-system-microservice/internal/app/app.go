@@ -5,6 +5,7 @@ import (
 	"context"
 	"log"
 	"log/slog"
+	"os"
 	"time"
 
 	grpcapp "rec-system-microservice/internal/app/grpc"
@@ -63,16 +64,25 @@ func newApp(
 
 	grpcApp := grpcapp.New(log, grpcPort, engine, prefs, actions, aiRecService)
 
+	// читаем брокеры из env — в Docker это kafka:9092, локально localhost:9092
+	kafkaBrokers := os.Getenv("KAFKA_BROKERS")
+	if kafkaBrokers == "" {
+		kafkaBrokers = "localhost:9092"
+	}
+	brokers := []string{kafkaBrokers}
+
 	userActionReader := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: []string{"localhost:9092"},
-		Topic:   "user-action",
-		GroupID: "recommendation",
+		Brokers:     brokers,
+		Topic:       "user-action",
+		GroupID:     "recommendation",
+		StartOffset: kafka.FirstOffset,
 	})
 
 	genreReader := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: []string{"localhost:9092"},
-		Topic:   "content-genre",
-		GroupID: "recommendation",
+		Brokers:     brokers,
+		Topic:       "content-genre",
+		GroupID:     "recommendation",
+		StartOffset: kafka.FirstOffset,
 	})
 
 	userConsumer := consumer.NewConsumer(
@@ -120,15 +130,17 @@ func initAIRecommendationServiceStub(log *slog.Logger, storage *postgresql.Stora
 }
 
 func (a *App) StartConsumers(ctx context.Context) {
-	for _, c := range a.Consumer {
-		go func(cons consumer.Consumer) {
+	log.Printf("starting %d consumers", len(a.Consumer))
+	for i, c := range a.Consumer {
+		go func(idx int, cons consumer.Consumer) {
+			log.Printf("consumer %d starting", idx)
 			for {
 				if err := cons.Start(ctx); err != nil {
-					log.Println("consumer stopped:", err)
+					log.Printf("consumer %d stopped: %v", idx, err)
 					time.Sleep(3 * time.Second)
 					continue
 				}
 			}
-		}(c)
+		}(i, c)
 	}
 }

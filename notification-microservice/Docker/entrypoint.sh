@@ -1,9 +1,10 @@
+#!/bin/sh
 set -e
 
-echo "🔄 Running migrations..."
-/app/migrator
+echo "running migrations..."
+/app/migrator --migrations-path=/app/migrations
 
-echo "✅ Migrations completed successfully"
+echo "migrations completed"
 
-echo "🚀 Starting application..."
-exec /app/app
+echo "starting application..."
+exec /app/app --config=/app/config/prod.yaml

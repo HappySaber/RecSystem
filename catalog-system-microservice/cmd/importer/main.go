@@ -28,11 +28,6 @@ func main() {
 	)
 
 	TMDBApiKey := os.Getenv("TMDB_APIKEY")
-	//log.Println(TMDBApiKey)
-	log.Println("HTTP_PROXY =", os.Getenv("HTTP_PROXY"))
-	log.Println("HTTPS_PROXY =", os.Getenv("HTTPS_PROXY"))
-	log.Println("http_proxy =", os.Getenv("http_proxy"))
-	log.Println("https_proxy =", os.Getenv("https_proxy"))
 
 	client := tmdb.NewClient(TMDBApiKey)
 	importer := tmdb.NewImporter(client, db, db, db, kafkaProducer)
