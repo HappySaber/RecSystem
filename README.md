@@ -1,12 +1,12 @@
-# RecSystem – система рекомендаций контента
+# RecSystem - система рекомендаций контента
 
-**RecSystem** — микросервисное веб-приложение для любителей фильмов, сериалов и аниме.  
+**RecSystem** - микросервисное веб-приложение для любителей фильмов, сериалов и аниме.  
 Система отслеживает взаимодействие пользователя с контентом и формирует персональные рекомендации на основе его предпочтений.  
 Дополнительно доступен ИИ-ассистент на базе **LLaMA 3** (Hugging Face) для рекомендаций по произвольному запросу.
 
 ---
 
-## ✨ Функциональность
+## Функциональность
 
 | Сервис | Описание |
 |--------|----------|
@@ -18,48 +18,66 @@
 
 ---
 
-## 🏗 Архитектура
+## Архитектура
 ```
-                        ┌─────────────┐
-                        │ API Gateway │  :8080
-                        └──────┬──────┘
-                               │ gRPC
-          ┌────────────────────┼────────────────────┐
-          │                    │                    │
-   ┌──────▼──────┐    ┌────────▼───────┐   ┌───────▼──────┐
-   │     SSO     │    │    Catalog     │   │Recommendation│
-   │  :50051     │    │    :50051      │   │   :50051     │
-   └──────┬──────┘    └────────┬───────┘   └──────┬───────┘
-          │                    │                   │
-          │              ┌─────▼──────┐            │
-          └──────────────►   Kafka    ◄────────────┘
-                         └─────┬──────┘
-                               │
-                        ┌──────▼──────┐
-                        │Notification │
-                        └─────────────┘
+                        +-------------+
+                        | API Gateway |  :8080
+                        +------+------+
+                               | gRPC
+          +--------------------+--------------------+
+          |                    |                    |
+   +------+------+    +--------+-------+   +-------+------+
+   |     SSO     |    |    Catalog     |   |Recommendation|
+   |  :50051     |    |    :50051      |   |   :50051     |
+   +------+------+    +--------+-------+   +------+-------+
+          |                    |                   |
+          |     user-registered|  content-genre    | user-action
+          |         (kafka)    |     (kafka)       |  (kafka)
+          |                    |                   |
+          +----------+  +------+         +---------+
+                     |  |                |
+                  +--+--+----------------+--+
+                  |          Kafka          |
+                  +--+-----------------------+
+                     | user-registered
+              +------+------+
+              |Notification |
+              +-------------+
 ```
 
-Каждый микросервис имеет собственную базу данных PostgreSQL.  
-Межсервисное взаимодействие — через **gRPC** (синхронно) и **Kafka** (асинхронно).
+Потоки данных через Kafka:
+
+| Топик | Отправитель | Получатель | Описание |
+|-------|-------------|------------|----------|
+| `user-registered` | SSO | Notification | Новый пользователь - приветственное письмо |
+| `content-genre` | Catalog (Importer) | Recommendation | Жанры контента - для построения рекомендаций |
+| `user-action` | API Gateway | Recommendation | Действия пользователя (лайк, дизлайк) - обновление предпочтений |
+
+Синхронное взаимодействие через gRPC:
+
+| Клиент | Сервер | Описание |
+|--------|--------|----------|
+| API Gateway | SSO | Регистрация, логин, валидация токена |
+| API Gateway | Catalog | Получение контента |
+| API Gateway | Recommendation | Получение рекомендаций |
 
 ---
 
-## 🛠 Стек технологий
+## Стек технологий
 
-- **Go 1.25** — основной язык разработки
-- **gRPC + Protobuf** — межсервисное взаимодействие
-- **PostgreSQL 16** — основное хранилище данных
-- **Redis 7** — хранение и обновление JWT-токенов
-- **Apache Kafka** — асинхронные события между сервисами
-- **Hugging Face (LLaMA 3)** — ИИ-рекомендации
-- **Docker & Docker Compose** — контейнеризация
-- **Goose** — управление миграциями БД
-- **testcontainers-go** — интеграционное тестирование
+- **Go 1.25** - основной язык разработки
+- **gRPC + Protobuf** - межсервисное взаимодействие
+- **PostgreSQL 16** - основное хранилище данных
+- **Redis 7** - хранение и обновление JWT-токенов
+- **Apache Kafka** - асинхронные события между сервисами
+- **Hugging Face (LLaMA 3)** - ИИ-рекомендации
+- **Docker & Docker Compose** - контейнеризация
+- **Goose** - управление миграциями БД
+- **testcontainers-go** - интеграционное тестирование
 
 ---
 
-## 🚀 Запуск приложения
+## Запуск приложения
 
 ### Требования
 
@@ -129,9 +147,11 @@ make up-build
 
 API Gateway доступен на `http://localhost:8080`
 
-### Импорт контента (одноразово)
+---
 
-После первого запуска необходимо загрузить контент из внешних API:
+## Первый запуск
+
+После старта приложения база каталога пуста. Необходимо запустить импорт контента с TMDB:
 ```bash
 docker-compose --profile import run --rm catalog-importer
 ```
@@ -141,12 +161,172 @@ docker-compose --profile import run --rm catalog-importer
 make import
 ```
 
+Импортер загрузит **1000 популярных фильмов** и отправит жанры в сервис рекомендаций через Kafka. Процесс занимает ~3-5 минут.
+
+Без импорта эндпоинты каталога и рекомендаций будут возвращать пустые результаты.
+
 ---
 
-## 🧪 Тестирование
+## API Endpoints
 
-В проекте реализованы **юнит** и **интеграционные** тесты.  
-Интеграционные тесты используют **testcontainers-go** — автоматически поднимают изолированную PostgreSQL в Docker.
+Base URL: `http://localhost:8080`
+
+### Публичные (без токена)
+
+#### Регистрация
+```
+POST /auth/register
+```
+```json
+{
+  "email": "user@example.com",
+  "password": "secret123",
+  "name": "Ivan",
+  "surname": "Ivanov",
+  "role": "user"
+}
+```
+
+Ответ:
+```json
+{
+  "user_id": "uuid"
+}
+```
+
+#### Авторизация
+```
+POST /auth/login
+```
+```json
+{
+  "email": "user@example.com",
+  "password": "secret123"
+}
+```
+
+Ответ:
+```json
+{
+  "access_token": "eyJhbGci..."
+}
+```
+
+---
+
+### Защищённые (требуют `Authorization: Bearer <token>`)
+
+#### Каталог
+
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| GET | `/api/catalog/get_content` | Получить контент по ID |
+| GET | `/api/catalog/get-content-by-external` | Найти контент по внешнему ID |
+
+**GET /api/catalog/get_content**
+```json
+{
+  "content_id": "uuid"
+}
+```
+
+**GET /api/catalog/get-content-by-external**
+```json
+{
+  "content_id": "uuid",
+  "external_source": "tmdb"
+}
+```
+
+---
+
+#### Действия с контентом
+
+Все эндпоинты принимают `content_id` из URL. `user_id` берётся из JWT токена автоматически.
+
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| POST | `/api/content/{content_id}/like` | Лайк |
+| POST | `/api/content/{content_id}/dislike` | Дизлайк |
+| POST | `/api/content/{content_id}/favorite` | Добавить в избранное |
+| POST | `/api/content/{content_id}/view` | Отметить как просмотренное |
+
+Пример:
+```
+POST /api/content/d3820b92-9d1e-4893-9495-03694a8bfd2e/like
+```
+
+---
+
+#### Рекомендации
+
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| GET | `/api/recommendations` | Персональные рекомендации на основе истории |
+| POST | `/api/recommendations/explicit` | ИИ-рекомендации по текстовому запросу |
+| POST | `/api/recommendations/genres` | Рекомендации по жанрам |
+| POST | `/api/recommendations/similar` | Похожий контент |
+| GET | `/api/recommendations/trending` | Трендовый контент (просмотры за 24ч) |
+| GET | `/api/recommendations/popular` | Популярный контент |
+
+**GET /api/recommendations**
+```json
+{
+  "limit": 10
+}
+```
+
+**POST /api/recommendations/explicit** - ИИ по текстовому запросу
+```json
+{
+  "query": "хочу что-то про космос и путешествия во времени",
+  "limit": 5
+}
+```
+
+**POST /api/recommendations/genres**
+```json
+{
+  "genres": ["Action", "Thriller"],
+  "limit": 10
+}
+```
+
+**POST /api/recommendations/similar**
+```json
+{
+  "content_id": "d3820b92-9d1e-4893-9495-03694a8bfd2e",
+  "limit": 10
+}
+```
+
+**GET /api/recommendations/trending**
+```json
+{
+  "limit": 10
+}
+```
+
+**GET /api/recommendations/popular**
+```json
+{
+  "limit": 10
+}
+```
+
+---
+
+#### Health Check
+```
+GET /health -> 200 OK
+```
+
+---
+
+## Тестирование
+
+В проекте реализованы юнит и интеграционные тесты.  
+Интеграционные тесты используют **testcontainers-go** - автоматически поднимают изолированную PostgreSQL в Docker.
 ```bash
 # юнит тесты (быстро, без Docker)
 go test ./internal/... -v
@@ -160,15 +340,15 @@ go test ./recommedation-system-microservice/tests/... -v -timeout 120s
 
 ---
 
-## 📁 Структура проекта
+## Структура проекта
 ```
 recsystem/
-├── api-gateway/                  # HTTP Gateway
-├── sso-microservice/             # Авторизация
-├── catalog-system-microservice/  # Каталог контента
+├── api-gateway/                       # HTTP Gateway
+├── sso-microservice/                  # Авторизация
+├── catalog-system-microservice/       # Каталог контента
 ├── recommedation-system-microservice/ # Рекомендации
-├── notification-microservice/    # Email уведомления
-├── proto/                        # Protobuf схемы
+├── notification-microservice/         # Email уведомления
+├── proto/                             # Protobuf схемы
 ├── docker-compose.yml
 ├── Makefile
 └── .env
@@ -176,7 +356,7 @@ recsystem/
 
 ---
 
-## 📌 Makefile команды
+## Makefile команды
 
 | Команда | Описание |
 |---------|----------|
