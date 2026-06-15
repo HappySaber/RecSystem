@@ -4,6 +4,7 @@ import (
 	"api-gateway/internal/dto"
 	pbCatalog "api-gateway/internal/pbs/catalog"
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"google.golang.org/grpc"
@@ -42,6 +43,7 @@ func (cc *CatalogClient) GetContent(
 
 	return &dto.Content{
 		ID:             c.GetId(),
+		Type:           contentTypeToString(c.GetType()),
 		ExternalSource: c.GetExternalSource(),
 		ExternalID:     c.GetExternalId(),
 		Title:          c.GetTitle(),
@@ -49,6 +51,34 @@ func (cc *CatalogClient) GetContent(
 		PosterURL:      c.GetPosterUrl(),
 		ReleaseDate:    c.GetReleaseDate(),
 	}, nil
+}
+
+func contentTypeToString(t pbCatalog.ContentType) string {
+	switch t {
+	case pbCatalog.ContentType_MOVIE:
+		return "movie"
+	case pbCatalog.ContentType_SERIES:
+		return "series"
+	case pbCatalog.ContentType_ANIME:
+		return "anime"
+	case pbCatalog.ContentType_GAME:
+		return "game"
+	case pbCatalog.ContentType_BOOK:
+		return "book"
+	default:
+		return ""
+	}
+}
+
+func parseStringSliceJSON(raw string) []string {
+	if raw == "" || raw == "null" {
+		return nil
+	}
+	var items []string
+	if err := json.Unmarshal([]byte(raw), &items); err != nil {
+		return nil
+	}
+	return items
 }
 
 func (cc *CatalogClient) GetContentByIDs(
@@ -122,17 +152,23 @@ func (cc *CatalogClient) GetMovieDetails(
 	}
 
 	m := resp.GetDetails()
+	var runtime *int32
+	if r := m.GetRuntime(); r > 0 {
+		runtime = &r
+	}
 
 	return &dto.MovieDetails{
 		ContentID:     m.GetContentId(),
 		TmdbID:        m.GetTmdbId(),
 		OriginalTitle: m.GetOriginalTitle(),
-		Runtime:       &m.Runtime,
+		Runtime:       runtime,
 		Tagline:       m.GetTagline(),
 		Status:        m.GetStatus(),
 		Budget:        m.GetBudget(),
 		Revenue:       m.GetRevenue(),
 		Language:      m.GetLanguage(),
+		Genres:        parseStringSliceJSON(m.GetGenresJson()),
+		Cast:          parseStringSliceJSON(m.GetCastJson()),
 	}, nil
 }
 

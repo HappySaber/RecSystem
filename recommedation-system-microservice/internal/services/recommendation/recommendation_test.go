@@ -63,6 +63,22 @@ func TestGetRecommendations_Success(t *testing.T) {
 	provider.AssertExpectations(t)
 }
 
+func TestGetRecommendations_ColdStart(t *testing.T) {
+	svc, provider := newTestRecommendation()
+
+	popular := []string{"popular-1", "popular-2"}
+	provider.On("GetUserRecommendations", mock.Anything, "user-new", 10).
+		Return([]string{}, nil).Once()
+	provider.On("GetPopularContent", mock.Anything, 10).
+		Return(popular, nil).Once()
+
+	result, err := svc.GetRecommendations(context.Background(), "user-new", 10)
+
+	require.NoError(t, err)
+	assert.Equal(t, popular, result)
+	provider.AssertExpectations(t)
+}
+
 func TestGetRecommendations_Error(t *testing.T) {
 	svc, provider := newTestRecommendation()
 

@@ -64,6 +64,11 @@ func NewRouter(h Handlers, mw *middleware.Manager) http.Handler {
 	// Catalog
 
 	api.HandleFunc(
+		"/catalog/content/{content_id}",
+		h.Catalog.GetContentDetails,
+	).Methods(http.MethodGet)
+
+	api.HandleFunc(
 		"/catalog/get_content",
 		h.Catalog.GetContent,
 	).Methods(http.MethodGet)

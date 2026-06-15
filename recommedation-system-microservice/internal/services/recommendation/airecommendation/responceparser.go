@@ -1,33 +1,59 @@
 package airecommendation
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"strings"
+)
 
-type JSONContentIDParser struct{}
+type JSONTitlesParser struct{}
 
-func NewAIResponseParser() (*JSONContentIDParser, error) {
-	return &JSONContentIDParser{}, nil
+func NewAIResponseParser() (*JSONTitlesParser, error) {
+	return &JSONTitlesParser{}, nil
 }
 
-func (p *JSONContentIDParser) ParseContentIDs(
-	raw string,
-) ([]string, error) {
-	// 1️⃣ пробуем идеальный вариант
-	var ids []string
-	if err := json.Unmarshal([]byte(raw), &ids); err == nil {
-		return ids, nil
+func normalizeRawResponse(raw string) string {
+	raw = strings.TrimSpace(raw)
+
+	if strings.HasPrefix(raw, "```") {
+		raw = strings.TrimPrefix(raw, "```json")
+		raw = strings.TrimPrefix(raw, "```JSON")
+		raw = strings.TrimPrefix(raw, "```")
+		if end := strings.LastIndex(raw, "```"); end >= 0 {
+			raw = raw[:end]
+		}
+		raw = strings.TrimSpace(raw)
 	}
 
-	// 2️⃣ пробуем объект-обёртку
+	start := strings.Index(raw, "[")
+	end := strings.LastIndex(raw, "]")
+	if start >= 0 && end > start {
+		return raw[start : end+1]
+	}
+
+	return raw
+}
+
+func (p *JSONTitlesParser) ParseTitles(raw string) ([]string, error) {
+	normalized := normalizeRawResponse(raw)
+
+	var titles []string
+	if err := json.Unmarshal([]byte(normalized), &titles); err == nil {
+		return titles, nil
+	}
+
 	var wrapped struct {
+		Titles     []string `json:"titles"`
 		ContentIDs []string `json:"content_ids"`
 		Results    []string `json:"results"`
 		Items      []string `json:"items"`
 	}
-	if err := json.Unmarshal([]byte(raw), &wrapped); err != nil {
+	if err := json.Unmarshal([]byte(normalized), &wrapped); err != nil {
 		return nil, ErrInvalidAIResponse
 	}
 
 	switch {
+	case len(wrapped.Titles) > 0:
+		return wrapped.Titles, nil
 	case len(wrapped.ContentIDs) > 0:
 		return wrapped.ContentIDs, nil
 	case len(wrapped.Results) > 0:
@@ -37,4 +63,9 @@ func (p *JSONContentIDParser) ParseContentIDs(
 	default:
 		return nil, ErrInvalidAIResponse
 	}
+}
+
+// ParseContentIDs — алиас для обратной совместимости
+func (p *JSONTitlesParser) ParseContentIDs(raw string) ([]string, error) {
+	return p.ParseTitles(raw)
 }

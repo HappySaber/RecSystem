@@ -91,8 +91,8 @@ func (s *serverAPI) GetContent(ctx context.Context, req *catalog1.GetContentRequ
 
 	return &catalog1.GetContentResponse{
 		Content: &catalog1.Content{
-			Id: content.ID,
-			//Type:           content.Type,
+			Id:             content.ID,
+			Type:           mapContentTypeToProto(content.Type),
 			ExternalSource: content.ExternalSource,
 			ExternalId:     content.ExternalID,
 			Title:          content.Title,
@@ -200,9 +200,30 @@ func (s *serverAPI) GetMovieDetails(ctx context.Context, req *catalog1.GetMovieD
 
 	return &catalog1.GetMovieDetailsResponse{
 		Details: &catalog1.MovieDetails{
-			ContentId: movieDetails.ContentID,
+			ContentId:     movieDetails.ContentID,
+			TmdbId:        int32(movieDetails.TmdbID),
+			OriginalTitle: movieDetails.OriginalTitle,
+			Runtime:       runtimeToInt32(movieDetails.Runtime),
+			Tagline:       movieDetails.Tagline,
+			Status:        movieDetails.Status,
+			Budget:        movieDetails.Budget,
+			Revenue:       movieDetails.Revenue,
+			Language:      movieDetails.Language,
+			GenresJson:    string(movieDetails.Genres),
+			CastJson:      string(movieDetails.CastMembers),
+			CrewJson:      string(movieDetails.Crew),
+			ImagesJson:    string(movieDetails.Images),
+			VideosJson:    string(movieDetails.Videos),
+			RawJson:       string(movieDetails.RawData),
 		},
 	}, nil
+}
+
+func runtimeToInt32(runtime *int) int32 {
+	if runtime == nil {
+		return 0
+	}
+	return int32(*runtime)
 }
 
 func (s *serverAPI) GetAnimeDetails(ctx context.Context, req *catalog1.GetAnimeDetailsRequest) (*catalog1.GetAnimeDetailsResponse, error) {

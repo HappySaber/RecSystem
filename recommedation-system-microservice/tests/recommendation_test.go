@@ -142,14 +142,28 @@ func TestGetRecommendations_ZeroLimit(t *testing.T) {
 func TestGetRecommendations_NoHistory(t *testing.T) {
 	ctx, st := suite.New(t)
 
-	// пользователь без истории — пустой результат это норма
+	newUser := "00000000-0000-0000-0000-000000000099"
+
+	_, err := st.DB.Exec(`
+		INSERT INTO content_popularity_agg (content_id, score)
+		VALUES ($1, 100)
+		ON CONFLICT (content_id) DO UPDATE SET score = EXCLUDED.score`,
+		contentID1,
+	)
+	require.NoError(t, err)
+
+	t.Cleanup(func() {
+		st.DB.Exec(`DELETE FROM content_popularity_agg WHERE content_id = $1`, contentID1)
+	})
+
+	// пользователь без истории — cold start, популярный контент
 	resp, err := st.Client.GetRecommendations(ctx, &recpb.GetRecommendationsRequest{
-		UserId: "00000000-0000-0000-0000-000000000099",
+		UserId: newUser,
 		Limit:  10,
 	})
 
 	require.NoError(t, err)
-	assert.Empty(t, resp.GetContentIds())
+	assert.Contains(t, resp.GetContentIds(), contentID1)
 }
 
 // GetRecommendationsByGenres

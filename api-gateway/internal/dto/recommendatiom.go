@@ -6,7 +6,8 @@ type GetExplicitRequest struct {
 }
 
 type GetExplicitResponse struct {
-	ContentIDs []string `json:"content_ids"`
+	Titles     []string `json:"titles"`
+	ContentIDs []string `json:"content_ids,omitempty"` // deprecated, для совместимости
 }
 
 type GetRecommendationsRequest struct {

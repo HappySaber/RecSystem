@@ -4,6 +4,7 @@ import "time"
 
 type Content struct {
 	ID             string `json:"id"`
+	Type           string `json:"type"`
 	ExternalSource string `json:"external_source"`
 	ExternalID     string `json:"external_id"`
 	Title          string `json:"title"`
@@ -12,22 +13,29 @@ type Content struct {
 	ReleaseDate    string `json:"release_date"`
 }
 
+type ContentDetailsResponse struct {
+	Content Content       `json:"content"`
+	Movie   *MovieDetails `json:"movie,omitempty"`
+}
+
+type MovieDetails struct {
+	ContentID     string   `json:"content_id"`
+	TmdbID        int32    `json:"tmdb_id"`
+	OriginalTitle string   `json:"original_title"`
+	Runtime       *int32   `json:"runtime,omitempty"`
+	Tagline       string   `json:"tagline"`
+	Status        string   `json:"status"`
+	Budget        int64    `json:"budget"`
+	Revenue       int64    `json:"revenue"`
+	Language      string   `json:"language"`
+	Genres        []string `json:"genres,omitempty"`
+	Cast          []string `json:"cast,omitempty"`
+}
+
 type ContentShort struct {
 	ID    string `json:"id"`
 	Type  string `json:"type"`
 	Title string `json:"title"`
-}
-
-type MovieDetails struct {
-	ContentID     string `json:"content_id"`
-	TmdbID        int32  `json:"tmdb_id"`
-	OriginalTitle string `json:"original_title"`
-	Runtime       *int32 `json:"runtime,omitempty"`
-	Tagline       string `json:"tagline"`
-	Status        string `json:"status"`
-	Budget        int64  `json:"budget"`
-	Revenue       int64  `json:"revenue"`
-	Language      string `json:"language"`
 }
 
 type SeriesDetails struct {

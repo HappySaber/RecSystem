@@ -55,6 +55,15 @@ func (r *Recommendation) GetRecommendations(
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
+	if len(recs) == 0 {
+		log.Info("cold start: user has no history, returning popular content")
+		recs, err = r.engine.GetPopularContent(ctx, limit)
+		if err != nil {
+			log.Error("failed to get popular content for cold start", "error", err)
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+	}
+
 	log.Info("recommendations retrieved", "count", len(recs))
 
 	return recs, nil

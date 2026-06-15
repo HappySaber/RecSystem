@@ -61,6 +61,14 @@ func (h *RecommendationHandler) GetExplicit(
 		return
 	}
 
+	if req.Query == "" {
+		http.Error(w, "query is required", http.StatusBadRequest)
+		return
+	}
+	if req.Limit <= 0 {
+		req.Limit = 12
+	}
+
 	// reqID, _ := ctx.Value(middleware.RequestIDKey).(string)
 
 	// searchEvent := schemas.UserSearchEvent{
@@ -80,7 +88,7 @@ func (h *RecommendationHandler) GetExplicit(
 	// ); err != nil {
 	// }
 
-	contentIDs, err := h.RecommendationClient.GetExplicit(
+	titles, err := h.RecommendationClient.GetExplicit(
 		ctx,
 		req.Query,
 		req.Limit,
@@ -91,7 +99,8 @@ func (h *RecommendationHandler) GetExplicit(
 	}
 
 	resp := dto.GetExplicitResponse{
-		ContentIDs: contentIDs,
+		Titles:     titles,
+		ContentIDs: titles,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -105,11 +114,8 @@ func (h *RecommendationHandler) GetRecommendations(
 ) {
 	ctx := r.Context()
 
-	var req dto.GetRecommendationsRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
-		return
-	}
+	limit := parseLimit(r)
+	offset := parseOffset(r)
 
 	userID, ok := middleware.GetUserID(r.Context())
 	if !ok {
@@ -117,11 +123,18 @@ func (h *RecommendationHandler) GetRecommendations(
 		return
 	}
 
-	contentIDs, err := h.RecommendationClient.GetRecommendations(
+	fetchLimit := offset + limit
+	allIDs, err := h.RecommendationClient.GetRecommendations(
 		ctx,
 		userID,
-		req.Limit,
+		fetchLimit,
 	)
+	if err != nil {
+		http.Error(w, "failed to get recommendations", http.StatusInternalServerError)
+		return
+	}
+
+	contentIDs := sliceFromOffset(allIDs, offset, limit)
 	if err != nil {
 		http.Error(w, "failed to get recommendations", http.StatusInternalServerError)
 		return
@@ -214,20 +227,11 @@ func (h *RecommendationHandler) GetTrendingContent(
 ) {
 	ctx := r.Context()
 
-	var req dto.GetTrendingContentRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
-		return
-	}
-
-	if req.Limit <= 0 {
-		http.Error(w, "invalid limit", http.StatusBadRequest)
-		return
-	}
+	limit := parseLimit(r)
 
 	contentIDs, err := h.RecommendationClient.GetTrendingContent(
 		ctx,
-		req.Limit,
+		limit,
 	)
 	if err != nil {
 		http.Error(w, "failed to get trending content", http.StatusInternalServerError)
@@ -249,20 +253,11 @@ func (h *RecommendationHandler) GetPopularContent(
 ) {
 	ctx := r.Context()
 
-	var req dto.GetPopularContentRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
-		return
-	}
-
-	if req.Limit <= 0 {
-		http.Error(w, "invalid limit", http.StatusBadRequest)
-		return
-	}
+	limit := parseLimit(r)
 
 	contentIDs, err := h.RecommendationClient.GetPopularContent(
 		ctx,
-		req.Limit,
+		limit,
 	)
 	if err != nil {
 		http.Error(w, "failed to get popular content", http.StatusInternalServerError)

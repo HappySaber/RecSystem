@@ -28,7 +28,7 @@ func (h *SSOHandler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 	resp, err := h.SSOClient.Register(r.Context(), req.Email, req.Password, req.Name, req.Surname, req.Role)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		respondRegisterError(w, err)
 		return
 	}
 
@@ -41,7 +41,7 @@ func (h *SSOHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	token, err := h.SSOClient.Login(r.Context(), req.Email, req.Password)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		respondLoginError(w, err)
 		return
 	}
 

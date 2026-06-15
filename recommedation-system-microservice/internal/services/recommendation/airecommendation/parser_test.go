@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func newParser() *airecommendation.JSONContentIDParser {
+func newParser() *airecommendation.JSONTitlesParser {
 	p, _ := airecommendation.NewAIResponseParser()
 	return p
 }
@@ -66,4 +66,23 @@ func TestParseContentIDs_EmptyWrappedObject(t *testing.T) {
 
 	require.Error(t, err)
 	assert.ErrorIs(t, err, airecommendation.ErrInvalidAIResponse)
+}
+
+func TestParseContentIDs_MarkdownBlock(t *testing.T) {
+	parser := newParser()
+
+	raw := "```json\n[\"The Shining\", \"Hereditary\"]\n```"
+	result, err := parser.ParseContentIDs(raw)
+
+	require.NoError(t, err)
+	assert.Equal(t, []string{"The Shining", "Hereditary"}, result)
+}
+
+func TestParseContentIDs_WrappedTitles(t *testing.T) {
+	parser := newParser()
+
+	result, err := parser.ParseContentIDs(`{"titles":["Film A","Film B"]}`)
+
+	require.NoError(t, err)
+	assert.Equal(t, []string{"Film A", "Film B"}, result)
 }

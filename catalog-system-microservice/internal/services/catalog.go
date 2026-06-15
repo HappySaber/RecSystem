@@ -19,17 +19,16 @@ type CatalogProvider interface {
 	GetContentByIDs(ctx context.Context, ids []string) ([]models.ContentShort, error)
 
 	FindContentByExternal(ctx context.Context, externalID, externalSource string) (models.Content, error)
-	//AllAnimeDetails(ctx context.Context) ([]models.AnimeDetails, error)
 	AnimeDetails(ctx context.Context, id string) (models.AnimeDetails, error)
 	AllAnimeDetails(ctx context.Context) ([]models.AnimeDetails, error)
-	BookDetails(ctx context.Context, id string) (models.BookDetails, error)
-	AllBookDetails(ctx context.Context) ([]models.BookDetails, error)
 	MovieDetails(ctx context.Context, id string) (models.MovieDetails, error)
 	AllMovieDetails(ctx context.Context) ([]models.MovieDetails, error)
 	SeriesDetails(ctx context.Context, id string) (models.SeriesDetails, error)
 	AllSeriesDetails(ctx context.Context) ([]models.SeriesDetails, error)
 	GameDetails(ctx context.Context, id string) (models.GameDetails, error)
 	AllGameDetails(ctx context.Context) ([]models.GameDetails, error)
+	BookDetails(ctx context.Context, id string) (models.BookDetails, error)
+	AllBookDetails(ctx context.Context) ([]models.BookDetails, error)
 }
 
 func New(

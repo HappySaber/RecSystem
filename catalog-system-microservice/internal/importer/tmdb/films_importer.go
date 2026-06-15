@@ -124,7 +124,7 @@ func (i *Importer) importMovie(movieID int) error {
 		ExternalID:     fmt.Sprint(details["id"]),
 		Title:          fmt.Sprint(details["title"]),
 		Description:    fmt.Sprint(details["overview"]),
-		PosterURL:      fmt.Sprint(details["poster_path"]),
+		PosterURL:      getString(details, "poster_path"),
 		ReleaseDate:    fmt.Sprint(details["release_date"]),
 	}
 

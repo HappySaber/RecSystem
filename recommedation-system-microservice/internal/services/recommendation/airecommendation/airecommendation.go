@@ -72,13 +72,19 @@ func (a *AIRecommendation) GetExplicitRecommendations(
 	log.Info("sending prompt to AI client", slog.String("prompt", prompt))
 	raw, err := a.client.Complete(ctx, prompt)
 	if err != nil {
-		log.Error("failed to parse AI response",
-			slog.String("raw", raw),
-		)
+		log.Error("failed to call AI client", slog.String("error", err.Error()))
 		return nil, err
 	}
 
-	return a.parser.ParseContentIDs(raw)
+	log.Info("AI raw response", slog.String("raw", raw))
+
+	titles, err := a.parser.ParseContentIDs(raw)
+	if err != nil {
+		log.Error("failed to parse AI response", slog.String("raw", raw), slog.String("error", err.Error()))
+		return nil, err
+	}
+
+	return titles, nil
 }
 func (a *AIRecommendation) GetImplicitRecommendations(
 	ctx context.Context,
