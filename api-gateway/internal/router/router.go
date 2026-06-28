@@ -25,6 +25,7 @@ func NewRouter(h Handlers, mw *middleware.Manager) http.Handler {
 
 	r.HandleFunc("/auth/register", h.SSO.Register).Methods(http.MethodPost)
 	r.HandleFunc("/auth/login", h.SSO.Login).Methods(http.MethodPost)
+	r.HandleFunc("/api/poster", handlers.ProxyPoster).Methods(http.MethodGet)
 
 	api := r.PathPrefix("/api").Subrouter()
 	api.Use(mw.Auth)

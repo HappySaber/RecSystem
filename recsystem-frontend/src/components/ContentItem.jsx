@@ -4,7 +4,7 @@ import { ContentPoster } from './ContentPoster'
 import { useUserActions } from '../hooks/useUserActions'
 import { isFavorite } from '../utils/favorites'
 
-export const ContentItem = memo(function ContentItem({ content, eagerPoster = false }) {
+export const ContentItem = memo(function ContentItem({ content }) {
   const [liked, setLiked] = useState(false)
   const [bookmarked, setBookmarked] = useState(() => isFavorite(content.id))
   const { trackAction, toggleFavorite } = useUserActions()
@@ -31,7 +31,7 @@ export const ContentItem = memo(function ContentItem({ content, eagerPoster = fa
 
   const body = (
     <>
-      <ContentPoster content={content} size="card" eager={eagerPoster} />
+      <ContentPoster content={content} size="card" />
       <div className="content-info">
         <h3 className="content-title-text">
           {content.title}

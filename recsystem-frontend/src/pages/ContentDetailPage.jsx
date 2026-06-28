@@ -62,7 +62,9 @@ export function ContentDetailPage() {
       <Link to="/" className="back-link">← Назад к рекомендациям</Link>
 
       <div className="detail-layout">
-        <ContentPoster content={content} size="detail" eager />
+        <div className="detail-poster">
+          <ContentPoster content={content} size="detail" />
+        </div>
 
         <div className="detail-main">
           <p className="detail-type">{content.type || content.external_source}</p>
